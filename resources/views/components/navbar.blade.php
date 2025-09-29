@@ -18,8 +18,8 @@
 
         {{-- Auth Buttons --}}
         <div class="flex space-x-3 items-center">
-            <a href="#" class="text-[#14274E] hover:text-blue-600 font-serif">Login</a>
-            <a href="#" class=" px-6 border-2 border-[#14274E] w-[110px] h-[35px] rounded-full text-[#14274E] text-center font-serif hover:bg-[#e8f0fc] transition flex items-center">
+            <a href="/login" class="text-[#14274E] hover:text-blue-600 font-serif">Login</a>
+            <a href="/registrasi" class=" px-6 border-2 border-[#14274E] w-[110px] h-[35px] rounded-full text-[#14274E] text-center font-serif hover:bg-[#e8f0fc] transition flex items-center">
                 Register
             </a>
         </div>

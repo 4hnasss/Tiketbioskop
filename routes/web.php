@@ -9,3 +9,11 @@ Route::get('/', function () {
 Route::get('/detailfilm', function () {
     return view('pages.detailfilm');
 });
+
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
+Route::get('/registrasi', function () {
+    return view('auth.registrasi');
+});
