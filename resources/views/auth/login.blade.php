@@ -26,11 +26,12 @@
                 placeholder="email address" 
             >
 
-            <input 
+            <input
                 type="password" 
                 class="w-[340px] h-[40px] bg-white text-[#394867] mt-[15px] px-3 rounded-[10px]" 
-                placeholder="email address" 
+                placeholder="Password" 
             >
+            
         
 
             <button type="submit" href="#" class="w-[340px] h-[40px] bg-[#1E56A0]  text-white text-center mt-[25px] px-3 rounded-[10px] cursor-pointer">
