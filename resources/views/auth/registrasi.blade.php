@@ -9,7 +9,7 @@
 <body>
     <div class="bg-gradient-to-b from-white to-blue-100 min-h-screen flex items-center justify-center flex-col">
     <img src="/img/Brand.png" alt="Flixora" class="w-[115px] h-[60px] absolute top-4 left-4">
-    <div class="w-[580px] h-[530px] bg-[#14274E] rounded-[10px] flex flex-col items-center">
+    <div class="w-fitt h-fitt bg-[#14274E] rounded-[10px] flex flex-col items-center pr-20 pl-20 pb-8">
         <p class="text-[30px] text-[#D6E4F0] font-semibold text-center pt-[15px] ">
             Create your account
         </p>
@@ -25,7 +25,7 @@
             <label class="text-[13px] text-left font-medium mb-[1px] text-[#D6E4F0]">Full Name</label>
             <input 
                 type="text" 
-                class="w-[440px] h-[35px] bg-white text-[#394867] ] px-3 rounded-[10px] mb-[10px]" 
+                class="w-[440px] h-[40px] bg-white text-[#394867] ] px-3 rounded-[10px] mb-[10px]" 
                 placeholder="Enter your full name" 
             >
 
@@ -33,7 +33,7 @@
             <label class="text-[13px] text-left font-medium mb-[1px] text-[#D6E4F0]">Email address</label>
             <input 
                 type="email" 
-                class="w-[440px] h-[35px] bg-white text-[#394867] px-3 rounded-[10px] mb-[10px]" 
+                class="w-[440px] h-[40px] bg-white text-[#394867] px-3 rounded-[10px] mb-[10px]" 
                 placeholder="email address" 
             >
 
@@ -41,7 +41,7 @@
             <label class="text-[13px] text-left font-medium mb-[1px] text-[#D6E4F0]">Password</label>
             <input 
                 type="password" 
-                class="w-[440px] h-[35px] bg-white text-[#394867] px-3 rounded-[10px] mb-[10px]" 
+                class="w-[440px] h-[40px] bg-white text-[#394867] px-3 rounded-[10px] mb-[10px]" 
                 placeholder="Password" 
             >
 
@@ -49,19 +49,11 @@
             <label class="text-[13px] text-left font-medium mb-[1px] text-[#D6E4F0]">Phone number</label>
             <input 
                 type="tel" 
-                class="w-[440px] h-[35px] bg-white text-[#394867] px-3 rounded-[10px] mb-[10px]" 
+                class="w-[440px] h-[40px] bg-white text-[#394867] px-3 rounded-[10px] mb-5" 
                 placeholder="Phone number" 
             >
 
-        <!--foto-->
-            <label class="text-[13px] text-left font-medium mb-[1px] text-[#D6E4F0]">Profile</label>
-            <input 
-                type="file" 
-                class="w-[440px] h-[35px] bg-white text-[#394867] flex items-center justify-center px-3 pt-[4px] rounded-[10px] file:mr-4 file:py-1 file:px-1 file:rounded-[8px] file:border-0 file:text-sm file:font-semibold file:bg-[#1E56A0] file:text-white hover:file:bg-[#163d75] mb-[10px]"
-            >
-
-
-            <button type="submit" href="/login" class="w-[440px] h-[35px] bg-[#1E56A0]  text-white text-center mt-[25px] px-3 rounded-[10px] cursor-pointer font-semibold">
+            <button type="submit" href="/login" class="w-[440px] h-[40px] bg-[#1E56A0]  text-white text-center mt-[25px] px-3 rounded-[10px] cursor-pointer font-semibold">
                 Register
             </button>
         </form>
