@@ -8,10 +8,10 @@ class jadwal extends Model
 {
     protected $fillable = [
         'film_id',
-        'studio_id',
         'harga_id',
         'tanggal',
         'jamtayang',
+        'studio'
     ];
 
     public function transaksi(){
@@ -22,11 +22,15 @@ class jadwal extends Model
         return $this->belongsTo(harga::class);
     }
 
-    public function studio(){
-        return $this->belongsTo(studio::class);
-    }
-
     public function film(){
         return $this->belongsTo(film::class);
+    }
+
+    public function kursi(){
+        return $this->hasMany(kursi::class);
+    }
+
+    public function tiket(){
+        return $this->hasMany(tiket::class);
     }
 }

@@ -51,12 +51,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'kasir',
         ]);
 
-        studio::create([
-            'nama' => 'studio',
-        ]);
-
         film::create([
-            'studio_id' => 1,
             'judul' => 'jangan panggil ibu kafir',
             'genre' => 'horror',
             'durasi' => 185,
@@ -73,11 +68,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         jadwal::create([
-            'studio_id' => 1,
             'film_id' => 1,
             'harga_id' => 1,
             'tanggal' => '2025-11-09',
             'jamtayang' => 10.20,
+            'studio' => 'studio 1',
         ]);
     }
 }

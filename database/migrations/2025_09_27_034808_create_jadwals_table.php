@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('film_id')->constrained()->onDelete('cascade');
-            $table->foreignId('studio_id')->constrained()->onDelete('cascade');
             $table->foreignId('harga_id')->constrained()->onDelete('cascade');
             $table->date('tanggal')->nullable();
             $table->time('jamtayang')->nullable();
+            $table->string('studio')->nullable();
         });
     }
 

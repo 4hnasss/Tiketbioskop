@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class kursi extends Model
 {
     protected $fillable = [
-        'studio_id',
+        'jadwal_id',
         'nomorkursi',
         'status',
     ];
 
-    public function studio(){
-        return $this->belongsTo(studio::class);
-    }
 
     public function tiket(){
         return $this->belongsTo(tiket::class);
+    }
+
+    public function jadwal(){
+        return $this->belongsTo(jadwal::class);
     }
 }

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('films', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('studio_id')->constrained()->onDelete('cascade');
             $table->string('judul')->nullable();
             $table->string('genre')->nullable();
             $table->integer('durasi')->nullable();

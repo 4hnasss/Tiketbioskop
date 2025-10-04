@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('kursis', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('studio_id')->constrained()->onDelete('cascade');
+            $table->foreignId('jadwal_id')->constrained()->onDelete('cascade');
             $table->string('nomorkursi')->nullable();
             $table->enum('status', ['tersedia', 'tidaktersedia', 'dipesan', 'terjual'])->default('tersedia')->nullable();
         });
