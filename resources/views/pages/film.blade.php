@@ -59,7 +59,7 @@
         </div>
 
         {{-- Section: Akan Tayang --}}
-        <div id="section-akan" class="hidden grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div id="section-akan" class="grid grid-cols-2 md:grid-cols-4 gap-6">
             @for ($i = 0; $i < 8; $i++)
             <div class="flex flex-col items-start">
                 <a href="/detailfilm">
