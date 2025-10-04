@@ -7,9 +7,9 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    <div class="bg-gradient-to-b from-white to-blue-100 min-h-screen flex flex-col">
         {{-- Navbar --}}
         @include('components.navbar')
+    <div class="bg-gradient-to-b from-white to-blue-100 min-h-screen flex flex-col pr-[130px] pl-[130px]">
 
         {{-- Section: Lagi tayang --}}
         <div class="container mx-auto px-6">
@@ -22,7 +22,7 @@
             
 
             {{-- Grid Film Lagi Tayang --}}
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <a href="/detailfilm">
                     <div class="bg-white rounded-lg shadow hover:shadow-md transition">
                         <img src="/img/Alie.jpg" alt="Rumah untuk alie" class="w-full h-[356px] object-cover rounded-t-lg">
