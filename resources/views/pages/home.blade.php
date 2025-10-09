@@ -7,11 +7,12 @@
     @vite('resources/css/app.css')
 </head>
 <body>
+    <div class="bg-gradient-to-b from-white to-[#D6E4F0] min-h-screen flex flex-col ">
         {{-- Navbar --}}
         @include('components.navbar')
-    <div class="bg-gradient-to-b from-white to-blue-100 min-h-screen flex flex-col pr-[130px] pl-[130px]">
 
-        {{-- Section: Lagi tayang --}}
+        <div class="flex flex-col pr-[130px] pl-[130px]">
+            {{-- Section: Lagi tayang --}}
         <div class="container mx-auto px-6">
             <div class="flex justify-between items-center mt-6 mb-4">
                 <p class="text-[25px] text-black font-bold">Lagi tayang</p>
@@ -25,58 +26,13 @@
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <a href="/detailfilm">
                     <div class="bg-white rounded-lg shadow hover:shadow-md transition">
-                        <img src="/img/Alie.jpg" alt="Rumah untuk alie" class="w-full h-[356px] object-cover rounded-t-lg">
+                        <img src="/img/pangepungan.jpg" alt="pangepungan" class="w-full h-[356px] object-cover rounded-t-lg">
                         <div class="p-3 text-center flex-col items-center">
-                            <p class="text-[20px] font-semibold text-black ">Rumah Untuk Alie</p>
+                            <p class="text-[20px] font-semibold text-black ">Pangepungan Di Bukit Duri</p>
                             <div class=" gap-2 text-black text-xs mt-1 ">
                                 <span class="rounded-[2px] h-full bg-[#D6E4F0]">1h54m</span>
                                 <span>|</span>
-                                <span>drama</span>
-                            </div>
-                            <p class="text-xs text-black-400 mt-5 font-serif text-center">Flixora</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/detailfilm">
-                    <div class="bg-white rounded-lg shadow hover:shadow-md transition">
-                        <img src="/img/Alie.jpg" alt="Rumah untuk alie" class="w-full h-[356px] object-cover rounded-t-lg">
-                        <div class="p-3 text-center flex-col items-center">
-                            <p class="text-[20px] font-semibold text-black ">Rumah Untuk Alie</p>
-                            <div class=" gap-2 text-black text-xs mt-1 ">
-                                <span class="rounded-[2px] h-full bg-[#D6E4F0]">1h54m</span>
-                                <span>|</span>
-                                <span>drama</span>
-                            </div>
-                            <p class="text-xs text-black-400 mt-5 font-serif text-center">Flixora</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/detailfilm">
-                    <div class="bg-white rounded-lg shadow hover:shadow-md transition">
-                        <img src="/img/Alie.jpg" alt="Rumah untuk alie" class="w-full h-[356px] object-cover rounded-t-lg">
-                        <div class="p-3 text-center flex-col items-center">
-                            <p class="text-[20px] font-semibold text-black ">Rumah Untuk Alie</p>
-                            <div class=" gap-2 text-black text-xs mt-1 ">
-                                <span class="rounded-[2px] h-full bg-[#D6E4F0]">1h54m</span>
-                                <span>|</span>
-                                <span>drama</span>
-                            </div>
-                            <p class="text-xs text-black-400 mt-5 font-serif text-center">Flixora</p>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/detailfilm">
-                    <div class="bg-white rounded-lg shadow hover:shadow-md transition">
-                        <img src="/img/Alie.jpg" alt="Rumah untuk alie" class="w-full h-[356px] object-cover rounded-t-lg">
-                        <div class="p-3 text-center flex-col items-center">
-                            <p class="text-[20px] font-semibold text-black ">Rumah Untuk Alie</p>
-                            <div class=" gap-2 text-black text-xs mt-1 ">
-                                <span class="rounded-[2px] h-full bg-[#D6E4F0]">1h54m</span>
-                                <span>|</span>
-                                <span>drama</span>
+                                <span>action</span>
                             </div>
                             <p class="text-xs text-black-400 mt-5 font-serif text-center">Flixora</p>
                         </div>
@@ -108,7 +64,7 @@
                 </a>
             </div>
         </div>
-
+        </div>
         {{-- Footer --}}
         @include('components.footer')
     </div>

@@ -6,11 +6,11 @@
     <title>Film | Flixora</title>
     @vite('resources/css/app.css')
 </head>
-<body>
+<body class="bg-gradient-to-b from-white to-[#D6E4F0] w-full">
 
     @include('components.navbar')
 
-    <div class="pl-[150px] pr-[150px] bg-gradient-to-b from-white to-[#D6E4F0] min-h-screen p-10">
+    <div class="pl-[150px] pr-[150px] min-h-screen p-10">
         
         <h1 class="text-4xl font-bold mb-6">Film</h1>
 
@@ -42,12 +42,11 @@
 
         {{-- Section: Lagi Tayang --}}
         <div id="section-lagi" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            @for ($i = 0; $i < 12; $i++)
             <div class="flex flex-col items-start">
                 <a href="/detailfilm">
-                    <img src="/img/Alie.jpg" alt="Film" class="w-full rounded-lg shadow-md">
+                    <img src="/img/pangepungan.jpg" alt="Film" class="w-full rounded-lg shadow-md">
                 </a>
-                <p class="mt-2 font-semibold text-sm">NGERI NGERI SEDAP</p>
+                <p class="mt-2 font-semibold text-sm">PANGEPUNGAN DI BUKIT DURI</p>
                 <p class="text-xs text-gray-500 flex items-center mt-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -55,17 +54,15 @@
                     1h 39m
                 </p>
             </div>
-            @endfor
         </div>
 
         {{-- Section: Akan Tayang --}}
         <div id="section-akan" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            @for ($i = 0; $i < 8; $i++)
             <div class="flex flex-col items-start">
                 <a href="/detailfilm">
-                    <img src="/img/Alie.jpg" alt="Film" class="w-full rounded-lg shadow-md">
+                    <img src="/img/pangepungan.jpg" alt="Film" class="w-full rounded-lg shadow-md">
                 </a>
-                <p class="mt-2 font-semibold text-sm">JUMBO</p>
+                <p class="mt-2 font-semibold text-sm">PANGEPUNGAN DI BUKIT DURI</p>
                 <p class="text-xs text-gray-500 flex items-center mt-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -73,7 +70,6 @@
                     2h 05m
                 </p>
             </div>
-            @endfor
         </div>
 
         {{-- Script toggle section --}}
@@ -110,5 +106,6 @@
             });
         </script>
     </div>
+         @include('components.footer')
 </body>
 </html>
