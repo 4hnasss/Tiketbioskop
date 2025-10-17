@@ -21,3 +21,7 @@ Route::get('/film', function () {
 Route::get('/detailfilm', function () {
     return view('pages.detailfilm');
 });
+
+Route::get('/kursi', function () {
+    return view('pages.kursi');
+});

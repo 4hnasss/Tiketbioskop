@@ -6,7 +6,7 @@
     <title>Film | Flixora</title>
     @vite('resources/css/app.css')
 </head>
-<body class="bg-gradient-to-b from-white to-[#D6E4F0] w-full">
+<body class="bg-gradient-to-r from-white to-[#D6E4F0] w-full">
 
     @include('components.navbar')
 
@@ -57,7 +57,7 @@
         </div>
 
         {{-- Section: Akan Tayang --}}
-        <div id="section-akan" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div id="section-akan" class="grid grid-cols-2 md:grid-cols-4 gap-6 hidden">
             <div class="flex flex-col items-start">
                 <a href="/detailfilm">
                     <img src="/img/pangepungan.jpg" alt="Film" class="w-full rounded-lg shadow-md">

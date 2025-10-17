@@ -1,4 +1,4 @@
-<footer class="bg-[#D6E4F0] shadow-inner py-6 mt-10">
+<footer class="bg-gradient-to-r from-white to-[#D6E4F0]">
     <div class="container mx-auto flex flex-col items-center space-y-4">
         {{-- Logo --}}
         <img src="/img/Brand.png" alt="Flixora" class="h-10">

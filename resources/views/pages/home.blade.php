@@ -7,7 +7,7 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    <div class="bg-gradient-to-b from-white to-[#D6E4F0] min-h-screen flex flex-col ">
+    <div class="bg-gradient-to-r from-white to-[#D6E4F0] min-h-screen flex flex-col ">
         {{-- Navbar --}}
         @include('components.navbar')
 

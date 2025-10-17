@@ -6,7 +6,7 @@
     <title>Detail Film | Flixora</title>
     @vite('resources/css/app.css')
 </head>
-<body class="bg-gradient-to-b from-white to-[#D6E4F0] min-h-screen">
+<body class="bg-gradient-to-r from-white to-[#D6E4F0] min-h-screen">
 @include('components.navbar')
         
         {{-- Konten Utama --}}
@@ -72,18 +72,18 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-5 pr-[200px] pl-[200px] mt-10 mb-[100px]">
-                    <button 
-                        class="w-full border-3 bg-[#D6E4F0] border-[#14274E] text-black font-bold text-[15px] px-4 py-2 rounded-full hover:bg-blue-900 hover:text-white transition cursor-pointer">
+                    <a 
+                        href="/kursi" class="w-full border-3 bg-[#D6E4F0] border-[#14274E] text-black text-center font-bold text-[15px] px-4 py-2 rounded-full hover:bg-blue-900 hover:text-white transition cursor-pointer">
                         10:00
-                    </button>
-                    <button 
-                        class="w-full border-3 bg-[#D6E4F0] border-[#14274E] text-black font-bold text-[15px] px-4 py-2 rounded-full hover:bg-blue-900 hover:text-white transition cursor-pointer">
-                        13:00
-                    </button>
-                    <button 
-                        class="w-full border-3 bg-[#D6E4F0] border-[#14274E] text-black font-bold text-[15px] px-4 py-2 rounded-full hover:bg-blue-900 hover:text-white transition cursor-pointer">
+                    </a>
+                    <a 
+                        href="/kursi" class="w-full border-3 bg-[#D6E4F0] border-[#14274E] text-black text-center font-bold text-[15px] px-4 py-2 rounded-full hover:bg-blue-900 hover:text-white transition cursor-pointer">
+                        18:00
+                    </a>
+                    <a 
+                        href="/kursi" class="w-full border-3 bg-[#D6E4F0] border-[#14274E] text-black text-center font-bold text-[15px] px-4 py-2 rounded-full hover:bg-blue-900 hover:text-white transition cursor-pointer">
                         16:00
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
