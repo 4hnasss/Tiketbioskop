@@ -25,3 +25,15 @@ Route::get('/detailfilm', function () {
 Route::get('/kursi', function () {
     return view('pages.kursi');
 });
+
+Route::get('/transaksi', function () {
+    return view('pages.transaksi');
+});
+
+Route::get('/profile', function () {
+    return view('pages.profile');
+});
+
+Route::get('/tiket', function () {
+    return view('pages.tiket');
+});

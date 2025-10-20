@@ -85,9 +85,10 @@
           </div>
         </div>
 
-        <button id="buyButton" disabled class="w-full h-10 mt-3 bg-[#14274E] hover:bg-blue-900 text-white font-semibold rounded-lg transition duration-200">
+        <a href="/transaksi" id="buyButton" disabled class="inline-block bg-[#14274E] hover:bg-blue-900 text-white font-semibold px-[110px] py-2 rounded-lg transition duration-200">
           Beli
-        </button>
+        </a>
+
       </div>
     </div>
   </div>

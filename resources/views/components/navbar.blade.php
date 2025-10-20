@@ -22,5 +22,6 @@
             <a href="/registrasi" class=" px-6 border-2 border-[#14274E] w-[110px] h-[35px] rounded-full text-[#14274E] text-center font-serif hover:bg-[#e8f0fc] transition flex items-center">
                 Register
             </a>
+            <a href="/tiket" class="text-[#14274E] hover:text-blue-600 font-serif">tiket</a>
         </div>
 </nav>
