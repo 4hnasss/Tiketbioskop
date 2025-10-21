@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('jadwal_id')->constrained()->onDelete('cascade');
-            $table->string('nomorkursi')->nullable();
-            $table->enum('status', ['tersedia', 'tidaktersedia', 'dipesan', 'terjual'])->default('tersedia')->nullable();
+            $table->foreignId('studio_id')->constrained()->onDelete('cascade');
+            $table->string('nomorkursi');
+            $table->enum('status', ['tersedia', 'tidaktersedia', 'dipesan', 'terjual'])->default('tersedia');
         });
     }
 

@@ -17,11 +17,11 @@
         {{-- Tombol filter --}}
         <div class="flex items-center gap-3 mb-8">
             <button id="btn-lagi" 
-                class="px-4 py-2 rounded-full font-medium focus:outline-none text-white bg-[#14274E] border border-[#14274E] transition">
+                class="px-4 py-2 rounded-full font-medium focus:outline-none text-white bg-[#14274E] border border-[#14274E] transition cursor-pointer">
                 Lagi tayang
             </button>
             <button id="btn-akan"
-                class="px-4 py-2 rounded-full font-medium focus:outline-none text-[#14274E] border border-[#14274E] bg-transparent transition">
+                class="px-4 py-2 rounded-full font-medium focus:outline-none text-[#14274E] border border-[#14274E] bg-transparent transition cursor-pointer">
                 Akan tayang
             </button>
 
@@ -39,38 +39,46 @@
                 </div>
             </div>
         </div>
-
-        {{-- Section: Lagi Tayang --}}
-        <div id="section-lagi" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="flex flex-col items-start">
-                <a href="/detailfilm">
-                    <img src="/img/pangepungan.jpg" alt="Film" class="w-full rounded-lg shadow-md">
-                </a>
-                <p class="mt-2 font-semibold text-sm">PANGEPUNGAN DI BUKIT DURI</p>
-                <p class="text-xs text-gray-500 flex items-center mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    1h 39m
-                </p>
-            </div>
+{{-- Section: Lagi Tayang --}}
+<div id="section-lagi" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    @foreach ($filmPlayNow as $film)
+        <div class="flex flex-col items-start">
+            <a href="{{ route('film.detailfilm', $film->id) }}">
+                <img src="{{ asset($film->poster) }}" 
+                     alt="Film" 
+                     class="w-full h-[300px] rounded-lg shadow-md object-cover">
+            </a>
+            <p class="mt-2 font-semibold text-sm">{{ $film->judul }}</p>
+            <p class="text-xs text-gray-500 flex items-center mt-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ $film->durasi }}
+            </p>
         </div>
+    @endforeach
+</div>
 
-        {{-- Section: Akan Tayang --}}
-        <div id="section-akan" class="grid grid-cols-2 md:grid-cols-4 gap-6 hidden">
-            <div class="flex flex-col items-start">
-                <a href="/detailfilm">
-                    <img src="/img/pangepungan.jpg" alt="Film" class="w-full rounded-lg shadow-md">
-                </a>
-                <p class="mt-2 font-semibold text-sm">PANGEPUNGAN DI BUKIT DURI</p>
-                <p class="text-xs text-gray-500 flex items-center mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    2h 05m
-                </p>
-            </div>
+{{-- Section: Akan Tayang --}}
+<div id="section-akan" class="grid grid-cols-2 md:grid-cols-4 gap-6 hidden">
+    @foreach ($filmUpcoming as $film)
+        <div class="flex flex-col items-start">
+            <a href="{{ route('film.detailfilm', $film->id) }}">
+                <img src="{{ asset($film->poster) }}" 
+                     alt="Film" 
+                     class="w-full h-[300px] rounded-lg shadow-md object-cover">
+            </a>
+            <p class="mt-2 font-semibold text-sm">{{ $film->judul }}</p>
+            <p class="text-xs text-gray-500 flex items-center mt-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ $film->durasi }}
+            </p>
         </div>
+    @endforeach
+</div>
+
 
         {{-- Script toggle section --}}
         <script>
