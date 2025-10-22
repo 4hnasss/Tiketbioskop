@@ -7,6 +7,8 @@ use App\Models\Film;
 use App\Models\Studio;
 use App\Models\Harga;
 use App\Models\Jadwal;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -125,5 +127,6 @@ class DatabaseSeeder extends Seeder
             'tanggal' => '2025-11-29',
             'jamtayang' => '17:30:00',
         ]);
+
     }
 }

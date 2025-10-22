@@ -18,7 +18,10 @@ return new class extends Migration
             $table->foreignId('jadwal_id')->constrained()->onDelete('cascade');
             $table->dateTime('tanggaltransaksi')->nullable();
             $table->decimal('totalharga')->nullable();
-            $table->enum('status', ['panding', 'selesai', 'batal'])->default('panding')->nullable();
+            $table->string('order_id')->unique();
+            $table->string('status')->default('pending');
+
+
         });
     }
 

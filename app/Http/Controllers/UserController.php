@@ -3,10 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\film;
+use App\Models\harga;
 use App\Models\jadwal;
 use App\Models\kursi;
+use App\Models\transaksi;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Midtrans\Config;
+use Midtrans\Snap;
+use Midtrans\Config as MidtransConfig;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Midtrans\Notification;
 
 class UserController extends Controller
 {
@@ -40,6 +50,33 @@ class UserController extends Controller
         return view('pages.detailfilm', compact('film', 'jadwals'));
     }
 
+    public function showRegister()
+    {
+        return view('auth.registrasi'); // arahkan ke file blade kamu
+    }
+
+    public function register(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+            'nohp' => 'nullable|string|max:20',
+        ]);
+
+        // Simpan ke database
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'nohp' => $request->nohp,
+        ]);
+
+        // Redirect setelah register
+        return redirect('/login')->with('success', 'Akun berhasil dibuat! Silakan login.');
+    }
+
     // Menampilkan halaman login
     public function showLoginForm()
     {
@@ -67,6 +104,42 @@ class UserController extends Controller
         ])->withInput();
     }
 
+    public function profile()
+    {
+        // Ambil data user yang sedang login
+        $user = Auth::user();
+
+        // Kirim data user ke view
+        return view('pages.profile', compact('user'));
+    }
+
+    public function ubahPassword()
+{
+    $user = Auth::user(); // ambil user yang sedang login
+    return view('pages.ubah-password', compact('user'));
+}
+
+public function updatePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => ['required'],
+        'new_password' => ['required', 'min:8', 'confirmed'],
+    ]);
+
+    $user = Auth::user();
+
+    // Cek apakah password lama benar
+    if (!Hash::check($request->current_password, $user->password)) {
+        return back()->withErrors(['current_password' => 'Password lama tidak sesuai.']);
+    }
+
+    // Update password baru
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    return redirect()->route('profile')->with('success', 'Password berhasil diperbarui.');
+}
+
     // Logout
     public function logout(Request $request)
     {
@@ -76,40 +149,110 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function profile(){
-        return view('pages.profile');
-    }
-
-    public function transaksi(){
-        return view('pages.transaksi');
-    }
-
     public function tiket(){
         return view('pages.tiket');
     }
 
+    public function transaksi()
+{
+    // Ambil semua transaksi beserta relasi jadwal dan film
+    $transaksis = transaksi::with(['jadwal.film', 'user'])
+                    ->orderBy('tanggaltransaksi', 'desc')
+                    ->get();
+
+    return view('pages.transaksi', compact('transaksis'));
+}
+
     public function kursi($film_id, $jadwal_id)
-    {
-        // Ambil data film
-        $film = Film::findOrFail($film_id);
+{
 
-        // Ambil data jadwal + relasinya (film, harga, studio)
-        $jadwal = Jadwal::with(['film', 'harga', 'studio'])->findOrFail($jadwal_id);
+    // ==== Ambil data film & jadwal ====
+    $film = Film::findOrFail($film_id);
+    $jadwal = Jadwal::with(['film', 'harga', 'studio'])->findOrFail($jadwal_id);
 
-        $kursi = Kursi::where('jadwal_id', $jadwal_id)
-              ->where('studio_id', $jadwal->studio_id)
-              ->get();
+    // ==== Ambil data kursi ====
+    $kursi = Kursi::where('jadwal_id', $jadwal_id)
+        ->where('studio_id', $jadwal->studio_id)
+        ->get();
+
+    // ==== Ambil harga per kursi ====
+    $hargaPerKursi = $jadwal->harga->harga ?? 20000;
+
+    // ==== Konfigurasi Midtrans ====
+    MidtransConfig::$serverKey = config('midtrans.serverKey');
+    MidtransConfig::$isProduction = false;  // Sandbox mode
+    MidtransConfig::$isSanitized = true;
+    MidtransConfig::$is3ds = true;
+
+    // ==== Buat transaksi di database ====
+    $orderId = 'TCKT-' . uniqid();
+
+    $transaksi = Transaksi::create([
+        'user_id' => Auth::id(),
+        'jadwal_id' => $jadwal_id,
+        'order_id' => $orderId,
+        'tanggaltransaksi' => Carbon::now(),
+        'totalharga' => $hargaPerKursi,
+        'status' => 'panding', // sesuai permintaan
+    ]);
+
+    // ==== Parameter untuk Midtrans ====
+    $params = [
+        'transaction_details' => [
+            'order_id' => $orderId,
+            'gross_amount' => (int) $transaksi->totalharga,
+        ],
+        'customer_details' => [
+            'name' => Auth::user()->name ?? 'Guest User',
+            'email' => Auth::user()->email ?? 'guest@example.com',
+        ],
+    ];
+
+    // ==== Dapatkan Snap Token dari Midtrans ====
+    $snapToken = Snap::getSnapToken($params);
+
+    // ==== Simpan snap token ke database ====
+    $transaksi->update(['snap_token' => $snapToken]);
+
+    // ==== Kirim data ke view ====
+    return view('pages.kursi', compact('film', 'jadwal', 'kursi', 'hargaPerKursi', 'snapToken'));
+}
 
 
-        // Ambil harga dari relasi jadwal->harga
-        $hargaPerKursi = $jadwal->harga->harga ?? 20000;
+public function midtransWebhook(Request $request)
+{
+    Log::info('Webhook Midtrans diterima:', $request->all());
 
-        // Biaya admin bisa tetap (sementara default)
-        $biayaAdmin = 5000;
+    $serverKey = config('midtrans.serverKey');
+    $json = $request->getContent();
+    $signatureKey = hash(
+        'sha512',
+        $request->order_id . $request->status_code . $request->gross_amount . $serverKey
+    );
 
-        // Kirim ke view
-        return view('pages.kursi', compact('film', 'jadwal', 'kursi', 'hargaPerKursi', 'biayaAdmin'));
+    // Validasi keamanan dari Midtrans
+    if ($signatureKey !== $request->signature_key) {
+        return response()->json(['message' => 'Invalid signature'], 403);
     }
+
+    // Ambil transaksi berdasarkan order_id
+    $transaksi = Transaksi::where('order_id', $request->order_id)->first();
+
+    if (!$transaksi) {
+        return response()->json(['message' => 'Transaction not found'], 404);
+    }
+
+    // Update status berdasarkan Midtrans
+    if ($request->transaction_status === 'capture' || $request->transaction_status === 'settlement') {
+        $transaksi->update(['status' => 'success']);
+    } elseif ($request->transaction_status === 'pending') {
+        $transaksi->update(['status' => 'panding']); // sesuai permintaan
+    } elseif ($request->transaction_status === 'deny' || $request->transaction_status === 'cancel') {
+        $transaksi->update(['status' => 'failed']);
+    }
+
+    return response()->json(['message' => 'Webhook processed successfully']);
+}
 
 
 

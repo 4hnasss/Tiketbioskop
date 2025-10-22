@@ -88,127 +88,170 @@
         </div>
     </div>
 
-    <!-- SCRIPT -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const seatArea = document.getElementById("seatArea");
-            const selectedSeats = document.getElementById("selectedSeats");
-            const seatSummary = document.getElementById("seatsSummary");
-            const seatCount = document.getElementById("seatCount");
-            const total = document.getElementById("total");
-            const buyButton = document.getElementById("buyButton");
+   <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.clientKey') }}"></script>
 
-            const seatPrice = {{ $hargaPerKursi }};
-            // Hilangkan duplikasi berdasarkan nomorkursi
-            const kursiDataRaw = @json($kursi);
-            const kursiData = Object.values(
-                kursiDataRaw.reduce((acc, k) => {
-                    acc[k.nomorkursi] = k; // simpan hanya kursi unik
-                    return acc;
-                }, {})
-            );
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const seatArea = document.getElementById("seatArea");
+    const selectedSeats = document.getElementById("selectedSeats");
+    const seatSummary = document.getElementById("seatsSummary");
+    const seatCount = document.getElementById("seatCount");
+    const total = document.getElementById("total");
+    const buyButton = document.getElementById("buyButton");
 
+    const seatPrice = {{ $hargaPerKursi }};
+    const snapToken = "{{ $snapToken ?? '' }}"; // Token dari controller
 
-            let chosen = [];
+    // Data kursi (hilangkan duplikasi berdasarkan nomorkursi)
+    const kursiDataRaw = @json($kursi);
+    const kursiData = Object.values(
+        kursiDataRaw.reduce((acc, k) => {
+            acc[k.nomorkursi] = k;
+            return acc;
+        }, {})
+    );
 
-            // Group kursi per baris
-            const grouped = {};
-            kursiData.forEach(k => {
-                const row = k.nomorkursi.charAt(0);
-                if (!grouped[row]) grouped[row] = [];
-                grouped[row].push(k);
-            });
+    let chosen = [];
 
-            Object.keys(grouped).forEach(row => {
-                const rowDiv = document.createElement("div");
-                rowDiv.className = "flex items-center gap-3";
+    // Group kursi per baris (contoh: A1, A2, B1...)
+    const grouped = {};
+    kursiData.forEach(k => {
+        const row = k.nomorkursi.charAt(0);
+        if (!grouped[row]) grouped[row] = [];
+        grouped[row].push(k);
+    });
 
-                const labelLeft = document.createElement("span");
-                labelLeft.className = "w-6 text-center";
-                labelLeft.textContent = row;
-                rowDiv.appendChild(labelLeft);
+    // Render kursi ke tampilan
+    Object.keys(grouped).forEach(row => {
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "flex items-center gap-3";
 
-                const block = document.createElement("div");
-                block.className = "flex gap-2";
-                grouped[row].sort((a, b) => parseInt(a.nomorkursi.slice(1)) - parseInt(b.nomorkursi.slice(1)));
-                // Urutkan kursi dulu
-                grouped[row].sort((a, b) => parseInt(a.nomorkursi.slice(1)) - parseInt(b.nomorkursi.slice(1)));
+        const labelLeft = document.createElement("span");
+        labelLeft.className = "w-6 text-center";
+        labelLeft.textContent = row;
+        rowDiv.appendChild(labelLeft);
 
-                // Tentukan posisi jalur tengah
-                const totalSeats = grouped[row].length;
-                const midIndex = Math.ceil(totalSeats / 2);
+        const block = document.createElement("div");
+        block.className = "flex gap-2";
 
-                // Buat kursi dengan jalur di tengah
-                grouped[row].forEach((k, index) => {
-                    block.appendChild(makeSeat(k));
+        grouped[row].sort((a, b) => parseInt(a.nomorkursi.slice(1)) - parseInt(b.nomorkursi.slice(1)));
+        const totalSeats = grouped[row].length;
+        const midIndex = Math.ceil(totalSeats / 2);
 
-                    // Tambahkan jarak di tengah (jalur)
-                    if (index + 1 === midIndex) {
-                        const aisle = document.createElement("div");
-                        aisle.className = "w-8"; // jarak 1 kursi
-                        block.appendChild(aisle);
-                    }
-                });
-                rowDiv.appendChild(block);
-
-                const labelRight = document.createElement("span");
-                labelRight.className = "w-6 text-center";
-                labelRight.textContent = row;
-                rowDiv.appendChild(labelRight);
-
-                seatArea.appendChild(rowDiv);
-            });
-
-            function makeSeat(kursi) {
-                const seat = document.createElement("div");
-                seat.className = "w-8 h-8 flex items-center justify-center text-white text-xs font-bold rounded border-2 cursor-pointer transition";
-                seat.textContent = kursi.nomorkursi.replace(/[A-Z]/, "");
-
-                if (kursi.status === "terjual") {
-                    seat.classList.add("bg-[#92A500]", "border-[#92A500]", "cursor-not-allowed");
-                } else if (kursi.status === "tidaktersedia") {
-                    seat.classList.add("bg-[#A01E1E]", "border-[#A01E1E]", "cursor-not-allowed");
-                } else if (kursi.status === "dipesan") {
-                    seat.classList.add("bg-[#1E56A0]", "border-[#1E56A0]", "cursor-not-allowed");
-                } else {
-                    seat.classList.add("bg-[#14274E]", "border-[#14274E]", "hover:opacity-80");
-                    seat.addEventListener("click", () => toggleSeat(kursi.nomorkursi, seat));
-                }
-                return seat;
-            }
-
-            function toggleSeat(code, el) {
-                if (chosen.includes(code)) {
-                    chosen = chosen.filter(c => c !== code);
-                    el.classList.remove("bg-blue-600", "border-blue-600");
-                    el.classList.add("bg-[#14274E]", "border-[#14274E]");
-                } else {
-                    chosen.push(code);
-                    el.classList.add("bg-blue-600", "border-blue-600");
-                    el.classList.remove("bg-[#14274E]", "border-[#14274E]");
-                }
-                updateSummary();
-            }
-
-            function updateSummary() {
-                if (chosen.length === 0) {
-                    selectedSeats.innerHTML = "Belum ada kursi yang dipilih";
-                    seatSummary.innerHTML = "<span class='text-gray-500'>-</span>";
-                    buyButton.disabled = true;
-                } else {
-                    selectedSeats.innerHTML = chosen
-                        .map(c => `<span class='px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm'>${c}</span>`)
-                        .join("");
-                    seatSummary.innerHTML = chosen.join(", ");
-                    buyButton.disabled = false;
-                }
-
-                seatCount.textContent = chosen.length;
-                const totalHarga = chosen.length * seatPrice;
-                total.textContent = totalHarga.toLocaleString("id-ID");
+        grouped[row].forEach((k, index) => {
+            block.appendChild(makeSeat(k));
+            if (index + 1 === midIndex) {
+                const aisle = document.createElement("div");
+                aisle.className = "w-8"; // jarak antar blok kursi
+                block.appendChild(aisle);
             }
         });
-    </script>
+
+        rowDiv.appendChild(block);
+
+        const labelRight = document.createElement("span");
+        labelRight.className = "w-6 text-center";
+        labelRight.textContent = row;
+        rowDiv.appendChild(labelRight);
+
+        seatArea.appendChild(rowDiv);
+    });
+
+    // Fungsi membuat elemen kursi
+    function makeSeat(kursi) {
+        const seat = document.createElement("div");
+        seat.className = "w-8 h-8 flex items-center justify-center text-white text-xs font-bold rounded border-2 cursor-pointer transition";
+        seat.textContent = kursi.nomorkursi.replace(/[A-Z]/, "");
+
+        switch (kursi.status) {
+            case "terjual":
+                seat.classList.add("bg-[#92A500]", "border-[#92A500]", "cursor-not-allowed");
+                break;
+            case "tidaktersedia":
+                seat.classList.add("bg-[#A01E1E]", "border-[#A01E1E]", "cursor-not-allowed");
+                break;
+            case "dipesan":
+                seat.classList.add("bg-[#1E56A0]", "border-[#1E56A0]", "cursor-not-allowed");
+                break;
+            default:
+                seat.classList.add("bg-[#14274E]", "border-[#14274E]", "hover:opacity-80");
+                seat.addEventListener("click", () => toggleSeat(kursi.nomorkursi, seat));
+        }
+        return seat;
+    }
+
+    // Fungsi toggle (pilih / batal pilih kursi)
+    function toggleSeat(code, el) {
+        const index = chosen.indexOf(code);
+        if (index !== -1) {
+            chosen.splice(index, 1);
+            el.classList.remove("bg-blue-600", "border-blue-600");
+            el.classList.add("bg-[#14274E]", "border-[#14274E]");
+        } else {
+            chosen.push(code);
+            el.classList.add("bg-blue-600", "border-blue-600");
+            el.classList.remove("bg-[#14274E]", "border-[#14274E]");
+        }
+        updateSummary();
+    }
+
+    // Update tampilan ringkasan kursi & total harga
+    function updateSummary() {
+        if (chosen.length === 0) {
+            selectedSeats.innerHTML = "Belum ada kursi yang dipilih";
+            seatSummary.innerHTML = "<span class='text-gray-500'>-</span>";
+            buyButton.disabled = true;
+            buyButton.classList.add("opacity-50", "cursor-not-allowed");
+        } else {
+            selectedSeats.innerHTML = chosen
+                .map(c => `<span class='px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm'>${c}</span>`)
+                .join(" ");
+            seatSummary.innerHTML = chosen.join(", ");
+            buyButton.disabled = false;
+            buyButton.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        seatCount.textContent = chosen.length;
+        const totalHarga = chosen.length * seatPrice;
+        total.textContent = totalHarga.toLocaleString("id-ID");
+    }
+
+    // ======= MIDTRANS SNAP BUTTON =======
+    buyButton.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if (chosen.length === 0) {
+            alert("Silakan pilih kursi terlebih dahulu!");
+            return;
+        }
+
+        if (!snapToken) {
+            alert("Token pembayaran tidak tersedia.");
+            return;
+        }
+
+        // Jalankan popup pembayaran Midtrans
+        snap.pay(snapToken, {
+            onSuccess: function(result) {
+                alert("Pembayaran sukses!");
+                console.log(result);
+                window.location.href = "/transaksi";
+            },
+            onPending: function(result) {
+                alert("Menunggu pembayaran...");
+                console.log(result);
+            },
+            onError: function(result) {
+                alert("Terjadi kesalahan saat pembayaran!");
+                console.error(result);
+            },
+            onClose: function() {
+                alert("Kamu menutup jendela pembayaran.");
+            }
+        });
+    });
+});
+</script>
 
     @include('components.footer')
 

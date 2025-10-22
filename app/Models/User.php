@@ -25,6 +25,7 @@ class User extends Authenticatable
         'role',
     ];
 
+
     public function transaksi(){
         return $this->hasMany(transaksi::class);
     }

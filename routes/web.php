@@ -7,10 +7,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [UserController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
-
-Route::get('/registrasi', function () {
-    return view('auth.registrasi');
-});
+Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserController::class, 'register'])->name('register.store');
 
 // Halaman umum
 Route::get('/', [UserController::class, 'home'])->name('home');
@@ -21,6 +19,9 @@ Route::get('/detailfilm/{film}', [UserController::class, 'detailfilm'])->name('f
 Route::middleware('auth')->group(function () {
     Route::get('/kursi/{film}/{jadwal}', [UserController::class, 'kursi'])->name('kursi');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/ubah-password', [UserController::class, 'ubahPassword'])->name('ubah-password');
+    Route::post('/ubah-password', [UserController::class, 'updatePassword'])->name('update-password');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
+    Route::post('/midtrans/webhook', [UserController::class, 'midtransWebhook']);
     Route::get('/tiket', [UserController::class, 'tiket'])->name('tiket');
 });

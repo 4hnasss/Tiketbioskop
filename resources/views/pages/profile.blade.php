@@ -3,134 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya | TicketLy</title>
+    <title>Profil Pengguna | Flixora</title>
     @vite('resources/css/app.css')
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-gradient-to-r from-white to-[#D6E4F0] min-h-screen">
+<body class="bg-[#f4f7ff] font-sans text-gray-800">
     @include('components.navbar')
 
-    <div class="flex justify-center py-12 px-4">
-        <div class="w-full max-w-4xl space-y-10">
-
-            <!-- ========== SECTION: INFORMASI PROFIL ========== -->
-            <section class="bg-white/30 backdrop-blur-md rounded-2xl shadow-xl p-10 border border-white/40">
-                <div class="text-center mb-8">
-                    <img src="{{ asset('img/user-icon.png') }}" alt="User Icon"
-                        class="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-[#14274E] shadow">
-                    <h1 class="text-2xl font-bold text-[#14274E] tracking-wide">Informasi Profil</h1>
-                    <p class="text-gray-600">User</p>
+    <div class="max-w-5xl mx-auto mt-16 mb-20 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-10 py-8 border-b border-gray-200">
+            <div class="flex items-center gap-5">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=4a90e2&color=fff&size=100" 
+                     alt="User Avatar" 
+                     class="w-20 h-20 rounded-full shadow-sm">
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800">{{ $user->name }}</h2>
+                    <p class="text-gray-500 text-sm">{{ $user->email }}</p>
                 </div>
+            </div>
+        </div>
 
-                <!-- Notifikasi -->
-                <div id="notif" class="hidden mb-4 text-center text-green-600 font-medium">
-                    ✅ Profil berhasil diperbarui!
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200 text-sm font-medium text-gray-500">
+            <button class="px-6 py-3 text-[#4a90e2] border-b-2 border-[#4a90e2] font-semibold">Profil</button>
+        </div>
+
+        <!-- Konten Profil -->
+        <div class="p-10 space-y-6">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Informasi Akun</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">Nama Lengkap</label>
+                        <input type="text" value="{{ $user->name }}" readonly
+                            class="w-full bg-[#f9fbff] border border-gray-200 rounded-lg px-4 py-2.5 text-gray-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">Email</label>
+                        <input type="email" value="{{ $user->email }}" readonly
+                            class="w-full bg-[#f9fbff] border border-gray-200 rounded-lg px-4 py-2.5 text-gray-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">Nomor HP</label>
+                        <input type="text" value="{{ $user->nohp }}" readonly
+                            class="w-full bg-[#f9fbff] border border-gray-200 rounded-lg px-4 py-2.5 text-gray-700">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-600 mb-1">Password</label>
+                        <input type="password" value="********" readonly
+                            class="w-full bg-[#f9fbff] border border-gray-200 rounded-lg px-4 py-2.5 text-gray-700">
+                        <a href="{{ route('ubah-password') }}" 
+                           class="text-[#4a90e2] text-sm mt-1 inline-block hover:underline font-medium">
+                            Ubah Password
+                        </a>
+                    </div>
                 </div>
-
-                <!-- Form Profil -->
-                <form id="profileForm" class="space-y-5">
-                    <div>
-                        <label class="block text-[#14274E] font-semibold mb-1">Nama Lengkap</label>
-                        <input type="text" id="name" value="Alburhani Suhani"
-                            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#14274E]">
-                    </div>
-
-                    <div>
-                        <label class="block text-[#14274E] font-semibold mb-1">Email</label>
-                        <input type="email" id="email" value="alburhani@example.com"
-                            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#14274E]">
-                    </div>
-
-                    <div>
-                        <label class="block text-[#14274E] font-semibold mb-1">Nomor HP</label>
-                        <input type="text" id="nohp" value="081234567890"
-                            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#14274E]">
-                    </div>
-
-                    <div class="text-center mt-8">
-                        <button type="button" id="saveBtn"
-                            class="bg-gradient-to-r from-[#14274E] to-[#394867] hover:from-[#0F1E3B] hover:to-[#26324D] text-white px-10 py-2.5 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300">
-                            💾 Simpan Perubahan
-                        </button>
-                    </div>
-                </form>
-            </section>
-
-            <!-- PEMBATAS VISUAL -->
-            <div class="flex justify-center">
-                <div class="h-[2px] w-1/3 bg-gradient-to-r from-transparent via-[#14274E]/40 to-transparent rounded-full"></div>
             </div>
 
-            <!-- ========== SECTION: RIWAYAT PEMESANAN ========== -->
-            <section class="bg-white/30 backdrop-blur-md rounded-2xl shadow-xl p-10 border border-white/40">
-                <h2 class="text-xl font-bold text-[#14274E] mb-6 flex items-center gap-2">
-                    🎟️ Riwayat Pemesanan
-                </h2>
-
-                <!-- Jika belum ada pesanan -->
-                <!-- <p class="text-gray-600 italic">Belum ada riwayat pemesanan.</p> -->
-
-                <!-- Daftar tiket -->
-                <div class="space-y-4">
-                    <!-- Tiket 1 -->
-                    <div class="bg-white/60 backdrop-blur-sm rounded-xl p-5 shadow border border-white/30 hover:shadow-md transition">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-[#14274E] text-lg">Pengepungan di Bukit Duri</h3>
-                                <p class="text-gray-700 text-sm">Studio 1 • 20 Okt 2025, 19:30</p>
-                                <p class="text-gray-500 text-sm">Kursi: C5, C6</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-green-600 font-semibold">PAID</span>
-                                <p class="text-sm font-medium text-[#14274E]">Rp 70.000</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tiket 2 -->
-                    <div class="bg-white/60 backdrop-blur-sm rounded-xl p-5 shadow border border-white/30 hover:shadow-md transition">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-[#14274E] text-lg">Legenda Laut Selatan</h3>
-                                <p class="text-gray-700 text-sm">Studio 2 • 15 Okt 2025, 21:00</p>
-                                <p class="text-gray-500 text-sm">Kursi: B3, B4</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-red-600 font-semibold">PENDING</span>
-                                <p class="text-sm font-medium text-[#14274E]">Rp 50.000</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tiket 3 -->
-                    <div class="bg-white/60 backdrop-blur-sm rounded-xl p-5 shadow border border-white/30 hover:shadow-md transition">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-[#14274E] text-lg">Operasi Matahari Hitam</h3>
-                                <p class="text-gray-700 text-sm">Studio 3 • 10 Okt 2025, 18:00</p>
-                                <p class="text-gray-500 text-sm">Kursi: A1</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-green-600 font-semibold">PAID</span>
-                                <p class="text-sm font-medium text-[#14274E]">Rp 35.000</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <!-- Tombol -->
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                <a href="{{ route('home') }}" 
+                   class="px-5 py-2.5 rounded-lg bg-[#4a90e2] text-white font-medium hover:bg-[#357abd] transition">
+                    Kembali Ke Beranda
+                </a>
+            </div>
         </div>
     </div>
 
     @include('components.footer')
-
     <script>
-        // Simulasi tombol "Simpan"
-        document.getElementById('saveBtn').addEventListener('click', function() {
-            const notif = document.getElementById('notif');
-            notif.classList.remove('hidden');
-            notif.textContent = "✅ Data profil berhasil disimpan (simulasi).";
-            setTimeout(() => notif.classList.add('hidden'), 3000);
-        });
+        lucide.createIcons();
     </script>
 </body>
 </html>

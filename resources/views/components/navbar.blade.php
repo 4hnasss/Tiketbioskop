@@ -27,7 +27,7 @@
         @else
             {{-- Jika belum login --}}
             <a href="{{ route('login.form') }}" class="text-[#14274E] hover:text-blue-600 font-serif">Login</a>
-            <a href="/registrasi" 
+            <a href="{{ route('register') }}" 
                 class="px-6 border-2 border-[#14274E] w-[110px] h-[35px] rounded-full text-[#14274E] text-center font-serif hover:bg-[#e8f0fc] transition flex items-center justify-center">
                 Register
             </a>
