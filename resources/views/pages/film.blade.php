@@ -6,114 +6,104 @@
     <title>Film | Flixora</title>
     @vite('resources/css/app.css')
 </head>
-<body class="bg-gradient-to-r from-white to-[#D6E4F0] w-full">
+<body class="bg-gradient-to-b from-[#e0f2fe] to-[#ffffff] min-h-screen font-sans text-gray-800 flex flex-col">
 
-    @include('components.navbar')
+@include('components.navbar')
 
-    <div class="pl-[150px] pr-[150px] min-h-screen p-10">
-        
-        <h1 class="text-4xl font-bold mb-6">Film</h1>
+<div class="px-[40px] py-10">
 
-        {{-- Tombol filter --}}
-        <div class="flex items-center gap-3 mb-8">
-            <button id="btn-lagi" 
-                class="px-4 py-2 rounded-full font-medium focus:outline-none text-white bg-[#14274E] border border-[#14274E] transition cursor-pointer">
-                Lagi tayang
-            </button>
-            <button id="btn-akan"
-                class="px-4 py-2 rounded-full font-medium focus:outline-none text-[#14274E] border border-[#14274E] bg-transparent transition cursor-pointer">
-                Akan tayang
-            </button>
+    <h1 class="text-3xl md:text-4xl font-bold text-[#14274E] mb-6">Film</h1>
 
-            {{-- Input pencarian --}}
-            <div class="flex-1 flex justify-end">
-                <div class="relative">
-                    <input type="text" placeholder="Cari Film" 
-                        class="border text-[13px] border-[#14274E] rounded-full px-6 py-2 w-[150px] h-[35px] focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" 
-                        class="absolute right-5 top-2.5 h-5 w-[15px] text-gray-500" fill="none" 
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                            d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" />
-                    </svg>
-                </div>
-            </div>
-        </div>
-{{-- Section: Lagi Tayang --}}
-<div id="section-lagi" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-    @foreach ($filmPlayNow as $film)
-        <div class="flex flex-col items-start">
-            <a href="{{ route('film.detailfilm', $film->id) }}">
-                <img src="{{ asset($film->poster) }}" 
-                     alt="Film" 
-                     class="w-full h-[300px] rounded-lg shadow-md object-cover">
-            </a>
-            <p class="mt-2 font-semibold text-sm">{{ $film->judul }}</p>
-            <p class="text-xs text-gray-500 flex items-center mt-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {{ $film->durasi }}
-            </p>
-        </div>
-    @endforeach
-</div>
-
-{{-- Section: Akan Tayang --}}
-<div id="section-akan" class="grid grid-cols-2 md:grid-cols-4 gap-6 hidden">
-    @foreach ($filmUpcoming as $film)
-        <div class="flex flex-col items-start">
-            <a href="{{ route('film.detailfilm', $film->id) }}">
-                <img src="{{ asset($film->poster) }}" 
-                     alt="Film" 
-                     class="w-full h-[300px] rounded-lg shadow-md object-cover">
-            </a>
-            <p class="mt-2 font-semibold text-sm">{{ $film->judul }}</p>
-            <p class="text-xs text-gray-500 flex items-center mt-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {{ $film->durasi }}
-            </p>
-        </div>
-    @endforeach
-</div>
-
-
-        {{-- Script toggle section --}}
-        <script>
-            const btnLagi = document.getElementById('btn-lagi');
-            const btnAkan = document.getElementById('btn-akan');
-            const sectionLagi = document.getElementById('section-lagi');
-            const sectionAkan = document.getElementById('section-akan');
-
-            btnLagi.addEventListener('click', () => {
-                // tampilkan section "Lagi Tayang"
-                sectionLagi.classList.remove('hidden');
-                sectionAkan.classList.add('hidden');
-
-                // ubah gaya tombol
-                btnLagi.classList.add('bg-[#14274E]', 'text-white');
-                btnLagi.classList.remove('bg-transparent', 'text-[#14274E]');
-                
-                btnAkan.classList.remove('bg-[#14274E]', 'text-white');
-                btnAkan.classList.add('bg-transparent', 'text-[#14274E]');
-            });
-
-            btnAkan.addEventListener('click', () => {
-                // tampilkan section "Akan Tayang"
-                sectionAkan.classList.remove('hidden');
-                sectionLagi.classList.add('hidden');
-
-                // ubah gaya tombol
-                btnAkan.classList.add('bg-[#14274E]', 'text-white');
-                btnAkan.classList.remove('bg-transparent', 'text-[#14274E]');
-                
-                btnLagi.classList.remove('bg-[#14274E]', 'text-white');
-                btnLagi.classList.add('bg-transparent', 'text-[#14274E]');
-            });
-        </script>
+    {{-- Tombol filter section --}}
+    <div class="flex items-center gap-3 mb-8">
+        <button id="btn-lagi" class="px-5 py-2 rounded-full font-medium text-white bg-[#14274E] border border-[#14274E] transition duration-300 cursor-pointer">
+            Lagi Tayang
+        </button>
+        <button id="btn-akan" class="px-5 py-2 rounded-full font-medium text-[#14274E] border border-[#14274E] bg-transparent hover:bg-[#14274E]/10 transition duration-300 cursor-pointer">
+            Akan Tayang
+        </button>
     </div>
-         @include('components.footer')
+
+    {{-- Section: Lagi Tayang & Akan Tayang --}}
+    @foreach(['lagi' => $filmPlayNow, 'akan' => $filmUpcoming] as $type => $films)
+        <div id="section-{{ $type }}" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 {{ $type == 'akan' ? 'hidden' : '' }}">
+            @foreach($films as $film)
+                <div class="relative group flex flex-col items-start">
+
+                    {{-- Poster --}}
+                    <div class="relative w-full overflow-hidden rounded-lg shadow-md">
+                        <img src="{{ asset($film->poster) }}" 
+                             alt="{{ $film->judul }}" 
+                             class="w-full h-[320px] object-cover rounded-lg transition duration-500 group-hover:scale-105">
+
+                        {{-- Overlay putih + tombol detail --}}
+                        <div class="absolute inset-0 bg-white/80 opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
+                            <a href="{{ route('film.detailfilm', $film->id) }}" 
+                               class="px-5 py-2 border-2 border-[#14274E] text-[#14274E] font-medium rounded-full shadow-sm hover:bg-[#14274E]/10 transition duration-300">
+                                Detail
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Judul --}}
+                    <p class="mt-2 font-semibold text-sm text-[#14274E] leading-tight">{{ $film->judul }}</p>
+
+                    {{-- Durasi --}}
+                    <p class="text-xs text-gray-600 flex items-center mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1 text-[#14274E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ $film->durasi }}
+                    </p>
+
+                    {{-- Jam tayang --}}
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        @if($film->jadwals && $film->jadwals->count())
+                            @foreach($film->jadwals as $jadwal)
+                                <a href="{{ route('kursi', ['film'=>$film->id, 'jadwal'=>$jadwal->id]) }}" 
+                                   class="px-3 py-1 text-sm bg-[#E7EEF8] border border-[#14274E] text-[#14274E] rounded-full hover:bg-[#14274E] hover:text-white transition duration-300">
+                                   {{ date('H:i', strtotime($jadwal->jamtayang)) }}
+                                </a>
+                            @endforeach
+                        @else
+                            <span class="text-gray-400 text-xs">Belum ada jadwal</span>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endforeach
+
+</div>
+
+{{-- Script toggle section --}}
+<script>
+    const btnLagi = document.getElementById('btn-lagi');
+    const btnAkan = document.getElementById('btn-akan');
+    const sectionLagi = document.getElementById('section-lagi');
+    const sectionAkan = document.getElementById('section-akan');
+
+    function setActive(activeBtn, inactiveBtn) {
+        activeBtn.classList.add('bg-[#14274E]', 'text-white');
+        activeBtn.classList.remove('bg-transparent', 'text-[#14274E]');
+        inactiveBtn.classList.remove('bg-[#14274E]', 'text-white');
+        inactiveBtn.classList.add('bg-transparent', 'text-[#14274E]');
+    }
+
+    btnLagi.addEventListener('click', () => {
+        sectionLagi.classList.remove('hidden');
+        sectionAkan.classList.add('hidden');
+        setActive(btnLagi, btnAkan);
+    });
+
+    btnAkan.addEventListener('click', () => {
+        sectionAkan.classList.remove('hidden');
+        sectionLagi.classList.add('hidden');
+        setActive(btnAkan, btnLagi);
+    });
+</script>
+
+@include('components.footer')
 </body>
 </html>

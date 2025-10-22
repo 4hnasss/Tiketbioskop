@@ -13,13 +13,19 @@ class tiket extends Model
         'kodetiket',
     ];
 
-    public function transaksi(){
-        return 
-        $this->belongsTo(transaksi::class);
+    public function transaksi()
+    {
+        return $this->belongsTo(Transaksi::class);
     }
 
-    public function kursi(){
-        return $this->hasMany(kursi::class);
+    public function jadwal()
+    {
+        return $this->belongsTo(Jadwal::class);
+    }
+
+    public function kursi()
+    {
+        return $this->belongsTo(Kursi::class);
     }
 
 }

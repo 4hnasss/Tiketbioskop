@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('totalharga')->nullable();
             $table->string('order_id')->unique();
             $table->string('status')->default('pending');
-
+            $table->string('metode_bayar')->nullable();
 
         });
     }

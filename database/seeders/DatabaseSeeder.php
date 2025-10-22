@@ -7,19 +7,19 @@ use App\Models\Film;
 use App\Models\Studio;
 use App\Models\Harga;
 use App\Models\Jadwal;
+use App\Models\Tiket;
+use App\Models\Kursi;
+use App\Models\Transaksi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         // ==== USER ====
-        User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'meysa',
             'email' => 'meysa@example.com',
             'password' => bcrypt('1203456'),
@@ -32,10 +32,10 @@ class DatabaseSeeder extends Seeder
             'judul' => 'Rumah Untuk Alie',
             'genre' => 'Drama',
             'durasi' => 185,
-            'deskripsi' => 'Rumah untuk Alie adalah film drama keluarga Indonesia tahun 2025 yang disutradarai oleh Herwin Novianto berdasarkan novel berjudul sama karya Lenn Liu. Film produksi Falcon Pictures ini dibintangi oleh Anantya Kirana, Rizky Hanggono, dan Dito Darmawan. Rumah untuk Alie tayang perdana di bioskop pada tanggal 17 April 2025.',
+            'deskripsi' => 'Rumah untuk Alie adalah film drama keluarga Indonesia tahun 2025 ...',
             'status' => 'upcomming',
-            'tanggalmulai' => '2025-10-20',
-            'tanggalselesai' => '2025-10-21',
+            'tanggalmulai' => '2025-10-23',
+            'tanggalselesai' => '2025-10-24',
             'poster' => 'img/Alie.jpg',
         ]);
 
@@ -45,8 +45,8 @@ class DatabaseSeeder extends Seeder
             'durasi' => 185,
             'deskripsi' => 'Home Sweet Loan adalah film drama keluarga Indonesia tahun 2024 yang disutradarai oleh Sabrina Rochelle Kalangie dan dibintangi oleh Yunita Siregar, Derby Romero dan Fita Anggriani. Film ini diadaptasi dari novel berjudul sama karya Almira Bastari dan diproduksi oleh Visinema Pictures. Ceritanya berfokus pada Kaluna (Yunita Siregar), seorang pekerja kantoran dari keluarga sederhana yang bermimpi memiliki rumah sendiri. Sebagai anak bungsu, ia tinggal bersama orang tua, kakak-kakaknya yang sudah berkeluarga, dan keponakan, yang membuat rumahnya terasa ramai dan sering mengganggu kenyamanannya.',
             'status' => 'playnow',
-            'tanggalmulai' => '2025-10-20',
-            'tanggalselesai' => '2025-10-21',
+            'tanggalmulai' => '2025-10-22',
+            'tanggalselesai' => '2025-11-21',
             'poster' => 'img/home.jpg',
         ]);
 
@@ -54,10 +54,21 @@ class DatabaseSeeder extends Seeder
             'judul' => 'Pangepungan Di Bukit Duri',
             'genre' => 'Horror',
             'durasi' => 185,
-            'deskripsi' => 'Pengepungan di Bukit Duri adalah film laga menegangkan Indonesia tahun 2025 yang ditulis dan disutradarai oleh Joko Anwar. Film produksi Amazon MGM Studios serta Come and See Pictures ini dibintangi oleh Morgan Oey, Omara Esteghlal, dan Hana Malasan. Film ini berkisah mengenai Edwin, seorang guru pengganti yang ditugaskan mengajar di SMA Duri, sebuah sekolah dengan reputasi buruk sebagai tempat berkumpulnya siswa bermasalah.',
+            'deskripsi' => 'Pengepungan di Bukit Duri adalah film laga menegangkan Indonesia tahun 2025 ...',
             'status' => 'playnow',
-            'tanggalmulai' => '2025-12-10',
+            'tanggalmulai' => '2025-10-20',
             'tanggalselesai' => '2025-12-11',
+            'poster' => 'img/pangepungan.jpg',
+        ]);
+
+        $film4 = Film::create([
+            'judul' => 'Pangepungan Di Bukit Duri',
+            'genre' => 'Horror',
+            'durasi' => 185,
+            'deskripsi' => 'Pengepungan di Bukit Duri adalah film laga menegangkan Indonesia tahun 2025 ...',
+            'status' => 'playnow',
+            'tanggalmulai' => '2025-11-20',
+            'tanggalselesai' => '2025-11-21',
             'poster' => 'img/pangepungan.jpg',
         ]);
 
@@ -71,61 +82,52 @@ class DatabaseSeeder extends Seeder
         $hargaWeekend = Harga::create(['jenis_hari' => 'weekend', 'harga' => 1500]);
 
         // ==== JADWAL ====
-        // Kursi akan otomatis dibuat dari model Jadwal (lihat di bawah)
-        Jadwal::create([
+        $jadwal = Jadwal::create([
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-20',
+            'tanggal' => '2025-10-23',
             'jamtayang' => '10:00:00',
         ]);
 
-        Jadwal::create([
+        $jadwal = Jadwal::create([
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-12-10',
+            'tanggal' => '2025-10-22',
             'jamtayang' => '12:00:00',
         ]);
 
-        Jadwal::create([
+        $jadwal = Jadwal::create([
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-12-10',
+            'tanggal' => '2025-10-22',
             'jamtayang' => '16:00:00',
         ]);
 
-        Jadwal::create([
+        $jadwal = Jadwal::create([
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-12-10',
+            'tanggal' => '2025-10-22',
             'jamtayang' => '18:30:00',
         ]);
 
-        Jadwal::create([
+        $jadwal = Jadwal::create([
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-29',
+            'tanggal' => '2025-12-20',
             'jamtayang' => '12:00:00',
         ]);
 
-        Jadwal::create([
-            'film_id' => $film3->id,
+        $jadwal = Jadwal::create([
+            'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-29',
-            'jamtayang' => '14:00:00',
-        ]);
-        
-        Jadwal::create([
-            'film_id' => $film3->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-29',
-            'jamtayang' => '17:30:00',
+            'tanggal' => '2025-12-20',
+            'jamtayang' => '12:00:00',
         ]);
 
     }

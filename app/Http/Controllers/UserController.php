@@ -6,6 +6,7 @@ use App\Models\film;
 use App\Models\harga;
 use App\Models\jadwal;
 use App\Models\kursi;
+use App\Models\tiket;
 use App\Models\transaksi;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -22,23 +23,40 @@ class UserController extends Controller
 {
     public function home()
     {
-        // Ambil data dari database berdasarkan status
-        $filmPlayNow = film::where('status', 'playnow')->get();
-        $filmUpcoming = film::where('status', 'upcomming')->get();
+        $today = Carbon::today();
 
-        // Kirim ke view
+        // Film yang sedang tayang
+        $filmPlayNow = Film::whereDate('tanggalmulai', '<=', $today)
+                            ->orderBy('tanggalmulai', 'desc')
+                            ->take(4)
+                            ->get();
+
+        // Film yang akan tayang
+        $filmUpcoming = Film::whereDate('tanggalmulai', '>', $today)
+                            ->orderBy('tanggalmulai', 'asc')
+                            ->take(4)
+                            ->get();
+
+
         return view('pages.home', compact('filmPlayNow', 'filmUpcoming'));
     }
 
-    public function film()
-    {
-        // Ambil data dari database berdasarkan status
-        $filmPlayNow = film::where('status', 'playnow')->get();
-        $filmUpcoming = film::where('status', 'upcomming')->get();
+public function film()
+{
+    // Film yang sedang tayang
+    $filmPlayNow = Film::with('jadwals')
+        ->where('tanggalmulai', '<=', now())
+        ->where('tanggalselesai', '>=', now())
+        ->get();
 
-        // Kirim ke view
-        return view('pages.film', compact('filmPlayNow', 'filmUpcoming'));
-    }
+    // Film yang akan tayang
+    $filmUpcoming = Film::with('jadwals')
+        ->where('tanggalmulai', '>', now())
+        ->get();
+
+    return view('pages.film', compact('filmPlayNow', 'filmUpcoming'));
+}
+
 
    public function detailfilm(film $film)
     {
@@ -113,33 +131,6 @@ class UserController extends Controller
         return view('pages.profile', compact('user'));
     }
 
-    public function ubahPassword()
-{
-    $user = Auth::user(); // ambil user yang sedang login
-    return view('pages.ubah-password', compact('user'));
-}
-
-public function updatePassword(Request $request)
-{
-    $request->validate([
-        'current_password' => ['required'],
-        'new_password' => ['required', 'min:8', 'confirmed'],
-    ]);
-
-    $user = Auth::user();
-
-    // Cek apakah password lama benar
-    if (!Hash::check($request->current_password, $user->password)) {
-        return back()->withErrors(['current_password' => 'Password lama tidak sesuai.']);
-    }
-
-    // Update password baru
-    $user->password = Hash::make($request->new_password);
-    $user->save();
-
-    return redirect()->route('profile')->with('success', 'Password berhasil diperbarui.');
-}
-
     // Logout
     public function logout(Request $request)
     {
@@ -149,19 +140,17 @@ public function updatePassword(Request $request)
         return redirect('/');
     }
 
-    public function tiket(){
-        return view('pages.tiket');
-    }
-
     public function transaksi()
 {
-    // Ambil semua transaksi beserta relasi jadwal dan film
-    $transaksis = transaksi::with(['jadwal.film', 'user'])
+    // Ambil semua transaksi user yang login beserta tiket dan relasi jadwal & film
+    $transaksis = Transaksi::with(['tiket.jadwal.film', 'jadwal.studio'])
+                    ->where('user_id', Auth::id())
                     ->orderBy('tanggaltransaksi', 'desc')
                     ->get();
 
     return view('pages.transaksi', compact('transaksis'));
 }
+
 
     public function kursi($film_id, $jadwal_id)
 {
@@ -217,6 +206,19 @@ public function updatePassword(Request $request)
     // ==== Kirim data ke view ====
     return view('pages.kursi', compact('film', 'jadwal', 'kursi', 'hargaPerKursi', 'snapToken'));
 }
+
+public function tiket($id)
+{
+    $tiket = Tiket::with(['jadwal.film', 'jadwal.studio', 'kursi', 'transaksi'])->find($id);
+
+    if (!$tiket) {
+        return redirect()->back()->with('error', 'Tiket tidak ditemukan.');
+    }
+
+    return view('pages.tiket', compact('tiket'));
+}
+
+
 
 
 public function midtransWebhook(Request $request)

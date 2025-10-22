@@ -19,9 +19,7 @@ Route::get('/detailfilm/{film}', [UserController::class, 'detailfilm'])->name('f
 Route::middleware('auth')->group(function () {
     Route::get('/kursi/{film}/{jadwal}', [UserController::class, 'kursi'])->name('kursi');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-    Route::get('/ubah-password', [UserController::class, 'ubahPassword'])->name('ubah-password');
-    Route::post('/ubah-password', [UserController::class, 'updatePassword'])->name('update-password');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::post('/midtrans/webhook', [UserController::class, 'midtransWebhook']);
-    Route::get('/tiket', [UserController::class, 'tiket'])->name('tiket');
+    Route::get('/tiket/{id}', [UserController::class, 'tiket'])->name('tiket.show');
 });

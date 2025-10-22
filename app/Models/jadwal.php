@@ -55,9 +55,11 @@ class jadwal extends Model
     public function film(){
         return $this->belongsTo(film::class);
     }
-
-    public function kursi(){
-        return $this->hasMany(kursi::class);
+    
+    public function kursis()
+    {
+        return $this->hasMany(Kursi::class, 'studio_id', 'studio_id'); 
+        // Asumsi kursi terkait dengan studio
     }
 
     public function tiket(){

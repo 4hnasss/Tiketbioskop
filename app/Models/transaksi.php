@@ -19,15 +19,18 @@ class transaksi extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function tiket(){
-        return $this->belongsTo(tiket::class);
+    public function tiket()
+    {
+        return $this->hasOne(Tiket::class);
+    }
+
+    public function jadwal()
+    {
+        return $this->belongsTo(Jadwal::class);
     }
 
     public function keuangan(){
         return $this->belongsTo(keuangan::class);
     }
 
-    public function jadwal(){
-        return $this->belongsTo(jadwal::class);
-    }
 }
