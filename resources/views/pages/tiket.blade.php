@@ -1,77 +1,63 @@
+<!-- resources/views/pages/tiket.blade.php -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiket Saya | TicketLy</title>
-    @vite('resources/css/app.css')
+    <title>Tiket | Flixora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gradient-to-b from-white to-[#E3F2FD] min-h-screen font-sans text-gray-800">
 
-<body class="bg-[#f4f7ff] font-sans text-gray-800 min-h-screen">
+    {{-- Navbar --}}
     @include('components.navbar')
 
-    <div class="max-w-3xl mx-auto mt-20 mb-16 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <!-- Header -->
-        <div class="px-8 py-6 bg-[#4a90e2] text-white flex justify-between items-center rounded-t-2xl">
-            <div>
-                <h1 class="text-2xl font-bold">🎟️ E-Ticket</h1>
-                <p class="text-sm opacity-80">Tunjukkan tiket ini di pintu masuk bioskop</p>
+    <div class="container mx-auto px-4 md:px-0 py-8">
+        <h1 class="text-2xl font-bold text-center mb-8 text-[#14274E]">Tiket Kamu</h1>
+
+        <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-6 border border-gray-100 space-y-6">
+
+            @foreach($tiket as $t)
+            <div class="flex flex-col md:flex-row gap-4 items-center bg-gray-50 p-4 rounded-lg shadow-sm">
+                {{-- Poster Film --}}
+                <img src="{{ $t->jadwal->film->poster }}" alt="Poster Film" class="w-36 h-48 rounded-lg object-cover shadow-sm">
+
+                <div class="flex-1">
+                    <h2 class="text-xl font-semibold text-[#14274E] mb-2">{{ $t->jadwal->film->judul }}</h2>
+                    <p class="text-gray-600 text-sm mb-1"><strong>Studio:</strong> {{ $t->jadwal->studio->nama ?? '-' }}</p>
+                    <p class="text-gray-600 text-sm mb-1"><strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($t->jadwal->tanggal)->translatedFormat('d F Y') }}</p>
+                    <p class="text-gray-600 text-sm mb-1"><strong>Jam Tayang:</strong> {{ \Carbon\Carbon::parse($t->jadwal->jamtayang)->format('H:i') }}</p>
+                    <p class="text-gray-600 text-sm mb-1"><strong>Kursi:</strong> {{ $t->kursi->nomorkursi ?? '-' }}</p>
+                    <p class="text-gray-600 text-sm mb-1"><strong>Total:</strong> Rp {{ number_format($t->transaksi->totalharga ?? 0, 0, ',', '.') }}</p>
+
+                    {{-- Status --}}
+                    @php
+                        $statusMap = [
+                            'panding' => ['color' => 'yellow', 'text' => 'Menunggu Pembayaran'],
+                            'selesai' => ['color' => 'green', 'text' => 'Pembayaran Selesai'],
+                            'batal' => ['color' => 'red', 'text' => 'Dibatalkan'],
+                            'challenge' => ['color' => 'orange', 'text' => 'Menunggu Verifikasi'],
+                        ];
+                        $status = $statusMap[$t->transaksi->status ?? ''] ?? ['color' => 'gray', 'text' => ucfirst($t->transaksi->status ?? 'Tidak Diketahui')];
+                    @endphp
+
+                    <span class="inline-block mt-2 px-3 py-1 text-xs font-medium rounded-full bg-{{ $status['color'] }}-100 text-{{ $status['color'] }}-600">
+                        {{ $status['text'] }}
+                    </span>
+                </div>
             </div>
-            <i data-lucide="ticket" class="w-8 h-8"></i>
+            @endforeach
+
         </div>
 
-        <!-- Konten Tiket -->
-        <div class="p-8 space-y-6">
-            <!-- Film & Jadwal -->
-            <div class="flex items-center gap-4 border-b border-gray-200 pb-4">
-                <img src="{{ asset($tiket->jadwal->film->poster ?? 'img/default.jpg') }}" 
-                     alt="Poster Film" 
-                     class="w-20 h-28 rounded-lg object-cover shadow-sm border border-gray-200">
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-800">{{ $tiket->jadwal->film->judul ?? 'Judul Film' }}</h2>
-                    <p class="text-sm text-gray-600">
-                        {{ $tiket->jadwal->studio->nama_studio ?? 'Studio 1' }} • 
-                        {{ $tiket->jadwal->tanggal ? \Carbon\Carbon::parse($tiket->jadwal->tanggal)->format('d M Y, H:i') : '-' }}
-                    </p>
-                </div>
-            </div>
-
-            <!-- Informasi Tiket -->
-            <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
-                <div class="space-y-2">
-                    <p><span class="font-semibold text-[#4a90e2]">Kode Tiket:</span> {{ $tiket->kodetiket ?? '-' }}</p>
-                    <p><span class="font-semibold text-[#4a90e2]">Kursi:</span> {{ $tiket->kursi->kodekursi ?? '-' }}</p>
-                    <p><span class="font-semibold text-[#4a90e2]">Nomor Transaksi:</span> {{ $tiket->transaksi->id ?? '-' }}</p>
-                </div>
-                <div class="space-y-2">
-                    <p><span class="font-semibold text-[#4a90e2]">Tanggal Pesan:</span> {{ $tiket->created_at ? $tiket->created_at->format('d M Y') : '-' }}</p>
-                    <p><span class="font-semibold text-[#4a90e2]">Status:</span> 
-                        <span class="text-green-600 font-semibold">
-                            {{ strtoupper($tiket->transaksi->status ?? 'PAID') }}
-                        </span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Catatan -->
-            <div class="pt-5 border-t border-gray-200 text-xs text-gray-600 space-y-1">
-                <p>📍 Lokasi: {{ $tiket->jadwal->studio->bioskop->nama_bioskop ?? 'TicketLy Cinema' }}</p>
-                <p>⏰ Mohon datang 15 menit sebelum jam tayang.</p>
-                <p>⚠️ Tiket yang sudah dibeli tidak dapat dikembalikan.</p>
-            </div>
-        </div>
-
-        <!-- Tombol -->
-        <div class="flex justify-center px-8 py-6 bg-[#f9fbff] border-t border-gray-100">
-            <button onclick="window.print()" 
-                class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#4a90e2] text-white font-medium hover:bg-[#357abd] transition">
-                Cetak Tiket
-            </button>
+        <div class="text-center mt-6">
+            <a href="{{ route('transaksi') }}" class="inline-block px-6 py-2 text-white bg-[#0A1D56] rounded-full shadow hover:bg-[#14274E] transition">
+                Kembali ke Riwayat Transaksi
+            </a>
         </div>
     </div>
 
+    {{-- Footer --}}
     @include('components.footer')
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>lucide.createIcons();</script>
 </body>
 </html>

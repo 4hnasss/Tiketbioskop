@@ -26,15 +26,14 @@
                                 <p class="text-gray-600 text-xs mb-0.5"><strong>Total:</strong> Rp {{ number_format($transaksi->totalharga, 0, ',', '.') }}</p>
 
                                 @php
-                                    $statusMap = [
-                                        'panding' => ['color' => 'yellow', 'text' => 'Menunggu Pembayaran'],
-                                        'selesai' => ['color' => 'green', 'text' => 'Pembayaran Selesai'],
-                                        'batal' => ['color' => 'red', 'text' => 'Dibatalkan'],
-                                        'challenge' => ['color' => 'orange', 'text' => 'Menunggu Verifikasi'],
-                                    ];
-                                    $status = $statusMap[$transaksi->status] ?? ['color' => 'gray', 'text' => ucfirst($transaksi->status)];
+                                $statusMap = [
+                                    'panding' => ['color' => 'yellow', 'text' => 'Menunggu Pembayaran'],
+                                    'selesai' => ['color' => 'green', 'text' => 'Pembayaran Selesai'],
+                                    'batal' => ['color' => 'red', 'text' => 'Dibatalkan'],
+                                    'challenge' => ['color' => 'orange', 'text' => 'Menunggu Verifikasi'],
+                                ];
+                                $status = $statusMap[$transaksi->status] ?? ['color' => 'gray', 'text' => ucfirst($transaksi->status)];
                                 @endphp
-
                                 <span class="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-{{ $status['color'] }}-100 text-{{ $status['color'] }}-600">
                                     {{ $status['text'] }}
                                 </span>

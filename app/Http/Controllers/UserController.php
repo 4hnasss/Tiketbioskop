@@ -140,7 +140,7 @@ public function film()
         return redirect('/');
     }
 
-    public function transaksi()
+public function transaksi()
 {
     // Ambil semua transaksi user yang login beserta tiket dan relasi jadwal & film
     $transaksis = Transaksi::with(['tiket.jadwal.film', 'jadwal.studio'])
@@ -153,109 +153,151 @@ public function film()
 
 
     public function kursi($film_id, $jadwal_id)
+    {
+        $film = Film::findOrFail($film_id);
+        $jadwal = Jadwal::with(['film', 'harga', 'studio'])->findOrFail($jadwal_id);
+
+        $kursi = Kursi::where('jadwal_id', $jadwal_id)
+              ->where('studio_id', $jadwal->studio_id)
+              ->get(); // pastikan ambil status terbaru
+
+        $hargaPerKursi = $jadwal->harga->harga ?? 20000;
+
+        return view('pages.kursi', compact('film', 'jadwal', 'kursi', 'hargaPerKursi'));
+    }
+
+public function buatPembayaran(Request $request)
 {
+    $request->validate([
+        'kursi' => 'required|array',
+        'hargaPerKursi' => 'required|integer',
+        'jadwal_id' => 'required|integer'
+    ]);
 
-    // ==== Ambil data film & jadwal ====
-    $film = Film::findOrFail($film_id);
-    $jadwal = Jadwal::with(['film', 'harga', 'studio'])->findOrFail($jadwal_id);
+    $jumlahTiket = count($request->kursi);
+    $hargaTotal = $jumlahTiket * $request->hargaPerKursi;
 
-    // ==== Ambil data kursi ====
-    $kursi = Kursi::where('jadwal_id', $jadwal_id)
-        ->where('studio_id', $jadwal->studio_id)
-        ->get();
+    $orderId = 'ORDER-' . uniqid();
 
-    // ==== Ambil harga per kursi ====
-    $hargaPerKursi = $jadwal->harga->harga ?? 20000;
-
-    // ==== Konfigurasi Midtrans ====
+    // Midtrans config
     MidtransConfig::$serverKey = config('midtrans.serverKey');
-    MidtransConfig::$isProduction = false;  // Sandbox mode
+    MidtransConfig::$isProduction = false;
     MidtransConfig::$isSanitized = true;
     MidtransConfig::$is3ds = true;
 
-    // ==== Buat transaksi di database ====
-    $orderId = 'TCKT-' . uniqid();
-
-    $transaksi = Transaksi::create([
-        'user_id' => Auth::id(),
-        'jadwal_id' => $jadwal_id,
-        'order_id' => $orderId,
-        'tanggaltransaksi' => Carbon::now(),
-        'totalharga' => $hargaPerKursi,
-        'status' => 'panding', // sesuai permintaan
-    ]);
-
-    // ==== Parameter untuk Midtrans ====
     $params = [
         'transaction_details' => [
             'order_id' => $orderId,
-            'gross_amount' => (int) $transaksi->totalharga,
+            'gross_amount' => $hargaTotal,
         ],
         'customer_details' => [
-            'name' => Auth::user()->name ?? 'Guest User',
-            'email' => Auth::user()->email ?? 'guest@example.com',
-        ],
+            'first_name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+        ]
     ];
 
-    // ==== Dapatkan Snap Token dari Midtrans ====
     $snapToken = Snap::getSnapToken($params);
 
-    // ==== Simpan snap token ke database ====
-    $transaksi->update(['snap_token' => $snapToken]);
+    // Simpan transaksi sementara
+    $transaksi = Transaksi::create([
+        'order_id' => $orderId,
+        'user_id' => auth()->id(),
+        'jadwal_id' => $request->jadwal_id,
+        'kursi' => json_encode($request->kursi),
+        'status' => 'panding', // set default sebagai pending
+        'totalharga' => $hargaTotal,
+        'snap_token' => $snapToken,
+        'tanggaltransaksi' => Carbon::now()
+    ]);
 
-    // ==== Kirim data ke view ====
-    return view('pages.kursi', compact('film', 'jadwal', 'kursi', 'hargaPerKursi', 'snapToken'));
+    // Tandai kursi sebagai 'dipesan' sementara
+    Kursi::whereIn('nomorkursi', $request->kursi)
+        ->where('jadwal_id', $request->jadwal_id)
+        ->update(['status' => 'dipesan']);
+
+    return response()->json([
+        'snapToken' => $snapToken,
+        'orderId' => $orderId
+    ]);
 }
 
-public function tiket($id)
-{
-    $tiket = Tiket::with(['jadwal.film', 'jadwal.studio', 'kursi', 'transaksi'])->find($id);
 
-    if (!$tiket) {
+public function midtransWebhook(Request $request)
+{
+    \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+    \Midtrans\Config::$isProduction = false;
+    \Midtrans\Config::$isSanitized = true;
+    \Midtrans\Config::$is3ds = true;
+
+    $notif = new \Midtrans\Notification();
+
+    $transaction = $notif->transaction_status; // capture, settlement, pending, deny, expire, cancel
+    $order_id = $notif->order_id;
+    $fraud = $notif->fraud_status ?? null;
+
+    $transaksi = Transaksi::where('order_id', $order_id)->first();
+
+    if (!$transaksi) {
+        Log::warning("Transaksi tidak ditemukan: " . $order_id);
+        return response()->json(['message' => 'Order not found'], 404);
+    }
+
+    $kursiList = json_decode($transaksi->kursi ?? '[]', true);
+
+    switch ($transaction) {
+        case 'capture':
+            if ($fraud == 'challenge') {
+                $transaksi->status = 'challenge';
+            } else {
+                $transaksi->status = 'selesai';
+                Kursi::whereIn('nomorkursi', $kursiList)
+                    ->where('jadwal_id', $transaksi->jadwal_id)
+                    ->update(['status' => 'terjual']);
+            }
+            break;
+
+        case 'settlement':
+            $transaksi->status = 'selesai';
+            Kursi::whereIn('nomorkursi', $kursiList)
+                ->where('jadwal_id', $transaksi->jadwal_id)
+                ->update(['status' => 'terjual']);
+            break;
+
+        case 'pending':
+            $transaksi->status = 'panding';
+            Kursi::whereIn('nomorkursi', $kursiList)
+                ->where('jadwal_id', $transaksi->jadwal_id)
+                ->update(['status' => 'dipesan']);
+            break;
+
+        case 'deny':
+        case 'expire':
+        case 'cancel':
+            $transaksi->status = 'batal';
+            Kursi::whereIn('nomorkursi', $kursiList)
+                ->where('jadwal_id', $transaksi->jadwal_id)
+                ->update(['status' => 'tersedia']);
+            break;
+    }
+
+    $transaksi->save();
+
+    return response()->json(['message' => 'OK']);
+}
+
+
+public function tiket($transaksiId)
+{
+    $tiket = Tiket::with(['jadwal.film', 'jadwal.studio', 'kursi', 'transaksi'])
+        ->where('transaksi_id', $transaksiId)
+        ->get();
+
+    if ($tiket->isEmpty()) {
         return redirect()->back()->with('error', 'Tiket tidak ditemukan.');
     }
 
     return view('pages.tiket', compact('tiket'));
 }
-
-
-
-
-public function midtransWebhook(Request $request)
-{
-    Log::info('Webhook Midtrans diterima:', $request->all());
-
-    $serverKey = config('midtrans.serverKey');
-    $json = $request->getContent();
-    $signatureKey = hash(
-        'sha512',
-        $request->order_id . $request->status_code . $request->gross_amount . $serverKey
-    );
-
-    // Validasi keamanan dari Midtrans
-    if ($signatureKey !== $request->signature_key) {
-        return response()->json(['message' => 'Invalid signature'], 403);
-    }
-
-    // Ambil transaksi berdasarkan order_id
-    $transaksi = Transaksi::where('order_id', $request->order_id)->first();
-
-    if (!$transaksi) {
-        return response()->json(['message' => 'Transaction not found'], 404);
-    }
-
-    // Update status berdasarkan Midtrans
-    if ($request->transaction_status === 'capture' || $request->transaction_status === 'settlement') {
-        $transaksi->update(['status' => 'success']);
-    } elseif ($request->transaction_status === 'pending') {
-        $transaksi->update(['status' => 'panding']); // sesuai permintaan
-    } elseif ($request->transaction_status === 'deny' || $request->transaction_status === 'cancel') {
-        $transaksi->update(['status' => 'failed']);
-    }
-
-    return response()->json(['message' => 'Webhook processed successfully']);
-}
-
 
 
 }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('jadwal_id')->constrained()->onDelete('cascade');
+            $table->json('kursi')->nullable();
             $table->dateTime('tanggaltransaksi')->nullable();
             $table->decimal('totalharga')->nullable();
             $table->string('order_id')->unique();
