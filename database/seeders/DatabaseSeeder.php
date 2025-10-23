@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
         $studio3 = Studio::create(['nama_studio' => 'Studio 3']);
 
         // ==== HARGA ====
-        $hargaWeekday = Harga::create(['jenis_hari' => 'weekday', 'harga' => 20000]);
+        $hargaWeekday = Harga::create(['jenis_hari' => 'weekday', 'harga' => 1]);
         $hargaWeekend = Harga::create(['jenis_hari' => 'weekend', 'harga' => 1500]);
 
         // ==== JADWAL ====
