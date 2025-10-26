@@ -24,6 +24,8 @@ class FilmsTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('judul')
                     ->searchable(),
+                TextColumn::make('trailer')
+                    ->searchable(),
                 TextColumn::make('genre')
                     ->searchable(),
                 TextColumn::make('durasi')

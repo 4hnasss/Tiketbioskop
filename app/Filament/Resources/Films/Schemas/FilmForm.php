@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Films\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -15,6 +16,10 @@ class FilmForm
         return $schema
             ->components([
                 TextInput::make('judul'),
+                FileUpload::make('trailer')
+                    ->label('Trailer Film')
+                    ->disk('trailers')  // folder public/trailers
+                    ->visibility('public'),
                 TextInput::make('genre'),
                 TextInput::make('durasi')
                     ->numeric(),
@@ -23,7 +28,10 @@ class FilmForm
                 Select::make('status')
                     ->options(['upcomming' => 'Upcomming', 'playnow' => 'Playnow'])
                     ->default('upcomming'),
-                TextInput::make('poster'),
+                FileUpload::make('poster')
+                    ->label('Poster Film')
+                    ->disk('img')       // folder public/img
+                    ->visibility('public'),
                 DatePicker::make('tanggalmulai'),
                 DatePicker::make('tanggalselesai'),
             ]);

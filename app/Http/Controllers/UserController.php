@@ -153,7 +153,7 @@ class UserController extends Controller
         return view('pages.kursi', compact('film', 'jadwal', 'kursi', 'hargaPerKursi'));
     }
 
-    public function buatPembayaran(Request $request)
+public function buatPembayaran(Request $request)
     {
         $request->validate([
             'kursi' => 'required|array',
@@ -163,7 +163,6 @@ class UserController extends Controller
 
         $jumlahTiket = count($request->kursi);
         $hargaTotal = $jumlahTiket * $request->hargaPerKursi;
-
         $orderId = 'ORDER-' . uniqid();
 
         // Midtrans config
@@ -188,10 +187,10 @@ class UserController extends Controller
         // Simpan transaksi sementara
         $transaksi = Transaksi::create([
             'order_id' => $orderId,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::user()->id,
             'jadwal_id' => $request->jadwal_id,
             'kursi' => json_encode($request->kursi),
-            'status' => 'pending', // set default sebagai pending
+            'status' => 'pending', // default
             'totalharga' => $hargaTotal,
             'snap_token' => $snapToken,
             'tanggaltransaksi' => Carbon::now()
@@ -210,10 +209,10 @@ class UserController extends Controller
 
     public function midtransWebhook(Request $request)
     {
-        \Midtrans\Config::$serverKey = config('midtrans.serverKey');
-        \Midtrans\Config::$isProduction = false;
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
+        MidtransConfig::$serverKey = config('midtrans.serverKey');
+        MidtransConfig::$isProduction = false;
+        MidtransConfig::$isSanitized = true;
+        MidtransConfig::$is3ds = true;
 
         $notif = new \Midtrans\Notification();
 
@@ -250,7 +249,7 @@ class UserController extends Controller
                 break;
 
             case 'pending':
-                $transaksi->status = 'panding';
+                $transaksi->status = 'pending';
                 Kursi::whereIn('nomorkursi', $kursiList)
                     ->where('jadwal_id', $transaksi->jadwal_id)
                     ->update(['status' => 'dipesan']);
@@ -273,8 +272,8 @@ class UserController extends Controller
 
     public function transaksi()
     {
-        // Ambil semua transaksi user yang login beserta tiket dan relasi jadwal & film
-        $transaksis = Transaksi::with(['tiket.jadwal.film', 'jadwal.studio'])
+        // Ambil semua transaksi user yang login beserta relasi jadwal & film
+        $transaksis = Transaksi::with(['jadwal.film', 'jadwal.studio'])
                         ->where('user_id', Auth::id())
                         ->orderBy('tanggaltransaksi', 'desc')
                         ->get();

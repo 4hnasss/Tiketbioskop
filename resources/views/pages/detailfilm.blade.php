@@ -24,7 +24,7 @@
         {{-- Poster --}}
         <div class="relative group w-full md:w-[230px] h-[320px] rounded-2xl overflow-hidden shadow-md cursor-pointer"
              onclick="bukaTrailer()">
-          <img src="{{ asset($film->poster) }}" 
+          <img src="{{ asset('img/' . $film->poster) }}" 
                alt="{{ $film->judul }}" 
                class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
           <div onclick="bukaTrailer()" 
@@ -107,7 +107,7 @@
     <div class="relative bg-white rounded-2xl overflow-hidden shadow-2xl w-[90%] max-w-2xl cursor-default"
          onclick="event.stopPropagation()">
       <video id="trailerVideo" class="w-full" controls>
-        <source src="{{ asset($film->trailer) }}" type="video/mp4">
+        <source src="{{ asset('trailers/' . $film->trailer) }}" type="video/mp4">
         Browser Anda tidak mendukung pemutar video.
       </video>
       <button onclick="tutupTrailer(event)" 

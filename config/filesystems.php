@@ -60,6 +60,31 @@ return [
             'report' => false,
         ],
 
+        // disk default public
+        'public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+
+        // disk khusus untuk poster di public/img
+        'img' => [
+            'driver' => 'local',
+            'root' => public_path('img'),
+            'url' => env('APP_URL').'/img',
+            'visibility' => 'public',
+        ],
+
+        // disk khusus untuk trailer di public/trailers
+        'trailers' => [
+            'driver' => 'local',
+            'root' => public_path('trailers'),
+            'url' => env('APP_URL').'/trailers',
+            'visibility' => 'public',
+        ],
+
+
     ],
 
     /*

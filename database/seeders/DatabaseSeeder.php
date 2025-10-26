@@ -40,120 +40,120 @@ class DatabaseSeeder extends Seeder
             'judul' => 'Rumah Untuk Alie',
             'genre' => 'Drama',
             'durasi' => 185,
-            'trailer' => 'trailers/rumah.mp4',
+            'trailer' => 'rumah.mp4',
             'deskripsi' => 'Rumah untuk Alie adalah film drama keluarga Indonesia tahun 2025 yang disutradarai oleh Herwin Novianto berdasarkan novel berjudul sama karya Lenn Liu. Film produksi Falcon Pictures ini dibintangi oleh Anantya Kirana, Rizky Hanggono, dan Dito Darmawan. Rumah untuk Alie tayang perdana di bioskop pada tanggal 17 April 2025.',
             'status' => 'playnow',
             'tanggalmulai' => '2025-10-21',
             'tanggalselesai' => '2025-10-30',
-            'poster' => 'img/Alie.jpg',
+            'poster' => 'Alie.jpg',
         ]);
 
         $film2 = Film::create([
             'judul' => 'Home Sweet Loan',
             'genre' => 'Drama',
             'durasi' => 115,
-            'trailer' => 'trailers/home.mp4',
+            'trailer' => 'home.mp4',
             'deskripsi' => 'Home Sweet Loan adalah film drama keluarga Indonesia tahun 2024 yang disutradarai oleh Sabrina Rochelle Kalangie dan dibintangi oleh Yunita Siregar, Derby Romero dan Fita Anggriani. Film ini diadaptasi dari novel berjudul sama karya Almira Bastari dan diproduksi oleh Visinema Pictures. Ceritanya berfokus pada Kaluna (Yunita Siregar), seorang pekerja kantoran dari keluarga sederhana yang bermimpi memiliki rumah sendiri. Sebagai anak bungsu, ia tinggal bersama orang tua, kakak-kakaknya yang sudah berkeluarga, dan keponakan, yang membuat rumahnya terasa ramai dan sering mengganggu kenyamanannya.',
             'status' => 'playnow',
             'tanggalmulai' => '2025-10-22',
             'tanggalselesai' => '2025-10-30',
-            'poster' => 'img/home.jpg',
+            'poster' => 'home.jpg',
         ]);
 
         $film3 = Film::create([
             'judul' => 'Pangepungan Di Bukit Duri',
             'genre' => 'action',
             'durasi' => 185,
-            'trailer' => 'trailers/pangepungan.mp4',
+            'trailer' => 'pangepungan.mp4',
             'deskripsi' => 'Pengepungan di Bukit Duri adalah film laga menegangkan Indonesia tahun 2025 yang ditulis dan disutradarai oleh Joko Anwar. Film produksi Amazon MGM Studios serta Come and See Pictures ini dibintangi oleh Morgan Oey, Omara Esteghlal, dan Hana Malasan. Film ini berkisah mengenai Edwin, seorang guru pengganti yang ditugaskan mengajar di SMA Duri, sebuah sekolah dengan reputasi buruk sebagai tempat berkumpulnya siswa bermasalah.',
             'status' => 'playnow',
             'tanggalmulai' => '2025-10-23',
             'tanggalselesai' => '2025-10-30',
-            'poster' => 'img/pangepungan.jpg',
+            'poster' => 'pangepungan.jpg',
         ]);
 
         $film4 = Film::create([
             'judul' => 'Avatar',
             'genre' => 'action',
             'durasi' => 185,
-            'trailer' => 'trailers/avatar.mp4',
+            'trailer' => 'avatar.mp4',
             'deskripsi' => 'Avatar: Fire and Ash adalah sebuah film fiksi ilmiah epos Amerika tahun 2025 yang disutradarai, ditulis, diproduksi bersama, dan diedit oleh James Cameron.[2] Dan merupakan film ketiga dalam waralaba Avatar, serta sekuel dari Avatar: The Way of Water (2022). Cameron memproduksinya dengan Jon Landau. Cameron, Rick Jaffa, Amanda Silver, Josh Friedman dan Shane Salerno terlibat dalam proses penulisan. Pemeran yang terdiri dari Sam Worthington, Zoe Saldaña, Sigourney Weaver, Stephen Lang, Joel David Moore, CCH Pounder, Giovanni Ribisi, Dileep Rao, Matt Gerald, Kate Winslet, Cliff Curtis, Edie Falco, Brendan Cowell, Jemaine Clement, Britain Dalton, Trinity Jo-Li Bliss, Jack Champion, Bailey Bass dan Filip Geljo mengulangi peran mereka dari film sebelumnya, dengan Michelle Yeoh, David Thewlis, dan Oona Chaplin memerankan karakter baru. Cameron menyatakan bahwa Avatar: The Seed Bearer sedang dipertimbangkan sebagai kemungkinan judul utama.',
             'status' => 'playnow',
             'tanggalmulai' => '2025-10-24',
             'tanggalselesai' => '2025-10-30',
-            'poster' => 'img/avatar.jpeg',
+            'poster' => 'avatar.jpeg',
         ]);
 
         $film5 = Film::create([
             'judul' => 'Jangan Panggil Reisa Kafir',
             'genre' => 'Drama',
             'durasi' => 185,
-            'trailer' => 'trailers/janganpanggil.mp4',
+            'trailer' => 'janganpanggil.mp4',
             'deskripsi' => 'Jangan Panggil Mama Kafir adalah sebuah film drama Indonesia tahun 2025 yang disutradarai oleh Dyan Sunu Prastowo. Film tersebut dibintangi oleh Michelle Ziudith, Giorgino Abraham, Emmie Lemu, TJ Ruth, Prastiwi Dwiarti, Dira Sugandi, N Humaira Jahra, Kaneishia Yusuf, Runny Rudiyanti dan Gilbert Pattiruhu. Film tersebut dirilis pada 16 Oktober 2025.',
             'status' => 'playnow',
             'tanggalmulai' => '2025-10-25',
             'tanggalselesai' => '2025-10-30',
-            'poster' => 'img/jangan.jpeg',
+            'poster' => 'jangan.jpeg',
         ]);
 
         $film6 = Film::create([
             'judul' => 'Andai Ibu Tidak Menikah Dengan Ayah',
             'genre' => 'Drama',
             'durasi' => 185,
-            'trailer' => 'trailers/andaiibu.mp4',
+            'trailer' => 'andaiibu.mp4',
             'deskripsi' => 'Andai Ibu Tidak Menikah dengan Ayah adalah sebuah film drama keluarga Indonesia tahun 2025 yang disutradarai oleh Kuntz Agus. Film tersebut dibintangi oleh Amanda Rawles, Sha Ine Febriyanti, Bucek Depp, Eva Celia, Nayla Purnama dan Indian Akbar. Film tersebut dirilis pada 4 September 2025.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
-            'poster' => 'img/andaiibu.jpeg',
+            'poster' => 'andaiibu.jpeg',
         ]);
 
         $film7 = Film::create([
             'judul' => 'Jumbo',
             'genre' => 'Kartun',
             'durasi' => 185,
-            'trailer' => 'trailers/jumbo.mp4',
+            'trailer' => 'jumbo.mp4',
             'deskripsi' => 'Film Jumbo mengisahkan seorang anak yatim piatu berusia 10 tahun bernama Don. Ia sering diremehkan karena memiliki tubuh yang besar. Don mempunyai sebuah buku dongeng warisan orang tuanya, yang penuh ilustrasi dan cerita ajaib. Buku tersebut bukan hanya kenang-kenangan, tetapi juga menjadi sumber inspirasi dan pelarian bagi Don dari dunia yang terasa tidak ramah karena kerap diremehkan oleh teman-temannya.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
-            'poster' => 'img/jumbo.jpg',
+            'poster' => 'jumbo.jpg',
         ]);
 
         $film8 = Film::create([
             'judul' => 'Panggil Aku Ayah',
             'genre' => 'Drama',
             'durasi' => 185,
-            'trailer' => 'trailers/panggilaku.mp4',
+            'trailer' => 'panggilaku.mp4',
             'deskripsi' => 'Intan adalah gadis kecil yang tumbuh jauh dari hidup sempurna, hanya punya satu hal paling berharga, ibunya, Rossa. Namun hidup membawa mereka ke titik terendah. Terjebak utang, Rossa didatangi dua penagih yakni Dedi dan Tatang. Rossa kemudian terdesak oleh Dedi dan Tatang hingga akhirnya menjadikan Intan sebagai jaminan hutangnya. Dedi yang awalnya hanya melihat Intan sebagai jaminan, perlahan justru terikat dalam kisah hidup gadis kecil ini. Dari pertemuan yang tak sengaja, tumbuh ikatan yang tak terduga.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
-            'poster' => 'img/panggil.jpeg',
+            'poster' => 'panggil.jpeg',
         ]);
 
         $film9 = Film::create([
             'judul' => 'Ngeri-Ngeri Sedap',
             'genre' => 'Drama',
             'durasi' => 185,
-            'trailer' => 'trailers/ngeri.mp4',
+            'trailer' => 'ngeri.mp4',
             'deskripsi' => 'Ngeri-Ngeri Sedap (bahasa Inggris: Missing Home) adalah film drama komedi Indonesia tahun 2022 yang disutradarai dan ditulis oleh Bene Dion Rajagukguk. Film berlatar Suku Batak ini dibintangi oleh Arswendy Beningswara Nasution, Tika Panggabean, Boris Bokir Manullang, Gita Bhebhita Butarbutar, Lolox, dan Indra Jegel. Film ini ditayangkan di bioskop Indonesia pada 2 Juni 2022.[1] Meskipun memiliki judul yang sama dengan buku yang ditulis oleh Bene Dion, film ini tidak diadaptasi dari buku tersebut.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
-            'poster' => 'img/ngeri.jpg',
+            'poster' => 'ngeri.jpg',
         ]);
 
         $film10 = Film::create([
             'judul' => 'Bertaut Rindu',
             'genre' => 'Drama',
             'durasi' => 185,
-            'trailer' => 'trailers/bertaut.mp4',
+            'trailer' => 'bertaut.mp4',
             'deskripsi' => 'Kehidupan Jovanka berubah setelah perceraian orang tuanya. Bersama dengan Yuli, ibunya ia pindah ke Bandung dan memulai semuanya dari awal. Di sekolah baru, ia bertemu dengan Magnus, cowok pendiam yang menyimpan banyak rahasia dan trauma. Pertemuan ini tak hanya mempertemukan dua hati, tapi dua jiwa yang sama-sama terluka.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
-            'poster' => 'img/bertaut.jpeg',
+            'poster' => 'bertaut.jpeg',
         ]);
         
 

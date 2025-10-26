@@ -10,13 +10,11 @@
 
     {{-- Navbar --}}
     @include('components.navbar')
-
     <div class="container mx-auto px-4 md:px-0 py-8">
         <h1 class="text-2xl font-bold text-center mb-8 text-[#14274E]">Riwayat Transaksi</h1>
-
-        <div class="space-y-4">
+            <div class="space-y-4">
                 @foreach($transaksis as $transaksi)
-                        <a href="{{ route('tiket') }}" class="block cursor-pointer">
+                    <a href="{{ route('tiket') }}" class="block cursor-pointer">
                         <div class="flex items-center bg-white backdrop-blur-sm rounded-xl shadow-2xl p-4 border border-gray-100 hover:shadow-md transition duration-200">
                             <img src="{{ $transaksi->jadwal->film->poster }}" alt="Poster Film" class="w-20 h-28 rounded-lg object-cover shadow-sm">
                             <div class="flex-1 ml-4">
@@ -39,16 +37,12 @@
                                 </span>
                             </div>
                         </div>
-                    @if($transaksi->tiket)
-                        </a>
-                    @endif
+                    </a>
                 @endforeach
-
             </div>
         </div>
     </div>
     {{-- Footer --}}
     @include('components.footer')
-
 </body>
 </html>

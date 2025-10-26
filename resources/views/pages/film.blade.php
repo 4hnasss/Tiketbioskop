@@ -32,7 +32,7 @@
 
                     {{-- Poster --}}
                     <div class="relative w-full overflow-hidden rounded-lg shadow-md">
-                        <img src="{{ asset($film->poster) }}" 
+                        <img src="{{ asset('img/' . $film->poster) }}" 
                              alt="{{ $film->judul }}" 
                              class="w-full h-[320px] object-cover rounded-lg transition duration-500 group-hover:scale-105">
 
