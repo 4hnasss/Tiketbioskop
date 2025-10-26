@@ -23,7 +23,7 @@ Route::post('/register', [UserController::class, 'register'])->name('register.st
 // ------------------------
 // MIDTRANS WEBHOOK (PUBLIC)
 // ------------------------
-Route::post('/midtrans/webhook', [UserController::class, 'midtransWebhook']); 
+Route::post('/midtrans/webhook', [UserController::class, 'midtransWebhook']);
 
 // ------------------------
 // ROUTE HANYA UNTUK USER LOGIN
@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/buat-pembayaran', [UserController::class, 'buatPembayaran']);
 
     //tiket
-    Route::get('/tiket/{transaksiId}', [UserController::class, 'tiket'])->name('tiket.show');
+    Route::get('/tiket', [UserController::class, 'tiket'])->name('tiket');
 
 
 });

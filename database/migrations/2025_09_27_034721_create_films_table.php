@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('judul')->nullable();
+            $table->string('trailer')->nullable();
             $table->string('genre')->nullable();
             $table->integer('durasi')->nullable();
             $table->text('deskripsi')->nullable();

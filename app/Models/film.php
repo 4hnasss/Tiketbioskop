@@ -11,6 +11,7 @@ class film extends Model
         'genre',
         'durasi',
         'deskripsi',
+        'trailer',
         'status',
         'poster',
         'tanggalmulai',

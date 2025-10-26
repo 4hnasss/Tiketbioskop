@@ -1,7 +1,9 @@
 <nav class="bg-white/90 backdrop-blur-md w-full h-[79px] flex items-center px-8 shadow-md sticky top-0 z-50 rounded-b-xl">
     {{-- Logo di kiri --}}
     <div class="flex items-center">
+        <a href="{{route('home')}}">
         <img src="/img/Brand.png" alt="Flixora" class="w-[115px] h-[60px]">
+        </a>
     </div>
 
     {{-- Spacer untuk push menu ke kanan --}}
