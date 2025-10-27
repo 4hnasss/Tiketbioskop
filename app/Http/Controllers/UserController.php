@@ -21,24 +21,28 @@ use Midtrans\Notification;
 
 class UserController extends Controller
 {
-    public function home()
-    {
-        $today = Carbon::today();
+public function home()
+{
+    $today = Carbon::today();
 
-        // Film yang sedang tayang
-        $filmPlayNow = Film::whereDate('tanggalmulai', '<=', $today)
-                            ->orderBy('tanggalmulai', 'desc')
-                            ->take(4)
-                            ->get();
+    // Film yang sedang tayang
+    $filmPlayNow = Film::whereDate('tanggalmulai', '<=', $today)
+                        ->orderBy('tanggalmulai', 'desc')
+                        ->take(8)
+                        ->get();
 
-        // Film yang akan tayang
-        $filmUpcoming = Film::whereDate('tanggalmulai', '>', $today)
-                            ->orderBy('tanggalmulai', 'asc')
-                            ->take(4)
-                            ->get();
+    // Film yang akan tayang
+    $filmUpcoming = Film::whereDate('tanggalmulai', '>', $today)
+                        ->orderBy('tanggalmulai', 'asc')
+                        ->take(8)
+                        ->get();
 
-        return view('pages.home', compact('filmPlayNow', 'filmUpcoming'));
-    }
+    // Film acak untuk scroll banner
+    $filmRandom = Film::inRandomOrder()->take(10)->get();
+
+    // Kirim semua ke view utama
+    return view('pages.home', compact('filmPlayNow', 'filmUpcoming', 'filmRandom'));
+}
 
     public function film()
     {
@@ -57,15 +61,25 @@ class UserController extends Controller
     }
 
 
-   public function detailfilm(film $film)
-    {
-        $jadwals = Jadwal::where('film_id', $film->id)
+public function detailfilm(Film $film, Request $request)
+{
+    // Ambil tanggal dari query, atau default hari ini
+    $tanggal = $request->query('tanggal', Carbon::today()->toDateString());
+
+    // Ambil semua jadwal film ini dan kelompokkan berdasarkan tanggal
+    $jadwals = Jadwal::where('film_id', $film->id)
         ->orderBy('tanggal')
         ->orderBy('jamtayang')
         ->get()
         ->groupBy('tanggal');
-        return view('pages.detailfilm', compact('film', 'jadwals'));
-    }
+
+    // Kirim data ke view
+    return view('pages.detailfilm', [
+        'film' => $film,
+        'jadwals' => $jadwals,
+        'tanggal' => $tanggal, // penting: dikirim ke Blade
+    ]);
+}
 
     public function showRegister()
     {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Film | Flixora</title>
+  <title>Detail Film | TicketLy</title>
   @vite('resources/css/app.css')
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -20,8 +20,6 @@
 
       {{-- Poster & Info Film --}}
       <div class="flex flex-col md:flex-row items-start md:items-center gap-8 mb-8 relative z-10">
-        
-        {{-- Poster --}}
         <div class="relative group w-full md:w-[230px] h-[320px] rounded-2xl overflow-hidden shadow-md cursor-pointer"
              onclick="bukaTrailer()">
           <img src="{{ asset('img/' . $film->poster) }}" 
@@ -35,7 +33,6 @@
           </div>
         </div>
 
-        {{-- Info --}}
         <div class="flex flex-col justify-between space-y-3 md:space-y-4">
           <h1 class="text-3xl font-bold text-[#14274E]">{{ $film->judul }}</h1>
           <p class="text-gray-600 text-sm">{{ $film->genre }}</p>
@@ -51,7 +48,7 @@
         </div>
       </div>
 
-      {{-- Sinopsis (dibuat minimalis dan rapi) --}}
+      {{-- Sinopsis --}}
       <div class="bg-white/60 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-8">
         <div class="flex items-center gap-2 mb-3">
           <i data-lucide="align-left" class="w-5 h-5 text-[#14274E]"></i>
@@ -62,33 +59,44 @@
         </p>
       </div>
 
-      {{-- Jadwal Tayang --}}
-      @foreach ($jadwals as $tanggal => $jadwalList)
-        <div class="bg-white/70 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-6">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-semibold text-[#14274E] flex items-center gap-2">
-              <i data-lucide="clock" class="w-5 h-5"></i> Jadwal Tayang
-            </h3>
-            <input 
-              type="date" 
-              id="tanggal" 
-              value="{{ $tanggal }}"
-              class="border border-[#14274E]/40 text-[#14274E] text-sm px-3 py-1.5 rounded-md bg-white/60 cursor-pointer hover:border-[#14274E]/70 transition"
-            />
-          </div>
+      {{-- Jadwal Tayang Otomatis --}}
+      @php
+          use Carbon\Carbon;
+          $today = $tanggal ?? Carbon::today()->toDateString();
+          $jadwalHariIni = $jadwals[$today] ?? collect();
+      @endphp
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            @foreach ($jadwalList as $jadwal)
+
+      <div class="bg-white/70 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold text-[#14274E] flex items-center gap-2">
+            <i data-lucide="clock" class="w-5 h-5"></i> Jadwal Tayang
+          </h3>
+
+          <input 
+            type="date" 
+            id="tanggal" 
+            value="{{ $today }}" 
+            min="{{ $film->tanggalmulai }}" 
+            max="{{ $film->tanggalselesai }}" 
+            onchange="ubahTanggal(this.value)"
+            class="border border-[#14274E]/40 text-[#14274E] text-sm px-3 py-1.5 rounded-md bg-white/60 cursor-pointer hover:border-[#14274E]/70 transition"
+          />
+        </div>
+
+        <div id="daftarJadwal" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          @forelse ($jadwalHariIni as $jadwal)
               <a 
                 href="{{ route('kursi', ['film' => $film->id, 'jadwal' => $jadwal->id]) }}"
                 class="relative overflow-hidden group border border-[#14274E]/50 rounded-full py-2 text-center text-[#14274E] font-semibold text-sm transition hover:bg-[#14274E] hover:text-white hover:shadow-md">
                 {{ date('H:i', strtotime($jadwal->jamtayang)) }}
                 <div class="absolute inset-0 bg-gradient-to-r from-[#14274E]/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
               </a>
-            @endforeach
-          </div>
+          @empty
+              <span class="text-gray-400 text-sm col-span-full text-center">Belum ada jadwal untuk tanggal ini</span>
+          @endforelse
         </div>
-      @endforeach
+      </div>
 
       {{-- Tombol Kembali --}}
       <div class="pt-4 text-center">
@@ -122,6 +130,14 @@
   <script>
     lucide.createIcons();
 
+    // Ganti tanggal otomatis
+    function ubahTanggal(tanggal) {
+      const params = new URLSearchParams(window.location.search);
+      params.set('tanggal', tanggal);
+      window.location.search = params.toString();
+    }
+
+    // Popup trailer
     const modal = document.getElementById('trailerModal');
     const video = document.getElementById('trailerVideo');
 
