@@ -33,17 +33,16 @@ Route::middleware('auth')->group(function () {
 
     // Profil
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+// Kursi & Pembayaran 
+Route::get('/kursi/{film}/{jadwal}', [UserController::class, 'kursi'])->name('kursi'); 
+Route::post('/buat-pembayaran', [UserController::class, 'buatPembayaran'])->name('buatPembayaran');
 
-    // Riwayat transaksi
-    Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
+// Transaksi 
+Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi'); 
+Route::get('/transaksi/{transaksi}/cek-status', [UserController::class, 'cekStatus'])->name('transaksi.cekStatus');
+// web.php
+Route::post('/transaksi/{id}/update-status', [UserController::class, 'updateStatus']);
 
-    // Pilih kursi & studio
-    Route::get('/kursi/{film}/{jadwal}', [UserController::class, 'kursi'])->name('kursi');
-
-    // Buat pembayaran (Snap token)
-    Route::post('/buat-pembayaran', [UserController::class, 'buatPembayaran']);
-
-    //tiket
     Route::get('/tiket', [UserController::class, 'tiket'])->name('tiket');
 
 

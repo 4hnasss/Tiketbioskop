@@ -10,9 +10,9 @@ class transaksi extends Model
         'user_id',
         'jadwal_id',
         'tanggaltransaksi',
-        'order_id',
         'totalharga',
         'status',
+        'snap_token'
     ];
 
     public function user(){

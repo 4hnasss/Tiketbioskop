@@ -19,8 +19,7 @@ return new class extends Migration
             $table->json('kursi')->nullable();
             $table->dateTime('tanggaltransaksi')->nullable();
             $table->decimal('totalharga')->nullable();
-            $table->string('order_id')->unique();
-            $table->string('status')->default('pending');
+            $table->string('status');
             $table->string('metode_bayar')->nullable();
 
         });
