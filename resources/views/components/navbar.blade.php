@@ -15,7 +15,7 @@
             {{-- Jika sudah login --}}
             <a href="{{ route('film') }}" class="text-[#14274E] hover:text-[#3b82f6] font-serif transition">Film</a>
             <a href="{{ route('profile') }}" class="text-[#14274E] hover:text-[#3b82f6] font-serif transition">Profile</a>
-            <a href="{{ route('transaksi') }}" class="text-[#14274E] hover:text-[#3b82f6] font-serif transition">Transaksi</a>
+            <a href="{{ route('transaksi.riwayat')}} " class="text-[#14274E] hover:text-[#3b82f6] font-serif transition">Transaksi</a>
 
             {{-- Logout --}}
             <form action="{{ route('logout') }}" method="POST" class="inline">

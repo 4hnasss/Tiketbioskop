@@ -24,4 +24,10 @@ class kursi extends Model
     public function jadwal(){
         return $this->belongsTo(jadwal::class);
     }
+
+    public function transaksis()
+{
+    return $this->belongsToMany(Transaksi::class);
+}
+
 }

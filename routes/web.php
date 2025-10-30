@@ -35,13 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
 // Kursi & Pembayaran 
 Route::get('/kursi/{film}/{jadwal}', [UserController::class, 'kursi'])->name('kursi'); 
-Route::post('/buat-pembayaran', [UserController::class, 'buatPembayaran'])->name('buatPembayaran');
-
-// Transaksi 
-Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi'); 
-Route::get('/transaksi/{transaksi}/cek-status', [UserController::class, 'cekStatus'])->name('transaksi.cekStatus');
-// web.php
-Route::post('/transaksi/{id}/update-status', [UserController::class, 'updateStatus']);
+Route::post('/buat-pembayaran', [UserController::class, 'buatPembayaran'])->name('transaksi.buat');
+Route::get('/transaksi/{id}', [UserController::class, 'show'])->name('transaksi');
+Route::post('/transaksi/{id}/update-status', [UserController::class, 'updateStatus'])->name('transaksi.updateStatus');
+Route::get('/riwayat-transaksi', [UserController::class, 'riwayat'])->name('transaksi.riwayat');
 
     Route::get('/tiket', [UserController::class, 'tiket'])->name('tiket');
 

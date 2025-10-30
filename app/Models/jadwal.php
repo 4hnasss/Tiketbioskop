@@ -16,27 +16,32 @@ class jadwal extends Model
         });
     }
 
-    private static function generateSeatsForJadwal($jadwal)
-    {
-        $rows = range('A', 'G'); // 7 baris kursi
-        $cols = 12; // 12 kursi per baris
+private static function generateSeatsForJadwal($jadwal)
+{
+    // Hapus kursi lama biar tidak dobel
+    \App\Models\Kursi::where('jadwal_id', $jadwal->id)->delete();
 
-        $seats = [];
-        foreach ($rows as $row) {
-            for ($i = 1; $i <= $cols; $i++) {
-                $seats[] = [
-                    'jadwal_id' => $jadwal->id,
-                    'studio_id' => $jadwal->studio_id,
-                    'nomorkursi' => $row . $i,
-                    'status' => 'tersedia',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
+    $rows = range('A', 'G'); // 7 baris kursi
+    $cols = 12; // 12 kursi per baris
+
+    $seats = [];
+    foreach ($rows as $row) {
+        for ($i = 1; $i <= $cols; $i++) {
+            $seats[] = [
+                'jadwal_id' => $jadwal->id,
+                'studio_id' => $jadwal->studio_id,
+                'nomorkursi' => $row . $i,
+                'status' => 'tersedia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
-
-        Kursi::insert($seats);
     }
+
+    \App\Models\Kursi::insert($seats);
+}
+
+
 
 
     public function studio()
