@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -128,10 +129,15 @@ public function login(Request $request)
         $user = Auth::user();
 
         // Redirect berdasarkan role
-        if ($user->role === 'admin') {
-            return redirect()->intended('/admin'); // Filament dashboard
-        } else {
-            return redirect()->intended('/'); // Home user biasa
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->intended('/admin/dashboard');
+            
+            case 'kasir':
+                return redirect()->intended('/kasir/welcome');
+            
+            default: // user biasa
+                return redirect()->intended('/');
         }
     }
 

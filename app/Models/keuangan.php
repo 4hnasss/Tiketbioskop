@@ -2,17 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class keuangan extends Model
+class Keuangan extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'transaksi_id',
         'totalpemesanan',
         'tanggal',
     ];
 
-    public function transaksi(){
-        return $this->hasMany(transaksi::class);
+    protected $casts = [
+        'totalpemesanan' => 'decimal:2',
+        'tanggal' => 'date',
+    ];
+
+    /**
+     * Relasi ke Transaksi
+     */
+    public function transaksi()
+    {
+        return $this->belongsTo(Transaksi::class);
     }
 }

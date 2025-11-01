@@ -2,33 +2,32 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class transaksi extends Model
+class Transaksi extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'jadwal_id',
-        'tanggaltransaksi',
+        'kursi',
         'totalharga',
         'status',
-        'snap_token',
-        'kursi',
+        'metode_bayar',
+        'tanggaltransaksi',
     ];
 
     protected $casts = [
         'kursi' => 'array',
+        'totalharga' => 'decimal:2',
+        'tanggaltransaksi' => 'datetime',
     ];
 
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
-
-// app/Models/Transaksi.php (tambahkan relasi)
-
-    public function tikets()
+    public function user()
     {
-        return $this->hasMany(Tiket::class);
+        return $this->belongsTo(User::class);
     }
 
     public function jadwal()
@@ -36,13 +35,11 @@ class transaksi extends Model
         return $this->belongsTo(Jadwal::class);
     }
 
-    public function kursi()
+    /**
+     * Relasi ke Keuangan
+     */
+    public function keuangan()
     {
-        return $this->belongsToMany(Kursi::class);
+        return $this->hasOne(Keuangan::class);
     }
-
-    public function keuangan(){
-        return $this->belongsTo(keuangan::class);
-    }
-
 }

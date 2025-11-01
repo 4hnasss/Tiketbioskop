@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\KasirController;
 use Illuminate\Support\Facades\Route;
 
 // ------------------------
@@ -21,11 +22,6 @@ Route::get('/register', [UserController::class, 'showRegister'])->name('register
 Route::post('/register', [UserController::class, 'register'])->name('register.store');
 
 // ------------------------
-// MIDTRANS WEBHOOK (PUBLIC)
-// ------------------------
-Route::post('/midtrans/webhook', [UserController::class, 'midtransWebhook']);
-
-// ------------------------
 // ROUTE HANYA UNTUK USER LOGIN
 // ------------------------
 Route::middleware('auth')->group(function () {
@@ -39,13 +35,30 @@ Route::middleware('auth')->group(function () {
 });
 
 // ------------------------
-// ROUTE KHUSUS ADMIN - PROTEKSI SEMUA URL /admin/*
+// ROUTE KHUSUS ADMIN
 // ------------------------
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('filament.pages.dashboard');
     })->name('admin.dashboard');
+});
+
+// ------------------------
+// ROUTE KHUSUS KASIR
+// ------------------------
+Route::middleware(['auth', 'kasir'])->prefix('kasir')->group(function () {
+    Route::get('/welcome', [KasirController::class, 'welcome'])->name('kasir.welcome');
     
-    // PENTING: Tangkap semua route admin lainnya
-    // Jika menggunakan Filament, tambahkan ini untuk menangkap semua route Filament
+    // Pesan Tiket
+    Route::get('/pesan-tiket', [KasirController::class, 'pesanTiket'])->name('kasir.pesan-tiket');
+    Route::get('/pesan-tiket/jadwal/{film}', [KasirController::class, 'pilihJadwal'])->name('kasir.pilih-jadwal');
+    Route::get('/pesan-tiket/kursi/{film}/{jadwal}', [KasirController::class, 'pilihKursi'])->name('kasir.pilih-kursi');
+    Route::post('/pesan-tiket/proses', [KasirController::class, 'prosesBooking'])->name('kasir.proses-booking');
+    Route::get('/transaksi/{id}', [KasirController::class, 'detailTransaksi'])->name('kasir.detail-transaksi');
+    
+    // Riwayat Transaksi
+    Route::get('/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat-transaksi');
+    
+    // Laporan Keuangan
+    Route::get('/laporan-keuangan', [KasirController::class, 'laporanKeuangan'])->name('kasir.laporan-keuangan');
 });
