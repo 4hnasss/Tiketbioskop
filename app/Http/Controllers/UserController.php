@@ -3,25 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\film;
-use App\Models\harga;
 use App\Models\jadwal;
 use App\Models\kursi;
-use App\Models\tiket;
 use App\Models\transaksi;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Midtrans\Config;
-use Midtrans\Snap;
-use Illuminate\Support\Str;
-use Midtrans\Config as MidtransConfig;
 use Carbon\Carbon;
-use Illuminate\Support\Env;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Midtrans\Notification;
-use Stringable;
 
 class UserController extends Controller
 {
@@ -457,22 +447,40 @@ private function updateKursiStatus($transaksi, $status)
      * Menampilkan daftar riwayat transaksi user.
      */
 public function riwayat()
-    {
-        $userId = auth()->id();
+{
+    $userId = auth()->id();
 
-        $transaksis = Transaksi::with(['jadwal.film', 'jadwal.studio'])
-            ->where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+    $transaksis = Transaksi::with(['jadwal.film', 'jadwal.studio'])
+        ->where('user_id', $userId)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        return view('pages.riwayat-transaksi', compact('transaksis'));
+    return view('pages.riwayat-transaksi', compact('transaksis'));
+}
+
+// ==========================
+// HALAMAN TIKET (SESUDAH BAYAR)
+// ==========================
+public function tiket($transaksiId)
+{
+    $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio'])
+        ->where('id', $transaksiId)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
+
+    // Pastikan status transaksi sudah selesai
+    if ($transaksi->status !== 'settlement') {
+        return redirect()->route('transaksi.riwayat')
+            ->with('error', 'Tiket hanya tersedia untuk transaksi yang sudah dibayar.');
     }
-    // ==========================
-    // HALAMAN TIKET (SESUDAH BAYAR)
-    // ==========================
-    public function tiket()
-    {
-        return view('pages.tiket');
-    }
+
+    // Decode kursi jika masih dalam format JSON string
+    $kursiArray = is_array($transaksi->kursi) 
+        ? $transaksi->kursi 
+        : json_decode($transaksi->kursi, true);
+
+    return view('pages.tiket', compact('transaksi', 'kursiArray'));
+}
+
 
 }

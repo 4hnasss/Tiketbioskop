@@ -24,9 +24,11 @@ class transaksi extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function tiket()
+// app/Models/Transaksi.php (tambahkan relasi)
+
+    public function tikets()
     {
-        return $this->hasOne(Tiket::class);
+        return $this->hasMany(Tiket::class);
     }
 
     public function jadwal()

@@ -38,8 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/transaksi/{id}', [UserController::class, 'show'])->name('transaksi.show');
     Route::post('/transaksi/{id}/update-status', [UserController::class, 'updateStatus'])->name('transaksi.update');
     Route::get('/riwayat-transaksi', [UserController::class, 'riwayat'])->name('transaksi.riwayat');
-
-    Route::get('/tiket', [UserController::class, 'tiket'])->name('tiket');
+    Route::get('/tiket/{transaksiId}', [UserController::class, 'tiket'])->name('tiket');
 
 
 });

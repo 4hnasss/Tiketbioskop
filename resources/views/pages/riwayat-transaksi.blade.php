@@ -15,6 +15,13 @@
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-2xl font-bold text-center mb-8 text-[#14274E]">Riwayat Transaksi</h1>
 
+        {{-- Alert Messages --}}
+        @if(session('error'))
+            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="space-y-4">
             @forelse($transaksis as $transaksi)
                 <div class="flex items-center bg-white rounded-xl shadow-md p-4 border border-gray-100 hover:shadow-lg transition duration-200">
@@ -25,7 +32,7 @@
                     <div class="flex-1 ml-4">
                         <h2 class="text-lg font-semibold text-[#14274E] mb-1">{{ $transaksi->jadwal->film->judul }}</h2>
                         
-                        {{-- ✅ PERBAIKAN: Tampilkan kursi dengan benar --}}
+                        {{-- ✅ Tampilkan kursi dengan benar --}}
                         <p class="text-gray-600 text-xs mb-1">
                             <strong>Kursi:</strong> 
                             @if(is_array($transaksi->kursi))
@@ -43,9 +50,7 @@
                                 <span class="text-gray-400">-</span>
                             @endif
                         </p>
-
-                        <p class="text-gray-600 text-xs"><strong>Studio:</strong> {{ $transaksi->jadwal->studio->nama_studio ?? '-' }}</p>
-                        <p class="text-gray-600 text-xs"><strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($transaksi->tanggaltransaksi)->format('d-m-Y H:i') }}</p>
+                        <p class="text-gray-600 text-xs"><strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($transaksi->tanggal)->format('d-m-Y') }}</p>
                         <p class="text-gray-600 text-xs"><strong>Total:</strong> Rp {{ number_format($transaksi->totalharga, 0, ',', '.') }}</p>
 
                         @if($transaksi->metode_pembayaran)
@@ -75,6 +80,17 @@
                                     <a href="{{ route('transaksi.show', $transaksi->id) }}" 
                                        class="bg-[#1E56A0] text-white text-xs px-3 py-1.5 rounded-full hover:bg-[#14274E] transition">
                                         Lanjutkan Pembayaran
+                                    </a>
+                                @endif
+
+                                {{-- ✅ Tombol Lihat Tiket (hanya jika status settlement) --}}
+                                @if($transaksi->status === 'settlement')
+                                    <a href="{{ route('tiket', $transaksi->id) }}" 
+                                       class="bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-full hover:bg-emerald-600 transition inline-flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+                                        </svg>
+                                        Lihat Tiket
                                     </a>
                                 @endif
                             </div>
