@@ -35,6 +35,14 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
+        $user = User::factory()->create([
+            'name' => 'rintan',
+            'email' => 'rintan@example.com',
+            'password' => bcrypt('1234567'),
+            'nohp' => '096009000',
+            'role' => 'kasir',
+        ]);
+
         // ==== FILM ====
         $film1 = Film::create([
             'judul' => 'Rumah Untuk Alie',

@@ -3,7 +3,7 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-/// ------------------------
+// ------------------------
 // HALAMAN UMUM
 // ------------------------
 Route::get('/', [UserController::class, 'home'])->name('home');
@@ -25,13 +25,10 @@ Route::post('/register', [UserController::class, 'register'])->name('register.st
 // ------------------------
 Route::post('/midtrans/webhook', [UserController::class, 'midtransWebhook']);
 
-
 // ------------------------
 // ROUTE HANYA UNTUK USER LOGIN
 // ------------------------
 Route::middleware('auth')->group(function () {
-
-    // Profil
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/kursi/{film}/{jadwal}', [UserController::class, 'kursi'])->name('kursi');
     Route::post('/buat-pembayaran', [UserController::class, 'buatPembayaran'])->name('buat.pembayaran');
@@ -39,13 +36,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/transaksi/{id}/update-status', [UserController::class, 'updateStatus'])->name('transaksi.update');
     Route::get('/riwayat-transaksi', [UserController::class, 'riwayat'])->name('transaksi.riwayat');
     Route::get('/tiket/{transaksiId}', [UserController::class, 'tiket'])->name('tiket');
-
-
 });
 
-Route::middleware(['auth', 'admin'])->get('/admin/dashboard', function () {
-    return view('filament.pages.dashboard');
+// ------------------------
+// ROUTE KHUSUS ADMIN - PROTEKSI SEMUA URL /admin/*
+// ------------------------
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('filament.pages.dashboard');
+    })->name('admin.dashboard');
+    
+    // PENTING: Tangkap semua route admin lainnya
+    // Jika menggunakan Filament, tambahkan ini untuk menangkap semua route Filament
 });
-
-
-

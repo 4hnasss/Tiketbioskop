@@ -37,7 +37,7 @@
                             <p><strong>Studio:</strong> {{ $transaksi->jadwal->studio->nama_studio ?? '-' }}</p>
                             <p><strong>Kursi:</strong> {{ $kursi }}</p>
                             <p><strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($transaksi->jadwal->tanggal)->format('d-m-Y') }}</p>
-                            <p><strong>Jam:</strong> {{ \Carbon\Carbon::parse($transaksi->jadwal->jam)->format('H:i') }}</p>
+                            <p><strong>Jam:</strong> {{ \Carbon\Carbon::parse($transaksi->jadwal->jamtayang)->format('H:i') }}</p>
                         </div>
                         
                         {{-- Harga per tiket --}}
