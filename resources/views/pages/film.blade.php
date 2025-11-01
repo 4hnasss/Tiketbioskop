@@ -57,17 +57,25 @@
                         {{ floor($film->durasi / 60) }}h {{ $film->durasi % 60 }}m
                     </p>
 
-                    {{-- Jam tayang --}}
+                    {{-- Jam tayang (hanya hari ini) --}}
                     <div class="mt-2 flex flex-wrap gap-2">
-                        @if($film->jadwals && $film->jadwals->count())
-                            @foreach($film->jadwals as $jadwal)
+                        @php
+                            use Carbon\Carbon;
+                            // Filter jadwal hanya untuk hari ini
+                            $jadwalHariIni = $film->jadwals
+                                ? $film->jadwals->filter(fn($j) => Carbon::parse($j->tanggal)->isToday())
+                                : collect();
+                        @endphp
+
+                        @if($jadwalHariIni->count())
+                            @foreach($jadwalHariIni as $jadwal)
                                 <a href="{{ route('kursi', ['film'=>$film->id, 'jadwal'=>$jadwal->id]) }}" 
                                    class="px-3 py-1 text-sm bg-[#E7EEF8] border border-[#14274E] text-[#14274E] rounded-full hover:bg-[#14274E] hover:text-white transition duration-300">
                                    {{ date('H:i', strtotime($jadwal->jamtayang)) }}
                                 </a>
                             @endforeach
                         @else
-                            <span class="text-gray-400 text-xs">Belum ada jadwal</span>
+                            <span class="text-gray-400 text-xs">Tidak ada jadwal hari ini</span>
                         @endif
                     </div>
                 </div>

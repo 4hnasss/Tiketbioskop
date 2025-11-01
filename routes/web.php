@@ -43,3 +43,9 @@ Route::middleware('auth')->group(function () {
 
 });
 
+Route::middleware(['auth', 'admin'])->get('/admin/dashboard', function () {
+    return view('filament.pages.dashboard');
+});
+
+
+

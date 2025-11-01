@@ -72,7 +72,7 @@
                     </p>
                 </div>
                 <div class="mt-6">
-                    <a href="{{ route('transaksi') }}" 
+                    <a href="{{ route('transaksi.riwayat')}} " 
                        class="inline-flex items-center justify-center gap-2 w-full px-5 py-3 bg-[#4a90e2] text-white font-medium rounded-xl hover:bg-[#357abd] transition">
                         <i data-lucide="ticket" class="w-5 h-5"></i> Lihat Riwayat Pemesanan
                     </a>

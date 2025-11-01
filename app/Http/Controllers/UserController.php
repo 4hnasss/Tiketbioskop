@@ -109,25 +109,35 @@ public function detailfilm(Film $film, Request $request)
     }
 
     // Memproses login
-    public function login(Request $request)
-    {
-        // Validasi input
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+public function login(Request $request)
+{
+    // Validasi input
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
 
-        // Attempt login
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate(); // supaya aman
-            return redirect()->intended('/'); // redirect setelah login sukses
+    // Attempt login
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        // Ambil user yang sedang login
+        $user = Auth::user();
+
+        // Redirect berdasarkan role
+        if ($user->role === 'admin') {
+            return redirect()->intended('/admin'); // Filament dashboard
+        } else {
+            return redirect()->intended('/'); // Home user biasa
         }
-
-        // Jika gagal login
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->withInput();
     }
+
+    // Jika gagal login
+    return back()->withErrors([
+        'email' => 'Email atau password salah.',
+    ])->withInput();
+}
+
 
     public function profile()
     {
