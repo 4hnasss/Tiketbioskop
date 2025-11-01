@@ -131,7 +131,7 @@ public function login(Request $request)
         // Redirect berdasarkan role
         switch ($user->role) {
             case 'admin':
-                return redirect()->intended('/admin/dashboard');
+                return redirect()->intended('/admin');
             
             case 'kasir':
                 return redirect()->intended('/kasir/welcome');

@@ -37,11 +37,13 @@ Route::middleware('auth')->group(function () {
 // ------------------------
 // ROUTE KHUSUS ADMIN
 // ------------------------
+
+// Redirect /admin ke Filament dashboard dengan middleware
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('filament.pages.dashboard');
-    })->name('admin.dashboard');
+    Route::redirect('/admin', config('filament.path'))->name('admin.dashboard');
 });
+
+
 
 // ------------------------
 // ROUTE KHUSUS KASIR
