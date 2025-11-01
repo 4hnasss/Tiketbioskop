@@ -38,21 +38,24 @@ public function home()
     return view('pages.home', compact('filmPlayNow', 'filmUpcoming', 'filmRandom'));
     }
 
-        public function film()
-        {
- $today = now()->toDateString();
+public function film()
+{
+    $today = now()->toDateString();
 
     $filmPlayNow = Film::where('tanggalmulai', '<=', $today)
                         ->where('tanggalselesai', '>=', $today)
-                        ->with('jadwals')
+                        ->with(['jadwals' => function ($q) {
+                            $q->whereDate('tanggal', Carbon::today());
+                        }])
                         ->get();
 
     $filmUpcoming = Film::where('tanggalmulai', '>', $today)
                          ->with('jadwals')
                          ->get();
 
-            return view('pages.film', compact('filmPlayNow', 'filmUpcoming'));
-        }
+    return view('pages.film', compact('filmPlayNow', 'filmUpcoming'));
+}
+
 
 
 public function detailfilm(Film $film, Request $request)
