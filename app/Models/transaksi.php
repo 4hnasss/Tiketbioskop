@@ -12,7 +12,12 @@ class transaksi extends Model
         'tanggaltransaksi',
         'totalharga',
         'status',
-        'snap_token'
+        'snap_token',
+        'kursi',
+    ];
+
+    protected $casts = [
+        'kursi' => 'array',
     ];
 
     public function user(){

@@ -10,16 +10,16 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function Jadwal(jadwal $jadwal): void
+
+    protected function jadwal(jadwal $jadwal)
     {
-        // Jalankan command hapus jadwal setiap hari pukul 00:01
-        $jadwal->command('jadwal:hapus-lewat')->dailyAt('00:01');
+        // Jalankan setiap 5 menit
+        $jadwal->command('transaksi:cancel-expired')->everyFiveMinutes();
     }
 
     protected $commands = [
         \App\Console\Commands\HapusJadwalLewat::class,
     ];
-
 
     /**
      * Register the commands for the application.
@@ -30,4 +30,5 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
 }

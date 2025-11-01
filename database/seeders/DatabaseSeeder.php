@@ -43,8 +43,8 @@ class DatabaseSeeder extends Seeder
             'trailer' => 'rumah.mp4',
             'deskripsi' => 'Rumah untuk Alie adalah film drama keluarga Indonesia tahun 2025 yang disutradarai oleh Herwin Novianto berdasarkan novel berjudul sama karya Lenn Liu. Film produksi Falcon Pictures ini dibintangi oleh Anantya Kirana, Rizky Hanggono, dan Dito Darmawan. Rumah untuk Alie tayang perdana di bioskop pada tanggal 17 April 2025.',
             'status' => 'playnow',
-            'tanggalmulai' => '2025-10-21',
-            'tanggalselesai' => '2025-10-30',
+            'tanggalmulai' => '2025-10-30',
+            'tanggalselesai' => '2025-11-30',
             'poster' => 'Alie.jpg',
         ]);
 
@@ -55,8 +55,8 @@ class DatabaseSeeder extends Seeder
             'trailer' => 'home.mp4',
             'deskripsi' => 'Home Sweet Loan adalah film drama keluarga Indonesia tahun 2024 yang disutradarai oleh Sabrina Rochelle Kalangie dan dibintangi oleh Yunita Siregar, Derby Romero dan Fita Anggriani. Film ini diadaptasi dari novel berjudul sama karya Almira Bastari dan diproduksi oleh Visinema Pictures. Ceritanya berfokus pada Kaluna (Yunita Siregar), seorang pekerja kantoran dari keluarga sederhana yang bermimpi memiliki rumah sendiri. Sebagai anak bungsu, ia tinggal bersama orang tua, kakak-kakaknya yang sudah berkeluarga, dan keponakan, yang membuat rumahnya terasa ramai dan sering mengganggu kenyamanannya.',
             'status' => 'playnow',
-            'tanggalmulai' => '2025-10-22',
-            'tanggalselesai' => '2025-10-30',
+            'tanggalmulai' => '2025-10-30',
+            'tanggalselesai' => '2025-11-30',
             'poster' => 'home.jpg',
         ]);
 
@@ -67,8 +67,8 @@ class DatabaseSeeder extends Seeder
             'trailer' => 'pangepungan.mp4',
             'deskripsi' => 'Pengepungan di Bukit Duri adalah film laga menegangkan Indonesia tahun 2025 yang ditulis dan disutradarai oleh Joko Anwar. Film produksi Amazon MGM Studios serta Come and See Pictures ini dibintangi oleh Morgan Oey, Omara Esteghlal, dan Hana Malasan. Film ini berkisah mengenai Edwin, seorang guru pengganti yang ditugaskan mengajar di SMA Duri, sebuah sekolah dengan reputasi buruk sebagai tempat berkumpulnya siswa bermasalah.',
             'status' => 'playnow',
-            'tanggalmulai' => '2025-10-23',
-            'tanggalselesai' => '2025-10-30',
+            'tanggalmulai' => '2025-10-30',
+            'tanggalselesai' => '2025-11-30',
             'poster' => 'pangepungan.jpg',
         ]);
 
@@ -79,8 +79,8 @@ class DatabaseSeeder extends Seeder
             'trailer' => 'avatar.mp4',
             'deskripsi' => 'Avatar: Fire and Ash adalah sebuah film fiksi ilmiah epos Amerika tahun 2025 yang disutradarai, ditulis, diproduksi bersama, dan diedit oleh James Cameron.[2] Dan merupakan film ketiga dalam waralaba Avatar, serta sekuel dari Avatar: The Way of Water (2022). Cameron memproduksinya dengan Jon Landau. Cameron, Rick Jaffa, Amanda Silver, Josh Friedman dan Shane Salerno terlibat dalam proses penulisan. Pemeran yang terdiri dari Sam Worthington, Zoe Saldaña, Sigourney Weaver, Stephen Lang, Joel David Moore, CCH Pounder, Giovanni Ribisi, Dileep Rao, Matt Gerald, Kate Winslet, Cliff Curtis, Edie Falco, Brendan Cowell, Jemaine Clement, Britain Dalton, Trinity Jo-Li Bliss, Jack Champion, Bailey Bass dan Filip Geljo mengulangi peran mereka dari film sebelumnya, dengan Michelle Yeoh, David Thewlis, dan Oona Chaplin memerankan karakter baru. Cameron menyatakan bahwa Avatar: The Seed Bearer sedang dipertimbangkan sebagai kemungkinan judul utama.',
             'status' => 'playnow',
-            'tanggalmulai' => '2025-10-24',
-            'tanggalselesai' => '2025-10-30',
+            'tanggalmulai' => '2025-10-30',
+            'tanggalselesai' => '2025-11-30',
             'poster' => 'avatar.jpeg',
         ]);
 
@@ -91,8 +91,8 @@ class DatabaseSeeder extends Seeder
             'trailer' => 'janganpanggil.mp4',
             'deskripsi' => 'Jangan Panggil Mama Kafir adalah sebuah film drama Indonesia tahun 2025 yang disutradarai oleh Dyan Sunu Prastowo. Film tersebut dibintangi oleh Michelle Ziudith, Giorgino Abraham, Emmie Lemu, TJ Ruth, Prastiwi Dwiarti, Dira Sugandi, N Humaira Jahra, Kaneishia Yusuf, Runny Rudiyanti dan Gilbert Pattiruhu. Film tersebut dirilis pada 16 Oktober 2025.',
             'status' => 'playnow',
-            'tanggalmulai' => '2025-10-25',
-            'tanggalselesai' => '2025-10-30',
+            'tanggalmulai' => '2025-10-30',
+            'tanggalselesai' => '2025-11-30',
             'poster' => 'jangan.jpeg',
         ]);
 
@@ -103,7 +103,7 @@ class DatabaseSeeder extends Seeder
             'trailer' => 'andaiibu.mp4',
             'deskripsi' => 'Andai Ibu Tidak Menikah dengan Ayah adalah sebuah film drama keluarga Indonesia tahun 2025 yang disutradarai oleh Kuntz Agus. Film tersebut dibintangi oleh Amanda Rawles, Sha Ine Febriyanti, Bucek Depp, Eva Celia, Nayla Purnama dan Indian Akbar. Film tersebut dirilis pada 4 September 2025.',
             'status' => 'upcomming',
-            'tanggalmulai' => '2025-11-02',
+            'tanggalmulai' => '2025-10-30',
             'tanggalselesai' => '2025-11-10',
             'poster' => 'andaiibu.jpeg',
         ]);
@@ -171,7 +171,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -179,7 +179,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -187,55 +187,55 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'studio_id' => $studio2->id,
+            'tanggal' => '2025-10-30',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'studio_id' => $studio2->id,
+            'tanggal' => '2025-10-30',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'studio_id' => $studio2->id,
+            'tanggal' => '2025-10-30',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'studio_id' => $studio3->id,
+            'tanggal' => '2025-10-30',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'studio_id' => $studio3->id,
+            'tanggal' => '2025-10-30',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'studio_id' => $studio3->id,
+            'tanggal' => '2025-10-30',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -243,7 +243,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -251,7 +251,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -259,7 +259,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -267,7 +267,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -275,7 +275,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -283,7 +283,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-27',
+            'tanggal' => '2025-10-30',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -292,7 +292,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -300,7 +300,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -308,7 +308,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -316,7 +316,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -324,7 +324,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -332,7 +332,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -340,7 +340,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -348,7 +348,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -356,55 +356,55 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'tanggal' => '2025-11-01',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'studio_id' => $studio2->id,
+            'tanggal' => '2025-11-01',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'studio_id' => $studio2->id,
+            'tanggal' => '2025-11-01',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'studio_id' => $studio2->id,
+            'tanggal' => '2025-11-01',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'studio_id' => $studio3->id,
+            'tanggal' => '2025-11-01',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'studio_id' => $studio3->id,
+            'tanggal' => '2025-11-01',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-28',
+            'studio_id' => $studio3->id,
+            'tanggal' => '2025-11-01',
             'jamtayang' => '18:00:00',
         ]);
     }
