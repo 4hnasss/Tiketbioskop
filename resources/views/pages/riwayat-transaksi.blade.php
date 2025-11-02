@@ -66,6 +66,7 @@
                             ];
                             $s = $map[$transaksi->status] ?? ['bg'=>'bg-gray-100','text'=>'text-gray-700','label'=>$transaksi->status];
                         @endphp
+                        <p class="text-gray-600 text-xs"><strong>Kode Token:</strong>{{ ($transaksi->snap_token) }}</p>
 
                         <div class="mt-3 flex items-center justify-between">
                             <span class="inline-block px-2 py-0.5 text-xs font-medium rounded-full {{ $s['bg'] }} {{ $s['text'] }}">
@@ -80,17 +81,6 @@
                                     <a href="{{ route('transaksi.show', $transaksi->id) }}" 
                                        class="bg-[#1E56A0] text-white text-xs px-3 py-1.5 rounded-full hover:bg-[#14274E] transition">
                                         Lanjutkan Pembayaran
-                                    </a>
-                                @endif
-
-                                {{-- ✅ Tombol Lihat Tiket (hanya jika status settlement) --}}
-                                @if($transaksi->status === 'settlement')
-                                    <a href="{{ route('tiket', $transaksi->id) }}" 
-                                       class="bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-full hover:bg-emerald-600 transition inline-flex items-center gap-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
-                                        </svg>
-                                        Lihat Tiket
                                     </a>
                                 @endif
                             </div>

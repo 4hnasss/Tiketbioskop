@@ -402,40 +402,33 @@ public function pilihKursi(Film $film, Jadwal $jadwal)
 
 public function riwayatTransaksi(Request $request)
 {
-    // Ambil input filter
-    $search  = $request->input('search');
-    $tanggal = $request->input('tanggal');
-    $status  = $request->input('status');
-
-    // Query dasar: ambil semua transaksi + relasi
-    $query = \App\Models\Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])
-        ->orderBy('created_at', 'desc');
-
-    // Filter: pencarian (ID / nama user)
-    if (!empty($search)) {
-        $query->where(function ($q) use ($search) {
-            $q->where('id', 'like', "%{$search}%")
-              ->orWhereHas('user', function ($q2) use ($search) {
-                  $q2->where('name', 'like', "%{$search}%")
-                     ->orWhere('email', 'like', "%{$search}%");
+    $query = Transaksi::with(['user', 'jadwal.film']);
+    
+    // Filter pencarian (ID atau Nama User)
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('id', 'like', '%' . $search . '%')
+              ->orWhereHas('user', function($q2) use ($search) {
+                  $q2->where('name', 'like', '%' . $search . '%')
+                     ->orWhere('email', 'like', '%' . $search . '%');
               });
         });
     }
-
-    // Filter: tanggal transaksi
-    if (!empty($tanggal)) {
-        $query->whereDate('created_at', $tanggal);
+    
+    // Filter Snap Token
+    if ($request->filled('snap_token')) {
+        $query->where('snap_token', 'like', '%' . $request->snap_token . '%');
     }
-
-    // Filter: status pembayaran
-    if (!empty($status)) {
-        $query->where('status', $status);
+    
+    // Filter Status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
     }
-
-    // Ambil hasil
-    $transaksis = $query->paginate(10)->withQueryString();
-
-    // Kirim ke view
+    
+    // Order by terbaru
+    $transaksis = $query->orderBy('created_at', 'desc')->paginate(15);
+    
     return view('riwayat-transaksi', compact('transaksis'));
 }
 

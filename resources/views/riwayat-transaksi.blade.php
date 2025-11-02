@@ -32,21 +32,30 @@
 
         <!-- Filter -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <form method="GET" action="{{ route('riwayat-transaksi') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form method="GET" action="{{ route('riwayat-transaksi') }}" id="filterForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Pencarian</label>
-                    <input type="text" name="search" value="{{ request('search') }}" 
+                    <input type="text" 
+                           name="search" 
+                           value="{{ request('search') }}" 
                            placeholder="ID atau Nama User..."
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
-                    <input type="date" name="tanggal" value="{{ request('tanggal') }}"
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Snap Token</label>
+                    <input type="text" 
+                           name="snap_token" 
+                           id="snapTokenInput"
+                           value="{{ request('snap_token') }}"
+                           placeholder="Ketik untuk mencari..."
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    <p class="text-xs text-gray-500 mt-1">Otomatis mencari saat mengetik</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    <select name="status" 
+                            id="statusSelect"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                         <option value="">Semua Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="settlement" {{ request('status') == 'settlement' ? 'selected' : '' }}>Settlement</option>
@@ -70,53 +79,55 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Film</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kursi</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">ID</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Kode Token</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">User</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">Film</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Kursi</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Total</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Metode</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">Status</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($transaksis as $transaksi)
                             <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     #{{ $transaksi->id }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $transaksi->created_at->format('d/m/Y H:i') }}
+                                <td class="px-4 py-4 text-sm text-gray-500">
+                                    <div class="max-w-[120px] truncate" title="{{ $transaksi->snap_token }}">
+                                        {{ $transaksi->snap_token }}
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">
+                                <td class="px-4 py-4 text-sm text-gray-900">
                                     <div class="font-medium">{{ $transaksi->user->name ?? 'N/A' }}</div>
-                                    <div class="text-xs text-gray-500">{{ $transaksi->user->email ?? '' }}</div>
+                                    <div class="text-xs text-gray-500 truncate max-w-[150px]">{{ $transaksi->user->email ?? '' }}</div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">
+                                <td class="px-4 py-4 text-sm text-gray-900">
                                     <div class="font-medium">{{ Str::limit($transaksi->jadwal->film->judul ?? 'N/A', 30) }}</div>
                                     <div class="text-xs text-gray-500">
                                         {{ \Carbon\Carbon::parse($transaksi->jadwal->tanggal ?? now())->format('d/m/Y') }} - 
                                         {{ \Carbon\Carbon::parse($transaksi->jadwal->jamtayang ?? now())->format('H:i') }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                                     @php
                                         $kursiArray = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
                                         $jumlahKursi = is_array($kursiArray) ? count($kursiArray) : 0;
                                     @endphp
                                     <span class="font-medium text-gray-900">{{ $jumlahKursi }}</span> kursi
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     Rp {{ number_format($transaksi->totalharga, 0, ',', '.') }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">
                                         {{ strtoupper($transaksi->metode_pembayaran ?? 'N/A') }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-4 py-4 whitespace-nowrap">
                                     @if($transaksi->status == 'settlement')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             Settlement
@@ -135,7 +146,7 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm">
                                     <a href="{{ route('detail-transaksi', $transaksi->id) }}" 
                                     class="text-indigo-600 hover:text-indigo-900 font-medium transition">
                                         Detail
@@ -158,7 +169,7 @@
             
             @if($transaksis->hasPages())
                 <div class="px-6 py-4 border-t bg-gray-50">
-                    {{ $transaksis->links() }}
+                    {{ $transaksis->appends(request()->query())->links() }}
                 </div>
             @endif
         </div>
@@ -181,5 +192,30 @@
             </div>
         @endif
     </main>
+
+    <script>
+        // Auto-search untuk Snap Token
+        let snapTokenTimeout;
+        const snapTokenInput = document.getElementById('snapTokenInput');
+        const filterForm = document.getElementById('filterForm');
+        const statusSelect = document.getElementById('statusSelect');
+
+        // Auto-submit saat mengetik snap token
+        if (snapTokenInput) {
+            snapTokenInput.addEventListener('input', function() {
+                clearTimeout(snapTokenTimeout);
+                snapTokenTimeout = setTimeout(function() {
+                    filterForm.submit();
+                }, 500);
+            });
+        }
+
+        // Auto-submit saat memilih status
+        if (statusSelect) {
+            statusSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+        }
+    </script>
 </body>
 </html>

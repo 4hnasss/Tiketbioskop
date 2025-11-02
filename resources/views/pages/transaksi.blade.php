@@ -50,6 +50,10 @@
           <p class="font-semibold">Status</p>
           <p id="statusText">{{ ucfirst($transaksi->status) }}</p>
         </div>
+        <div class="grid grid-cols-2 py-2 border-b border-gray-200">
+          <p class="font-semibold">Kode Token</p>
+          <p id="statusText">{{ ucfirst($transaksi->snap_token) }}</p>
+        </div>
       </div>
 
       @if($transaksi->status !== 'settlement')

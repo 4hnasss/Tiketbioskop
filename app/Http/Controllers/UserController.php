@@ -476,30 +476,4 @@ public function riwayat()
 
     return view('pages.riwayat-transaksi', compact('transaksis'));
 }
-
-// ==========================
-// HALAMAN TIKET (SESUDAH BAYAR)
-// ==========================
-public function tiket($transaksiId)
-{
-    $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio'])
-        ->where('id', $transaksiId)
-        ->where('user_id', auth()->id())
-        ->firstOrFail();
-
-    // Pastikan status transaksi sudah selesai
-    if ($transaksi->status !== 'settlement') {
-        return redirect()->route('transaksi.riwayat')
-            ->with('error', 'Tiket hanya tersedia untuk transaksi yang sudah dibayar.');
-    }
-
-    // Decode kursi jika masih dalam format JSON string
-    $kursiArray = is_array($transaksi->kursi) 
-        ? $transaksi->kursi 
-        : json_decode($transaksi->kursi, true);
-
-    return view('pages.tiket', compact('transaksi', 'kursiArray'));
-}
-
-
 }
