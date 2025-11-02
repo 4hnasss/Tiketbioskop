@@ -75,7 +75,7 @@
             @php
                 $menus = [
                     ['route' => 'kasir.pesan-tiket', 'title' => 'Pesan Tiket', 'desc' => 'Buat pesanan tiket baru untuk pengunjung', 'color' => 'from-sky-400 to-indigo-500'],
-                    ['route' => 'kasir.riwayat-transaksi', 'title' => 'Riwayat Transaksi', 'desc' => 'Lihat semua transaksi pengunjung', 'color' => 'from-emerald-400 to-green-500'],
+                    ['route' => 'riwayat-transaksi', 'title' => 'Riwayat Transaksi', 'desc' => 'Lihat semua transaksi pengunjung', 'color' => 'from-emerald-400 to-green-500'],
                     ['route' => 'kasir.laporan-keuangan', 'title' => 'Laporan Keuangan', 'desc' => 'Lihat pendapatan dan statistik', 'color' => 'from-purple-400 to-pink-500'],
                 ];
             @endphp

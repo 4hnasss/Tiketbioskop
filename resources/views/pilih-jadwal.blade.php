@@ -36,7 +36,13 @@
                         </div>
                         <div>
                             <span class="text-gray-600">Harga:</span>
-                            <span class="font-medium ml-2 text-indigo-600">Rp {{ number_format($film->harga, 0, ',', '.') }}</span>
+                            <span class="font-medium ml-2 text-indigo-600">
+                                @if(isset($hargaMin) && isset($hargaMax) && $hargaMin != $hargaMax)
+                                    Rp {{ number_format($hargaMin, 0, ',', '.') }} - Rp {{ number_format($hargaMax, 0, ',', '.') }}
+                                @else
+                                    Rp {{ number_format($hargaMin ?? 20000, 0, ',', '.') }}
+                                @endif
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -63,7 +69,7 @@
                         </h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                             @foreach($jadwalGroup as $jadwal)
-                                <a href="{{ route('kasir.pilih-kursi', ['film' => $film->id, 'jadwal' => $jadwal->id]) }}" 
+                                <a href="{{ route('pilih-kursi', ['film' => $film->id, 'jadwal' => $jadwal->id]) }}" 
                                    class="border-2 border-indigo-200 rounded-lg p-4 text-center hover:border-indigo-500 hover:bg-indigo-50 transition group">
                                     <div class="text-2xl font-bold text-indigo-600 mb-1">
                                         {{ \Carbon\Carbon::parse($jadwal->jamtayang)->format('H:i') }}

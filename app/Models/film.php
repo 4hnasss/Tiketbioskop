@@ -18,9 +18,10 @@ class film extends Model
         'tanggalselesai',
     ];
 
-public function jadwals()
+public function jadwal()
 {
-    return $this->hasMany(Jadwal::class, 'film_id');
+    return $this->hasMany(Jadwal::class);
 }
+
 
 }

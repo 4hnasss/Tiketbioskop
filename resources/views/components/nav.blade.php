@@ -12,7 +12,7 @@
                 $navItems = [
                     ['route' => 'kasir.welcome', 'label' => 'Dashboard'],
                     ['route' => 'kasir.pesan-tiket', 'label' => 'Pesan Tiket'],
-                    ['route' => 'kasir.riwayat-transaksi', 'label' => 'Riwayat'],
+                    ['route' => 'riwayat-transaksi', 'label' => 'Riwayat'],
                     ['route' => 'kasir.laporan-keuangan', 'label' => 'Laporan'],
                 ];
             @endphp

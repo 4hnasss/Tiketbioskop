@@ -32,7 +32,7 @@
 
         <!-- Filter -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <form method="GET" action="{{ route('kasir.riwayat-transaksi') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form method="GET" action="{{ route('riwayat-transaksi') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Pencarian</label>
                     <input type="text" name="search" value="{{ request('search') }}" 
@@ -57,7 +57,7 @@
                     <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition">
                         Filter
                     </button>
-                    <a href="{{ route('kasir.riwayat-transaksi') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition">
+                    <a href="{{ route('riwayat-transaksi') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition">
                         Reset
                     </a>
                 </div>
@@ -136,8 +136,8 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <a href="{{ route('kasir.detail-transaksi', $transaksi->id) }}" 
-                                       class="text-indigo-600 hover:text-indigo-900 font-medium">
+                                    <a href="{{ route('detail-transaksi', $transaksi->id) }}" 
+                                    class="text-indigo-600 hover:text-indigo-900 font-medium transition">
                                         Detail
                                     </a>
                                 </td>

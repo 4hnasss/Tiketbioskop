@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Pilih Kursi | Flixora</title>
+  <title>Pilih Kursi | Kasir - Flixora</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gradient-to-b from-[#f7faff] to-[#dbe9ff] min-h-screen font-sans text-gray-800">
 @include('components.nav')
+
   <div class="text-center mt-10">
     <h1 class="text-2xl md:text-3xl font-bold tracking-wide text-[#0A1D56]">{{ strtoupper($film->judul) }}</h1>
     <p class="text-[#1E56A0] text-sm mt-1">
@@ -63,7 +64,7 @@
         <div class="border-b border-gray-200 pb-4 mb-4">
           <p class="text-sm font-semibold text-gray-800 mb-1">Kursi</p>
           <div id="seatsSummary" class="text-sm text-gray-600 min-h-6 mb-2"><span class="text-gray-500">-</span></div>
-          <div class="text-xs text-gray-600"><span id="seatCount">0</span> kursi × Rp <span id="pricePerSeat">{{ $hargaPerKursi }}</span></div>
+          <div class="text-xs text-gray-600"><span id="seatCount">0</span> kursi × Rp <span id="pricePerSeat">{{ number_format($hargaPerKursi, 0, ',', '.') }}</span></div>
         </div>
 
         <div class="flex justify-between items-center mb-6">
@@ -71,9 +72,9 @@
           <span class="text-2xl font-bold text-[#0A1D56]">Rp <span id="total">0</span></span>
         </div>
 
-        <a href="#" id="buyButton" class="block text-center border-2 border-[#0A1D56] text-[#0A1D56] font-semibold py-2 rounded-full opacity-50 cursor-not-allowed transition hover:bg-[#0A1D56] hover:text-white hover:opacity-100">
-          Bayar Sekarang
-        </a>
+        <button id="buyButton" class="w-full border-2 border-[#0A1D56] text-[#0A1D56] font-semibold py-2 rounded-full opacity-50 cursor-not-allowed transition hover:bg-[#0A1D56] hover:text-white hover:opacity-100">
+          Lanjutkan
+        </button>
       </div>
     </div>
   </div>
@@ -103,48 +104,41 @@
       grouped[row].push(k);
     });
 
-    // Render seats with split layout (left-aisle-right)
+    // Render seats with split layout
     Object.keys(grouped).sort().forEach(row => {
       const rowDiv = document.createElement("div");
       rowDiv.className = "flex items-center gap-4 mb-3";
 
-      // Row label (kiri)
       const labelLeft = document.createElement("span");
       labelLeft.className = "w-6 text-center font-bold text-gray-700";
       labelLeft.textContent = row;
       rowDiv.appendChild(labelLeft);
 
-      // Sort seats by number
       const sortedSeats = grouped[row].sort((a,b) => 
         parseInt(a.nomorkursi.slice(1)) - parseInt(b.nomorkursi.slice(1))
       );
 
-      // Split seats into left and right sections
       const totalSeats = sortedSeats.length;
       const halfPoint = Math.ceil(totalSeats / 2);
       
       const leftSeats = sortedSeats.slice(0, halfPoint);
       const rightSeats = sortedSeats.slice(halfPoint);
 
-      // Left section
       const leftBlock = document.createElement("div");
       leftBlock.className = "flex gap-2";
       leftSeats.forEach(k => leftBlock.appendChild(makeSeat(k)));
       rowDiv.appendChild(leftBlock);
 
-      // Aisle (jalan tengah)
       const aisle = document.createElement("div");
       aisle.className = "w-8 flex items-center justify-center";
       aisle.innerHTML = '<div class="w-1 h-6 bg-gray-300 rounded"></div>';
       rowDiv.appendChild(aisle);
 
-      // Right section
       const rightBlock = document.createElement("div");
       rightBlock.className = "flex gap-2";
       rightSeats.forEach(k => rightBlock.appendChild(makeSeat(k)));
       rowDiv.appendChild(rightBlock);
 
-      // Row label (kanan)
       const labelRight = document.createElement("span");
       labelRight.className = "w-6 text-center font-bold text-gray-700";
       labelRight.textContent = row;
@@ -159,7 +153,6 @@
       seat.textContent = k.nomorkursi.replace(/[A-Z]/, "");
       seat.className = "w-9 h-9 flex items-center justify-center text-white text-xs font-bold rounded-md border-2 cursor-pointer transition-all duration-200 shadow-sm";
       
-      // ✅ Warna yang lebih pas untuk setiap status
       if (k.status === "terjual") {
         seat.classList.add("bg-red-500", "border-red-600", "cursor-not-allowed", "opacity-80");
         seat.title = "Terjual";
@@ -170,7 +163,6 @@
         seat.classList.add("bg-gray-400", "border-gray-500", "cursor-not-allowed", "opacity-60");
         seat.title = "Tidak Tersedia";
       } else {
-        // Status: tersedia
         seat.classList.add("bg-blue-600", "border-blue-700", "hover:bg-blue-700", "hover:scale-110", "hover:shadow-md");
         seat.title = "Klik untuk memilih";
         seat.addEventListener("click", () => toggleSeat(k.nomorkursi, seat));
@@ -198,14 +190,14 @@
         selectedSeats.innerHTML = "<span class='text-gray-500'>Belum ada kursi yang dipilih</span>";
         seatsSummary.innerHTML = "<span class='text-gray-500'>-</span>";
         buyButton.classList.add("opacity-50", "cursor-not-allowed");
-        buyButton.style.pointerEvents = "none";
+        buyButton.disabled = true;
       } else {
         selectedSeats.innerHTML = chosen.sort().map(seat => 
           `<span class="px-2 py-1 bg-green-100 text-green-700 rounded-md text-xs font-semibold">${seat}</span>`
         ).join(' ');
         seatsSummary.textContent = chosen.sort().join(", ");
         buyButton.classList.remove("opacity-50", "cursor-not-allowed");
-        buyButton.style.pointerEvents = "auto";
+        buyButton.disabled = false;
       }
 
       seatCount.textContent = chosen.length;
@@ -224,21 +216,14 @@
       buyButton.textContent = "Memproses...";
       buyButton.classList.add("opacity-50");
 
-      console.log("=== DEBUG INFO ===");
-      console.log("Kursi terpilih:", chosen);
-      console.log("Harga per kursi:", seatPrice);
-      console.log("Jadwal ID:", jadwalId);
-
       try {
         const payload = {
           kursi: chosen,
           hargaPerKursi: seatPrice,
           jadwal_id: jadwalId
         };
-        
-        console.log("Payload yang dikirim:", payload);
 
-        const res = await fetch("/buat-pembayaran", {
+        const res = await fetch("{{ route('proses-booking') }}", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -249,27 +234,18 @@
           body: JSON.stringify(payload)
         });
 
-        console.log("Response status:", res.status);
-
-        const contentType = res.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          const text = await res.text();
-          console.error("Response bukan JSON:", text);
-          throw new Error("Server tidak mengembalikan JSON. Cek console untuk detail.");
-        }
-
         const data = await res.json();
-        console.log("Response data:", data);
 
+        
         if (data.success && data.transaksiId) {
           console.log("✅ Transaksi berhasil dibuat!");
-          window.location.href = `/transaksi/${data.transaksiId}`;
+          window.location.href = `/kasir/transaksi-kasir/${data.transaksiId}`;
         } else {
           console.error("❌ Transaksi gagal:", data);
-          alert(data.message || "Gagal membuat transaksi. Cek console untuk detail.");
+          alert(data.message || "Gagal membuat transaksi.");
           
           buyButton.disabled = false;
-          buyButton.textContent = "Bayar Sekarang";
+          buyButton.textContent = "Lanjutkan";
           buyButton.classList.remove("opacity-50");
         }
       } catch (err) {
@@ -277,12 +253,11 @@
         alert("Terjadi kesalahan: " + err.message);
         
         buyButton.disabled = false;
-        buyButton.textContent = "Bayar Sekarang";
+        buyButton.textContent = "Lanjutkan";
         buyButton.classList.remove("opacity-50");
       }
     });
 
-    // Initial state
     updateSummary();
   </script>
 </body>

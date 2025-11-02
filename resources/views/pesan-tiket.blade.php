@@ -41,26 +41,35 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($films as $film)
-                        <tr>
-                            <td class="px-6 py-4">
-                                @if($film->poster)
-                                    <img src="{{ asset('img/' . $film->poster) }}" alt="{{ $film->judul }}" class="w-16 h-20 object-cover rounded">
-                                @else
-                                    <div class="w-16 h-20 bg-gray-200 flex items-center justify-center text-gray-400 text-sm rounded">
-                                        No Image
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 font-medium text-gray-800">{{ $film->judul }}</td>
-                            <td class="px-6 py-4 text-gray-600">{{ $film->genre }}</td>
-                            <td class="px-6 py-4 text-gray-600">{{ $film->durasi }} menit</td>
-                            <td class="px-6 py-4 font-semibold text-indigo-600">Rp {{ number_format($film->harga, 0, ',', '.') }}</td>
-                            <td class="px-6 py-4">
-                                <a href="{{ route('kasir.pilih-jadwal', $film->id) }}" class="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 transition">Pilih Jadwal</a>
-                            </td>
-                        </tr>
-                        @endforeach
+@foreach($films as $film)
+<tr>
+    <td class="px-6 py-4">
+        @if($film->poster)
+            <img src="{{ asset('img/' . $film->poster) }}" alt="{{ $film->judul }}" class="w-16 h-20 object-cover rounded">
+        @else
+            <div class="w-16 h-20 bg-gray-200 flex items-center justify-center text-gray-400 text-sm rounded">
+                No Image
+            </div>
+        @endif
+    </td>
+    <td class="px-6 py-4 font-medium text-gray-800">{{ $film->judul }}</td>
+    <td class="px-6 py-4 text-gray-600">{{ $film->genre }}</td>
+    <td class="px-6 py-4 text-gray-600">{{ $film->durasi }} menit</td>
+    
+    {{-- Ambil harga dari relasi jadwal->harga --}}
+    <td class="px-6 py-4 font-semibold text-indigo-600">
+        @php
+            $harga = $film->jadwal->first()->harga->harga ?? 20000;
+        @endphp
+        Rp {{ number_format($harga, 0, ',', '.') }}
+    </td>
+
+    <td class="px-6 py-4">
+        <a href="{{ route('kasir.pilih-jadwal', $film->id) }}" class="text-white bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 transition">Pilih Jadwal</a>
+    </td>
+</tr>
+@endforeach
+
                     </tbody>
                 </table>
             </div>

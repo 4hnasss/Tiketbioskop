@@ -179,7 +179,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -187,7 +187,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -195,7 +195,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -203,7 +203,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -211,7 +211,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -219,7 +219,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -227,7 +227,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -235,7 +235,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -243,7 +243,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -251,7 +251,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -259,7 +259,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -267,7 +267,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -275,7 +275,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -283,7 +283,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -291,128 +291,128 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-30',
+            'tanggal' => '2025-10-02',
             'jamtayang' => '18:00:00',
         ]);
 
         // ==== JADWAL ====
         $jadwal = Jadwal::create([
-            'film_id' => $film1->id,
+            'film_id' => $film6->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film1->id,
+            'film_id' => $film6->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film1->id,
+            'film_id' => $film6->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film2->id,
-            'harga_id' => $hargaWeekday->id,
+            'film_id' => $film8->id,
+            'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film2->id,
-            'harga_id' => $hargaWeekday->id,
+            'film_id' => $film8->id,
+            'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film2->id,
-            'harga_id' => $hargaWeekday->id,
+            'film_id' => $film8->id,
+            'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film3->id,
+            'film_id' => $film7->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film3->id,
+            'film_id' => $film7->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film3->id,
+            'film_id' => $film7->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film4->id,
+            'film_id' => $film9->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film4->id,
+            'film_id' => $film9->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film4->id,
+            'film_id' => $film9->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '18:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film5->id,
+            'film_id' => $film10->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '10:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film5->id,
+            'film_id' => $film10->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '14:00:00',
         ]);
 
         $jadwal = Jadwal::create([
-            'film_id' => $film5->id,
+            'film_id' => $film10->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-01',
+            'tanggal' => '2025-11-02',
             'jamtayang' => '18:00:00',
         ]);
     }

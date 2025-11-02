@@ -53,9 +53,11 @@ private static function generateSeatsForJadwal($jadwal)
         return $this->belongsTo(transaksi::class);
     }
 
-    public function harga(){
-        return $this->belongsTo(harga::class);
+    public function harga()
+    {
+        return $this->belongsTo(Harga::class, 'harga_id');
     }
+
 
     public function film(){
         return $this->belongsTo(film::class);

@@ -45,13 +45,13 @@ public function film()
 
     $filmPlayNow = Film::where('tanggalmulai', '<=', $today)
                         ->where('tanggalselesai', '>=', $today)
-                        ->with(['jadwals' => function ($q) {
+                        ->with(['jadwal' => function ($q) {
                             $q->whereDate('tanggal', Carbon::today());
                         }])
                         ->get();
 
     $filmUpcoming = Film::where('tanggalmulai', '>', $today)
-                         ->with('jadwals')
+                         ->with('jadwal')
                          ->get();
 
     return view('pages.film', compact('filmPlayNow', 'filmUpcoming'));

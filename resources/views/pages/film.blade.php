@@ -62,8 +62,8 @@
 
                         {{-- Jam tayang (sudah difilter di Controller) --}}
                         <div class="mt-2 flex flex-wrap gap-2">
-                            @if($film->jadwals->count())
-                                @foreach($film->jadwals as $jadwal)
+                            @if($film->jadwal->count())
+                                @foreach($film->jadwal as $jadwal)
                                     <a href="{{ route('kursi', ['film'=>$film->id, 'jadwal'=>$jadwal->id]) }}" 
                                        class="px-3 py-1 text-sm bg-[#E7EEF8] border border-[#14274E] text-[#14274E] rounded-full hover:bg-[#14274E] hover:text-white transition duration-300">
                                        {{ date('H:i', strtotime($jadwal->jamtayang)) }}

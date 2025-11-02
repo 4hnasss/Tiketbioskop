@@ -55,57 +55,60 @@ class KasirController extends Controller
     /**
      * Halaman Pesan Tiket - Pilih Film
      */
-    public function pesanTiket()
-    {
-        $today = Carbon::today()->toDateString();
+public function pesanTiket()
+{
+    $today = Carbon::today()->toDateString();
 
-        // Film yang sedang tayang (sama dengan UserController)
-        $films = Film::where('tanggalmulai', '<=', $today)
-            ->where('tanggalselesai', '>=', $today)
-            ->orderBy('judul', 'asc')
-            ->get();
-        
-        return view('pesan-tiket', compact('films'));
-    }
+    // Ambil film + jadwal + harga
+    $films = Film::where('tanggalmulai', '<=', $today)
+        ->where('tanggalselesai', '>=', $today)
+        ->with(['jadwal.harga']) // muat relasi harga
+        ->orderBy('judul', 'asc')
+        ->get();
+    
+    return view('pesan-tiket', compact('films'));
+}
+
 
     /**
      * Pilih Jadwal Film
      */
-    public function pilihJadwal($filmId)
-    {
-        $film = Film::findOrFail($filmId);
-        
-        // Ambil jadwal yang masih available
-        $jadwals = Jadwal::where('film_id', $filmId)
-            ->where('tanggal', '>=', Carbon::today())
-            ->with(['studio', 'harga'])
-            ->orderBy('tanggal', 'asc')
-            ->orderBy('jamtayang', 'asc')
-            ->get();
-        
-        return view('pilih-jadwal', compact('film', 'jadwals'));
-    }
-
-    /**
-     * Pilih Kursi (sama dengan UserController)
-     */
-public function pilihkursi($film_id, $jadwal_id)
+public function pilihJadwal($filmId)
 {
-    $film = Film::findOrFail($film_id);
-    $jadwal = Jadwal::with(['film', 'harga', 'studio'])->findOrFail($jadwal_id);
+    $film = Film::findOrFail($filmId);
 
-    $kursi = Kursi::where('jadwal_id', $jadwal_id)
-        ->where('studio_id', $jadwal->studio_id)
+    // Ambil semua jadwal film (beserta studio dan harga)
+    $jadwals = Jadwal::where('film_id', $filmId)
+        ->where('tanggal', '>=', Carbon::today())
+        ->with(['studio', 'harga'])
+        ->orderBy('tanggal', 'asc')
+        ->orderBy('jamtayang', 'asc')
         ->get();
 
-    $hargaPerKursi = $jadwal->harga->harga ?? 20000;
+    // Ambil list harga dari relasi harga di jadwal
+    $hargaList = $jadwals->pluck('harga.harga')->filter();
+
+    // Hitung harga min dan max
+    $hargaMin = $hargaList->min();
+    $hargaMax = $hargaList->max();
+
+    return view('pilih-jadwal', compact('film', 'jadwals', 'hargaMin', 'hargaMax'));
+}
+
+public function pilihKursi(Film $film, Jadwal $jadwal)
+{
+    $kursi = Kursi::where('jadwal_id', $jadwal->id)
+        ->orderBy('nomorkursi')
+        ->get();
+
+    // ❌ SALAH - Mengambil dari studio
+    // $hargaPerKursi = $jadwal->studio->harga ?? 50000;
+
+    // ✅ BENAR - Mengambil dari relasi harga di jadwal
+    $hargaPerKursi = $jadwal->harga->harga ?? 50000;
 
     return view('pilih-kursi', compact('film', 'jadwal', 'kursi', 'hargaPerKursi'));
 }
-
-    /**
-     * Proses Pemesanan Tiket oleh Kasir (Pembayaran Cash)
-     */
     public function prosesBooking(Request $request)
     {
         try {
@@ -113,145 +116,357 @@ public function pilihkursi($film_id, $jadwal_id)
             Log::info('Request Data:', $request->all());
 
             $validated = $request->validate([
-                'film_id' => 'required|exists:films,id',
-                'jadwal_id' => 'required|exists:jadwals,id',
                 'kursi' => 'required|array|min:1',
                 'kursi.*' => 'required|string',
+                'jadwal_id' => 'required|integer|exists:jadwals,id',
                 'hargaPerKursi' => 'required|numeric|min:0',
-                'nama_pemesan' => 'required|string|max:255',
-                'email_pemesan' => 'nullable|email',
-                'no_hp_pemesan' => 'required|string|max:20',
             ]);
 
-            DB::beginTransaction();
+            if (!auth()->check()) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Anda harus login terlebih dahulu.'
+                ], 401);
+            }
 
-            $kursiList = $validated['kursi'];
+            $kursi = $validated['kursi'];
             $jadwalId = $validated['jadwal_id'];
             $hargaPerKursi = $validated['hargaPerKursi'];
 
-            // ✅ CEK: Pastikan kursi masih tersedia
-            foreach ($kursiList as $nomorKursi) {
+            // Cek ketersediaan kursi
+            foreach ($kursi as $nomorKursi) {
                 $kursiCheck = Kursi::where('jadwal_id', $jadwalId)
                     ->where('nomorkursi', $nomorKursi)
                     ->first();
                 
                 if (!$kursiCheck || $kursiCheck->status !== 'tersedia') {
-                    DB::rollBack();
-                    return back()->with('error', "Kursi {$nomorKursi} sudah tidak tersedia. Silakan pilih kursi lain.");
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Kursi {$nomorKursi} sudah tidak tersedia. Silakan pilih kursi lain."
+                    ], 400);
                 }
             }
 
-            $jadwal = Jadwal::with(['film', 'studio'])->findOrFail($jadwalId);
-            $totalHarga = count($kursiList) * $hargaPerKursi;
+            $jadwal = Jadwal::with(['film', 'studio'])->find($jadwalId);
+            if (!$jadwal) {
+                return response()->json([
+                    'success' => false, 
+                    'message' => 'Jadwal tidak ditemukan.'
+                ], 404);
+            }
 
-            // ✅ Simpan transaksi (status langsung settlement karena cash)
+            $totalHarga = count($kursi) * $hargaPerKursi;
+
+            // Simpan transaksi dengan status pending
             $transaksi = Transaksi::create([
-                'user_id' => Auth::id(), // Kasir yang input
+                'user_id' => auth()->id(),
                 'jadwal_id' => $jadwalId,
-                'kursi' => $kursiList,
+                'kursi' => $kursi,
                 'totalharga' => $totalHarga,
-                'status' => 'settlement', // Langsung settlement untuk cash
-                'metode_bayar' => 'cash',
+                'status' => 'pending',
                 'tanggaltransaksi' => now(),
             ]);
 
             Log::info('Transaksi Created:', ['id' => $transaksi->id]);
 
-            // ✅ UPDATE: Set status kursi jadi "terjual" langsung
-            foreach ($kursiList as $nomorKursi) {
+            // Set status kursi jadi "dipesan" (reserved)
+            foreach ($kursi as $nomorKursi) {
                 Kursi::where('jadwal_id', $jadwalId)
                     ->where('nomorkursi', $nomorKursi)
-                    ->update(['status' => 'terjual']);
+                    ->update(['status' => 'dipesan']);
                 
-                Log::info('Kursi sold:', [
+                Log::info('Kursi reserved:', [
                     'nomor' => $nomorKursi,
-                    'status' => 'terjual'
+                    'status' => 'dipesan'
                 ]);
             }
 
-            // ✅ Simpan ke tabel keuangan
-            Keuangan::create([
-                'transaksi_id' => $transaksi->id,
-                'totalpemesanan' => $totalHarga,
-                'tanggal' => Carbon::today(),
+            Log::info('=== Booking Berhasil ===');
+
+            return response()->json([
+                'success' => true,
+                'transaksiId' => $transaksi->id,
+                'message' => 'Transaksi berhasil dibuat'
             ]);
-
-            Log::info('Keuangan Created:', [
-                'transaksi_id' => $transaksi->id,
-                'total' => $totalHarga
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('detail-transaksi', $transaksi->id)
-                ->with('success', 'Transaksi berhasil! Tiket telah dicetak.');
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack();
-            Log::error('Validation Error:', $e->errors());
-            return back()->withErrors($e->errors())->withInput();
 
         } catch (\Exception $e) {
-            DB::rollBack();
             Log::error('=== Error Proses Booking ===');
             Log::error('Error Message: ' . $e->getMessage());
             Log::error('Error Trace: ' . $e->getTraceAsString());
             
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    /**
-     * Detail Transaksi
-     */
     public function detailTransaksi($id)
     {
+        try {
+            $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])
+                ->findOrFail($id);
+            
+            Log::info('=== Kasir Detail Transaksi ===', [
+                'id' => $transaksi->id,
+                'status' => $transaksi->status
+            ]);
+
+            // Generate snap token jika belum ada dan status masih pending
+            if (in_array($transaksi->status, ['pending', 'challenge']) && empty($transaksi->snap_token)) {
+                try {
+                    \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+                    \Midtrans\Config::$isProduction = false;
+                    \Midtrans\Config::$isSanitized = true;
+                    \Midtrans\Config::$is3ds = true;
+                    
+                    $orderId = 'FLX-KASIR-' . $transaksi->id . '-' . time();
+                    
+                    Log::info('Generating snap token with order_id: ' . $orderId);
+                    
+                    $params = [
+                        'transaction_details' => [
+                            'order_id' => $orderId,
+                            'gross_amount' => (int) $transaksi->totalharga,
+                        ],
+                        'customer_details' => [
+                            'first_name' => $transaksi->user->name ?? 'Kasir',
+                            'email' => $transaksi->user->email ?? 'kasir@flixora.com',
+                        ],
+                        'item_details' => [
+                            [
+                                'id' => 'TICKET-' . $transaksi->jadwal_id,
+                                'price' => (int) ($transaksi->totalharga / count($transaksi->kursi)),
+                                'quantity' => count($transaksi->kursi),
+                                'name' => $transaksi->jadwal->film->judul ?? 'Movie Ticket',
+                            ]
+                        ],
+                    ];
+                    
+                    $snapToken = \Midtrans\Snap::getSnapToken($params);
+                    $transaksi->snap_token = $snapToken;
+                    $transaksi->save();
+                    
+                    Log::info('Snap token generated successfully');
+                } catch (\Exception $e) {
+                    Log::error('Failed to generate snap token: ' . $e->getMessage());
+                }
+            }
+            
+            return view('transaksi-kasir', compact('transaksi'));
+            
+        } catch (\Exception $e) {
+            Log::error('=== Error in detailTransaksi ===');
+            Log::error('Message: ' . $e->getMessage());
+            
+            return redirect()->route('pesan-tiket')
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function prosesPembayaranCash(Request $request, $id)
+    {
+        try {
+            $transaksi = Transaksi::findOrFail($id);
+            
+            if ($transaksi->status !== 'pending') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaksi sudah diproses sebelumnya'
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            // Update status transaksi ke settlement
+            $transaksi->status = 'settlement';
+            $transaksi->metode_pembayaran = 'cash';
+            $transaksi->save();
+
+            // Update status kursi jadi terjual
+            $kursiList = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
+            
+            foreach ($kursiList as $nomorKursi) {
+                Kursi::where('jadwal_id', $transaksi->jadwal_id)
+                    ->where('nomorkursi', $nomorKursi)
+                    ->update(['status' => 'terjual']);
+            }
+
+            DB::commit();
+
+            Log::info('Pembayaran Cash Berhasil', [
+                'transaksi_id' => $id,
+                'kursi' => $kursiList
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran berhasil!'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error pembayaran cash: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function updateStatusPembayaran(Request $request, $id)
+{
+    try {
+        Log::info('=== Update Status Request ===', [
+            'transaksi_id' => $id,
+            'request_data' => $request->all()
+        ]);
+
+        $transaksi = Transaksi::findOrFail($id);
+        $oldStatus = $transaksi->status;
+        $newStatus = $request->status;
+        
+        // Validasi input
+        if (!$newStatus) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status tidak boleh kosong'
+            ], 400);
+        }
+        
+        DB::beginTransaction();
+
+        $transaksi->status = $newStatus;
+        $transaksi->metode_pembayaran = $request->metode_pembayaran ?? $transaksi->metode_pembayaran;
+        $transaksi->save();
+
+        Log::info('Status transaksi updated', [
+            'transaksi_id' => $id,
+            'old_status' => $oldStatus,
+            'new_status' => $newStatus,
+            'metode_pembayaran' => $transaksi->metode_pembayaran
+        ]);
+
+        // Update status kursi ketika pembayaran settlement
+        if ($newStatus === 'settlement' && $oldStatus !== 'settlement') {
+            $kursiList = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
+            
+            foreach ($kursiList as $nomorKursi) {
+                Kursi::where('jadwal_id', $transaksi->jadwal_id)
+                    ->where('nomorkursi', $nomorKursi)
+                    ->update(['status' => 'terjual']);
+            }
+            
+            Log::info('Kursi status updated to terjual', [
+                'transaksi_id' => $id,
+                'kursi' => $kursiList
+            ]);
+        }
+        
+        // Jika transaksi dibatalkan, kembalikan kursi jadi tersedia
+        if ($newStatus === 'batal' && in_array($oldStatus, ['pending', 'challenge'])) {
+            $kursiList = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
+            
+            foreach ($kursiList as $nomorKursi) {
+                Kursi::where('jadwal_id', $transaksi->jadwal_id)
+                    ->where('nomorkursi', $nomorKursi)
+                    ->update(['status' => 'tersedia']);
+            }
+            
+            Log::info('Kursi status updated to tersedia (cancelled)', [
+                'transaksi_id' => $id,
+                'kursi' => $kursiList
+            ]);
+        }
+
+        DB::commit();
+
+        Log::info('✅ Update status berhasil');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diupdate'
+        ]);
+        
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('❌ Error updating status: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+public function riwayatTransaksi(Request $request)
+{
+    // Ambil input filter
+    $search  = $request->input('search');
+    $tanggal = $request->input('tanggal');
+    $status  = $request->input('status');
+
+    // Query dasar: ambil semua transaksi + relasi
+    $query = \App\Models\Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])
+        ->orderBy('created_at', 'desc');
+
+    // Filter: pencarian (ID / nama user)
+    if (!empty($search)) {
+        $query->where(function ($q) use ($search) {
+            $q->where('id', 'like', "%{$search}%")
+              ->orWhereHas('user', function ($q2) use ($search) {
+                  $q2->where('name', 'like', "%{$search}%")
+                     ->orWhere('email', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    // Filter: tanggal transaksi
+    if (!empty($tanggal)) {
+        $query->whereDate('created_at', $tanggal);
+    }
+
+    // Filter: status pembayaran
+    if (!empty($status)) {
+        $query->where('status', $status);
+    }
+
+    // Ambil hasil
+    $transaksis = $query->paginate(10)->withQueryString();
+
+    // Kirim ke view
+    return view('riwayat-transaksi', compact('transaksis'));
+}
+
+
+    /**
+ * Show detail transaksi (Read-only view)
+ */
+public function showDetailTransaksi($id)
+{
+    try {
         $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])
             ->findOrFail($id);
         
-        // Decode kursi jika masih dalam format JSON string
-        $kursiArray = is_array($transaksi->kursi) 
-            ? $transaksi->kursi 
-            : json_decode($transaksi->kursi, true);
+        Log::info('=== View Detail Transaksi ===', [
+            'id' => $transaksi->id,
+            'status' => $transaksi->status,
+            'user' => $transaksi->user->name ?? 'N/A'
+        ]);
+
+        return view('detail-transaksi', compact('transaksi'));
         
-        return view('detail-transaksi', compact('transaksi', 'kursiArray'));
+    } catch (\Exception $e) {
+        Log::error('=== Error in showDetailTransaksi ===');
+        Log::error('Message: ' . $e->getMessage());
+        
+        return redirect()->route('riwayat-transaksi')
+            ->with('error', 'Transaksi tidak ditemukan.');
     }
-
-    /**
-     * Riwayat Transaksi Semua User
-     */
-    public function riwayatTransaksi(Request $request)
-    {
-        $query = Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])
-            ->orderBy('created_at', 'desc');
-
-        // Filter berdasarkan status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter berdasarkan tanggal
-        if ($request->filled('tanggal')) {
-            $query->whereDate('created_at', $request->tanggal);
-        }
-
-        // Filter berdasarkan pencarian
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('id', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($userQ) use ($search) {
-                      $userQ->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        $transaksis = $query->paginate(20);
-
-        return view('riwayat-transaksi', compact('transaksis'));
-    }
-
+}
     /**
      * Laporan Keuangan (dari tabel keuangan)
      */
