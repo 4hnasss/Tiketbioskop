@@ -64,8 +64,10 @@ Route::middleware(['auth', 'kasir'])->prefix('kasir')->group(function () {
     Route::get('/kasir/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])
         ->name('riwayat-transaksi');
 
-    // Detail Transaksi (READ ONLY)
     Route::get('/detail-transaksi/{id}', [KasirController::class, 'showDetailTransaksi'])->name('detail-transaksi');
+    
+    // Cetak Tiket
+    Route::get('/cetak-tiket/{transaksiId}/{kursi}', [KasirController::class, 'cetakTiket'])->name('cetak-tiket');
 
 
     // Laporan Keuangan

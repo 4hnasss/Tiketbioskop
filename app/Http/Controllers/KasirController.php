@@ -18,39 +18,37 @@ class KasirController extends Controller
     /**
      * Tampilkan halaman welcome untuk kasir
      */
-    public function welcome()
-    {
-        $user = Auth::user();
-        
-        // Statistik hari ini dari tabel keuangan
-        $today = Carbon::today();
-        
-        // Total transaksi hari ini
-        $transaksiHariIni = Keuangan::whereDate('tanggal', $today)->count();
-        
-        // Total pendapatan hari ini
-        $pendapatanHariIni = Keuangan::whereDate('tanggal', $today)
-            ->sum('totalpemesanan');
-        
-        // Tiket terjual hari ini (hitung dari kursi dalam transaksi)
-        $tiketTerjualHariIni = Transaksi::whereHas('keuangan', function($q) use ($today) {
-                $q->whereDate('tanggal', $today);
-            })
-            ->get()
-            ->sum(function($transaksi) {
-                $kursi = is_array($transaksi->kursi) 
-                    ? $transaksi->kursi 
-                    : json_decode($transaksi->kursi, true);
-                return is_array($kursi) ? count($kursi) : 0;
-            });
-        
-        return view('welcome', compact(
-            'user',
-            'transaksiHariIni',
-            'pendapatanHariIni',
-            'tiketTerjualHariIni'
-        ));
-    }
+public function welcome()
+{
+    $user = Auth::user();
+    
+    // Statistik hari ini dari tabel transaksi
+    $today = Carbon::today();
+    
+    // Total transaksi hari ini
+    $transaksiHariIni = Transaksi::whereDate('tanggaltransaksi', $today)->count();
+    
+    // Total pendapatan hari ini
+    $pendapatanHariIni = Transaksi::whereDate('tanggaltransaksi', $today)
+        ->sum('totalharga');
+    
+    // Tiket terjual hari ini (hitung dari kursi dalam transaksi)
+    $tiketTerjualHariIni = Transaksi::whereDate('tanggaltransaksi', $today)
+        ->get()
+        ->sum(function($transaksi) {
+            $kursi = is_array($transaksi->kursi) 
+                ? $transaksi->kursi 
+                : json_decode($transaksi->kursi, true);
+            return is_array($kursi) ? count($kursi) : 0;
+        });
+    
+    return view('welcome', compact(
+        'user',
+        'transaksiHariIni',
+        'pendapatanHariIni',
+        'tiketTerjualHariIni'
+    ));
+}
 
     /**
      * Halaman Pesan Tiket - Pilih Film
@@ -467,60 +465,99 @@ public function showDetailTransaksi($id)
             ->with('error', 'Transaksi tidak ditemukan.');
     }
 }
+
+/**
+ * Cetak tiket untuk kursi tertentu
+ */
+public function cetakTiket($transaksiId, $kursi)
+{
+    try {
+        $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])
+            ->findOrFail($transaksiId);
+        
+        // Cek apakah transaksi sudah settlement
+        if ($transaksi->status !== 'settlement') {
+            return redirect()->route('detail-transaksi', $transaksiId)
+                ->with('error', 'Tiket hanya bisa dicetak untuk transaksi yang sudah settlement.');
+        }
+        
+        // Cek apakah kursi ada dalam transaksi
+        $kursiArray = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
+        
+        if (!in_array($kursi, $kursiArray)) {
+            return redirect()->route('detail-transaksi', $transaksiId)
+                ->with('error', 'Kursi tidak ditemukan dalam transaksi ini.');
+        }
+        
+        // Hitung harga per kursi
+        $hargaPerKursi = count($kursiArray) > 0 ? $transaksi->totalharga / count($kursiArray) : 0;
+        
+        Log::info('=== Cetak Tiket ===', [
+            'transaksi_id' => $transaksiId,
+            'kursi' => $kursi
+        ]);
+
+        return view('cetak-tiket', compact('transaksi', 'kursi', 'hargaPerKursi'));
+        
+    } catch (\Exception $e) {
+        Log::error('=== Error in cetakTiket ===');
+        Log::error('Message: ' . $e->getMessage());
+        
+        return redirect()->route('detail-transaksi', $transaksiId)
+            ->with('error', 'Gagal membuat tiket.');
+    }
+}
     /**
      * Laporan Keuangan (dari tabel keuangan)
      */
     public function laporanKeuangan(Request $request)
-    {
-        // Default: tampilkan data 7 hari terakhir
-        $tanggalMulai = $request->filled('tanggal_mulai') 
-            ? Carbon::parse($request->tanggal_mulai) 
-            : Carbon::today()->subDays(6);
-        
-        $tanggalSelesai = $request->filled('tanggal_selesai') 
-            ? Carbon::parse($request->tanggal_selesai) 
-            : Carbon::today();
+{
+    // Default: tampilkan data 7 hari terakhir
+    $tanggalMulai = $request->filled('tanggal_mulai') 
+        ? Carbon::parse($request->tanggal_mulai) 
+        : Carbon::today()->subDays(6);
+    
+    $tanggalSelesai = $request->filled('tanggal_selesai') 
+        ? Carbon::parse($request->tanggal_selesai) 
+        : Carbon::today();
 
-        // Pendapatan per hari dari tabel keuangan
-        $pendapatanPerHari = Keuangan::selectRaw('DATE(tanggal) as tanggal, SUM(totalpemesanan) as total, COUNT(*) as jumlah_transaksi')
-            ->whereBetween('tanggal', [$tanggalMulai->startOfDay(), $tanggalSelesai->endOfDay()])
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
-            ->get();
+    // Pendapatan per hari dari tabel transaksi
+    $pendapatanPerHari = Transaksi::selectRaw('DATE(tanggaltransaksi) as tanggal, SUM(totalharga) as total, COUNT(*) as jumlah_transaksi')
+        ->whereBetween('tanggaltransaksi', [$tanggalMulai->startOfDay(), $tanggalSelesai->endOfDay()])
+        ->where('status', 'settlement')
+        ->groupBy('tanggal')
+        ->orderBy('tanggal', 'desc')
+        ->get();
 
-        // Total keseluruhan
-        $totalPendapatan = $pendapatanPerHari->sum('total');
-        $totalTransaksi = $pendapatanPerHari->sum('jumlah_transaksi');
+    // Total keseluruhan
+    $totalPendapatan = $pendapatanPerHari->sum('total');
+    $totalTransaksi = $pendapatanPerHari->sum('jumlah_transaksi');
 
-        // Film terlaris (dari transaksi yang ada di keuangan)
-        $filmTerlaris = Transaksi::selectRaw('jadwal_id, COUNT(*) as jumlah_transaksi, SUM(totalharga) as total_pendapatan')
-            ->with(['jadwal.film'])
-            ->whereHas('keuangan', function($q) use ($tanggalMulai, $tanggalSelesai) {
-                $q->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai]);
-            })
-            ->where('status', 'settlement')
-            ->groupBy('jadwal_id')
-            ->orderBy('jumlah_transaksi', 'desc')
-            ->limit(10)
-            ->get();
+    // Film terlaris
+    $filmTerlaris = Transaksi::selectRaw('jadwal_id, COUNT(*) as jumlah_transaksi, SUM(totalharga) as total_pendapatan')
+        ->with(['jadwal.film'])
+        ->whereBetween('tanggaltransaksi', [$tanggalMulai->startOfDay(), $tanggalSelesai->endOfDay()])
+        ->where('status', 'settlement')
+        ->groupBy('jadwal_id')
+        ->orderBy('jumlah_transaksi', 'desc')
+        ->limit(10)
+        ->get();
 
-        // Metode pembayaran
-        $metodePembayaran = Transaksi::selectRaw('metode_pembayaran, COUNT(*) as jumlah, SUM(totalharga) as total')
-            ->whereHas('keuangan', function($q) use ($tanggalMulai, $tanggalSelesai) {
-                $q->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai]);
-            })
-            ->where('status', 'settlement')
-            ->groupBy('metode_pembayaran')
-            ->get();
+    // Metode pembayaran
+    $metodePembayaran = Transaksi::selectRaw('metode_pembayaran, COUNT(*) as jumlah, SUM(totalharga) as total')
+        ->whereBetween('tanggaltransaksi', [$tanggalMulai->startOfDay(), $tanggalSelesai->endOfDay()])
+        ->where('status', 'settlement')
+        ->groupBy('metode_pembayaran')
+        ->get();
 
-        return view('laporan-keuangan', compact(
-            'pendapatanPerHari',
-            'totalPendapatan',
-            'totalTransaksi',
-            'filmTerlaris',
-            'metodePembayaran',
-            'tanggalMulai',
-            'tanggalSelesai'
-        ));
-    }
+    return view('laporan-keuangan', compact(
+        'pendapatanPerHari',
+        'totalPendapatan',
+        'totalTransaksi',
+        'filmTerlaris',
+        'metodePembayaran',
+        'tanggalMulai',
+        'tanggalSelesai'
+    ));
+}
 }

@@ -57,7 +57,7 @@
               </svg>
               <div class="flex-1">
                 <p class="text-sm text-gray-600">Studio</p>
-                <p class="font-semibold text-gray-900">{{ $transaksi->jadwal->studio->namastudio }}</p>
+                <p class="font-semibold text-gray-900">{{ $transaksi->jadwal->studio->nama_studio }}</p>
               </div>
             </div>
 
