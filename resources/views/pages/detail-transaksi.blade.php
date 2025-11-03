@@ -72,7 +72,7 @@
                     </div>
                     <div>
                         <p class="text-gray-600">Tanggal Pemesanan</p>
-                        <p class="font-semibold text-[#14274E]">{{($transaksi->tanggal) }}</p>
+                        <p class="font-semibold text-[#14274E]">{{($transaksi->tanggaltransaksi) }}</p>
                     </div>
                     @if($transaksi->metode_pembayaran)
                     <div>
