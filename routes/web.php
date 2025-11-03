@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/transaksi/{id}', [UserController::class, 'show'])->name('transaksi.show');
     Route::post('/transaksi/{id}/update-status', [UserController::class, 'updateStatus'])->name('transaksi.update');
     Route::get('/riwayat-transaksi', [UserController::class, 'riwayat'])->name('transaksi.riwayat');
+    Route::get('/detail-transaksi/{id}', [UserController::class, 'detailTransaksi'])->name('transaksidetail');
 });
 
 // ------------------------
@@ -55,19 +56,19 @@ Route::middleware(['auth', 'kasir'])->prefix('kasir')->group(function () {
     Route::get('/pesan-tiket/kursi/{film}/{jadwal}', [KasirController::class, 'pilihKursi'])->name('pilih-kursi');
     Route::post('/pesan-tiket/proses', [KasirController::class, 'prosesBooking'])->name('proses-booking');
     
-    // Transaksi
+   // Transaksi
     Route::get('/transaksi-kasir/{id}', [KasirController::class, 'detailTransaksi'])->name('transaksi-kasir');
     Route::post('/transaksi-kasir/{id}/pembayaran-cash', [KasirController::class, 'prosesPembayaranCash'])->name('pembayaran-cash');
     Route::post('/transaksi-kasir/{id}/update-status', [KasirController::class, 'updateStatusPembayaran'])->name('update-status-pembayaran');
     
+    // ✅ Tiket Routes
+    Route::get('/riwayat-tiket', [KasirController::class, 'riwayatTiket'])->name('riwayat-tiket-kasir');
+    Route::get('/tiket/{id}', [KasirController::class, 'detailTiket'])->name('detail-tiket-kasir');
+
     Route::get('/kasir/riwayat-transaksi', [KasirController::class, 'riwayatTransaksi'])
         ->name('riwayat-transaksi');
 
     Route::get('/detail-transaksi/{id}', [KasirController::class, 'showDetailTransaksi'])->name('detail-transaksi');
-    
-    // Cetak Tiket
-    Route::get('/cetak-tiket/{transaksiId}/{kursi}', [KasirController::class, 'cetakTiket'])->name('cetak-tiket');
-
 
     // Laporan Keuangan
     Route::get('/laporan-keuangan', [KasirController::class, 'laporanKeuangan'])->name('kasir.laporan-keuangan');

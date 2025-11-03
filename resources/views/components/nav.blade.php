@@ -8,14 +8,15 @@
 
         {{-- Menu Navigasi --}}
         <div class="hidden md:flex items-center space-x-6 font-serif">
-            @php
-                $navItems = [
-                    ['route' => 'kasir.welcome', 'label' => 'Dashboard'],
-                    ['route' => 'kasir.pesan-tiket', 'label' => 'Pesan Tiket'],
-                    ['route' => 'riwayat-transaksi', 'label' => 'Riwayat'],
-                    ['route' => 'kasir.laporan-keuangan', 'label' => 'Laporan'],
-                ];
-            @endphp
+@php
+    $navItems = [
+        ['route' => 'kasir.welcome', 'label' => 'Dashboard'],
+        ['route' => 'kasir.pesan-tiket', 'label' => 'Pesan Tiket'],
+        ['route' => 'riwayat-transaksi', 'label' => 'Riwayat'],
+        ['route' => 'kasir.laporan-keuangan', 'label' => 'Laporan'],
+        ['route' => 'riwayat-tiket-kasir', 'label' => 'Tiket'],  // ✅ UBAH INI: dari 'riwayat-tiket' ke 'riwayat-tiket-kasir'
+    ];
+@endphp
 
             @foreach ($navItems as $item)
                 <a href="{{ route($item['route']) }}"

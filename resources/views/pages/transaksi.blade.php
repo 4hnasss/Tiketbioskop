@@ -24,42 +24,50 @@
         </div>
         <div class="grid grid-cols-2 py-1 border-b border-gray-200">
           <p class="font-semibold">Jadwal</p>
-          <p>{{ $transaksi->jadwal->tanggal }} {{ $transaksi->jadwal->jam_tayang }}</p>
+          <p>{{ $transaksi->jadwal->tanggal }} {{ $transaksi->jadwal->jamtayang }}</p>
         </div>
         <div class="grid grid-cols-2 py-1 border-b border-gray-200">
           <p class="font-semibold">Studio</p>
           <p>{{ $transaksi->jadwal->studio->nama_studio }}</p>
         </div>
-<div class="grid grid-cols-2 py-1 border-b border-gray-200">
-  <p class="font-semibold">Kursi</p>
-  <p>
-    {{-- ✅ Karena $transaksi->kursi sudah array, langsung join --}}
-    @if(is_array($transaksi->kursi))
-      {{ implode(', ', $transaksi->kursi) }}
-    @else
-      {{ $transaksi->kursi }}
-    @endif
-  </p>
-</div>
-
+        <div class="grid grid-cols-2 py-1 border-b border-gray-200">
+          <p class="font-semibold">Kursi</p>
+          <p>
+            @if(is_array($transaksi->kursi))
+              {{ implode(', ', $transaksi->kursi) }}
+            @else
+              {{ $transaksi->kursi }}
+            @endif
+          </p>
+        </div>
         <div class="grid grid-cols-2 py-2 border-b border-gray-200 mt-2">
           <p class="font-semibold">Total Harga</p>
           <p>Rp {{ number_format($transaksi->totalharga, 0, ',', '.') }}</p>
         </div>
         <div class="grid grid-cols-2 py-2 border-b border-gray-200">
           <p class="font-semibold">Status</p>
-          <p id="statusText">{{ ucfirst($transaksi->status) }}</p>
-        </div>
-        <div class="grid grid-cols-2 py-2 border-b border-gray-200">
-          <p class="font-semibold">Kode Token</p>
-          <p id="statusText">{{ ucfirst($transaksi->snap_token) }}</p>
+          <p id="statusText" class="font-semibold {{ $transaksi->status === 'settlement' ? 'text-green-600' : 'text-yellow-600' }}">
+            {{ ucfirst($transaksi->status) }}
+          </p>
         </div>
       </div>
 
       @if($transaksi->status !== 'settlement')
         <button id="payNow" class="w-full bg-[#0B1B3F] text-white py-2.5 rounded-md font-semibold hover:bg-[#152a6d] transition">
-          Bayar
+          Bayar Sekarang
         </button>
+      @else
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+          <div class="flex items-center justify-center gap-2 text-green-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="font-semibold">Pembayaran Berhasil!</span>
+          </div>
+        </div>
+        <a href="/riwayat-transaksi" class="w-full inline-block bg-[#0B1B3F] text-white py-2.5 rounded-md font-semibold hover:bg-[#152a6d] transition">
+          Lihat Riwayat Transaksi
+        </a>
       @endif
     </div>
   </main>
@@ -73,9 +81,21 @@
     if (payBtn) {
       payBtn.addEventListener("click", function () {
         snap.pay(snapToken, {
-          onSuccess: function (result) { updateStatus('settlement', result.payment_type); },
-          onPending: function () { updateStatus('pending'); },
-          onError: function () { alert("Pembayaran gagal."); }
+          onSuccess: function (result) { 
+            console.log('Payment success:', result);
+            updateStatus('settlement', result.payment_type); 
+          },
+          onPending: function (result) { 
+            console.log('Payment pending:', result);
+            updateStatus('pending'); 
+          },
+          onError: function (result) { 
+            console.error('Payment error:', result);
+            alert("Pembayaran gagal. Silakan coba lagi."); 
+          },
+          onClose: function() {
+            console.log('Payment popup closed');
+          }
         });
       });
     }
@@ -87,13 +107,26 @@
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": csrfToken
         },
-        body: JSON.stringify({ status, metode_pembayaran: metode || 'unknown' })
-      }).then(() => {
-        document.getElementById("statusText").textContent = status;
-        if (status === 'settlement') {
-          alert("Pembayaran berhasil!");
-          window.location.href = "/riwayat-transaksi?status=success";
+        body: JSON.stringify({ 
+          status: status, 
+          metode_pembayaran: metode || 'midtrans' 
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("statusText").textContent = status;
+          document.getElementById("statusText").className = status === 'settlement' ? 'font-semibold text-green-600' : 'font-semibold text-yellow-600';
+          
+          if (status === 'settlement') {
+            alert("Pembayaran berhasil! Tiket Anda sedang diproses.");
+            window.location.href = "/riwayat-transaksi?status=success";
+          }
         }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memperbarui status.');
       });
     }
   </script>

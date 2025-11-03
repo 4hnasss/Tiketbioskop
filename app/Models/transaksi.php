@@ -42,4 +42,9 @@ class Transaksi extends Model
     {
         return $this->hasOne(Keuangan::class);
     }
+
+    public function tikets()
+    {
+        return $this->hasMany(Tiket::class);
+    }
 }

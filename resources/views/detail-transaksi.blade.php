@@ -244,36 +244,12 @@
                 <!-- Action Buttons -->
                 @if($transaksi->status === 'settlement')
                     <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg shadow-md p-6 border border-green-200">
-                        <div class="text-center mb-4">
+                        <div class="text-center">
                             <svg class="w-12 h-12 text-green-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <p class="text-sm font-semibold text-green-800">Transaksi Selesai</p>
-                            <p class="text-xs text-green-600 mt-1">Tiket sudah dapat digunakan</p>
-                        </div>
-                    </div>
-                    
-                    <!-- List Tiket -->
-                    <div class="bg-white rounded-lg shadow-md p-6 mt-4">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b">Cetak Tiket</h3>
-                        <div class="space-y-2">
-                            @foreach($kursiArray as $kursi)
-                                <a href="{{ route('cetak-tiket', ['transaksiId' => $transaksi->id, 'kursi' => $kursi]) }}" 
-                                   class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition group">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-indigo-100 group-hover:bg-indigo-200 rounded-lg flex items-center justify-center transition">
-                                            <span class="font-bold text-indigo-600">{{ $kursi }}</span>
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold text-gray-900 text-sm">Kursi {{ $kursi }}</p>
-                                            <p class="text-xs text-gray-600">Klik untuk cetak/download</p>
-                                        </div>
-                                    </div>
-                                    <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </a>
-                            @endforeach
+                            <p class="text-xs text-green-600 mt-1">Pembayaran berhasil dikonfirmasi</p>
                         </div>
                     </div>
                 @elseif($transaksi->status === 'pending')

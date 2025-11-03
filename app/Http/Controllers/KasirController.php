@@ -7,6 +7,7 @@ use App\Models\Jadwal;
 use App\Models\Kursi;
 use App\Models\Transaksi;
 use App\Models\Keuangan;
+use App\Models\Tiket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -262,59 +263,64 @@ public function pilihKursi(Film $film, Jadwal $jadwal)
         }
     }
 
-    public function prosesPembayaranCash(Request $request, $id)
-    {
-        try {
-            $transaksi = Transaksi::findOrFail($id);
-            
-            if ($transaksi->status !== 'pending') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Transaksi sudah diproses sebelumnya'
-                ], 400);
-            }
-
-            DB::beginTransaction();
-
-            // Update status transaksi ke settlement
-            $transaksi->status = 'settlement';
-            $transaksi->metode_pembayaran = 'cash';
-            $transaksi->save();
-
-            // Update status kursi jadi terjual
-            $kursiList = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
-            
-            foreach ($kursiList as $nomorKursi) {
-                Kursi::where('jadwal_id', $transaksi->jadwal_id)
-                    ->where('nomorkursi', $nomorKursi)
-                    ->update(['status' => 'terjual']);
-            }
-
-            DB::commit();
-
-            Log::info('Pembayaran Cash Berhasil', [
-                'transaksi_id' => $id,
-                'kursi' => $kursiList
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran berhasil!'
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error pembayaran cash: ' . $e->getMessage());
-            
+// Update method prosesPembayaranCash
+// Update method prosesPembayaranCash
+public function prosesPembayaranCash(Request $request, $id)
+{
+    try {
+        $transaksi = Transaksi::findOrFail($id);
+        
+        if ($transaksi->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Transaksi sudah diproses sebelumnya'
+            ], 400);
         }
+
+        DB::beginTransaction();
+
+        // Update status transaksi ke settlement
+        $transaksi->status = 'settlement';
+        $transaksi->metode_pembayaran = 'cash';
+        $transaksi->save();
+
+        // Update status kursi jadi terjual
+        $kursiList = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
+        
+        foreach ($kursiList as $nomorKursi) {
+            Kursi::where('jadwal_id', $transaksi->jadwal_id)
+                ->where('nomorkursi', $nomorKursi)
+                ->update(['status' => 'terjual']);
+        }
+
+        // ✅ Generate Tiket untuk setiap kursi
+        $this->generateTiket($transaksi);
+
+        DB::commit();
+
+        Log::info('Pembayaran Cash Berhasil', [
+            'transaksi_id' => $id,
+            'kursi' => $kursiList
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran berhasil!'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error pembayaran cash: ' . $e->getMessage());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
     }
+}
 
-
-    public function updateStatusPembayaran(Request $request, $id)
+// Update method updateStatusPembayaran
+public function updateStatusPembayaran(Request $request, $id)
 {
     try {
         Log::info('=== Update Status Request ===', [
@@ -326,7 +332,6 @@ public function pilihKursi(Film $film, Jadwal $jadwal)
         $oldStatus = $transaksi->status;
         $newStatus = $request->status;
         
-        // Validasi input
         if (!$newStatus) {
             return response()->json([
                 'success' => false,
@@ -344,7 +349,6 @@ public function pilihKursi(Film $film, Jadwal $jadwal)
             'transaksi_id' => $id,
             'old_status' => $oldStatus,
             'new_status' => $newStatus,
-            'metode_pembayaran' => $transaksi->metode_pembayaran
         ]);
 
         // Update status kursi ketika pembayaran settlement
@@ -356,6 +360,9 @@ public function pilihKursi(Film $film, Jadwal $jadwal)
                     ->where('nomorkursi', $nomorKursi)
                     ->update(['status' => 'terjual']);
             }
+
+            // ✅ Generate Tiket untuk setiap kursi
+            $this->generateTiket($transaksi);
             
             Log::info('Kursi status updated to terjual', [
                 'transaksi_id' => $id,
@@ -391,12 +398,97 @@ public function pilihKursi(Film $film, Jadwal $jadwal)
     } catch (\Exception $e) {
         DB::rollBack();
         Log::error('❌ Error updating status: ' . $e->getMessage());
-        Log::error('Stack trace: ' . $e->getTraceAsString());
         
         return response()->json([
             'success' => false,
             'message' => $e->getMessage()
         ], 500);
+    }
+}
+
+// ✅ Method untuk Generate Tiket
+private function generateTiket($transaksi)
+{
+    try {
+        $kursiList = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
+        
+        foreach ($kursiList as $nomorKursi) {
+            // Cari kursi_id berdasarkan nomor kursi
+            $kursi = Kursi::where('jadwal_id', $transaksi->jadwal_id)
+                ->where('nomorkursi', $nomorKursi)
+                ->first();
+            
+            if ($kursi) {
+                // Generate kode tiket unik
+                $kodetiket = $this->generateKodeTiket($transaksi->id, $nomorKursi);
+                
+                // Buat tiket baru
+                Tiket::create([
+                    'transaksi_id' => $transaksi->id,
+                    'kursi_id' => $kursi->id,
+                    'jadwal_id' => $transaksi->jadwal_id,
+                    'kodetiket' => $kodetiket
+                ]);
+                
+                Log::info('Tiket berhasil dibuat', [
+                    'kodetiket' => $kodetiket,
+                    'kursi' => $nomorKursi
+                ]);
+            }
+        }
+    } catch (\Exception $e) {
+        Log::error('Error generating tiket: ' . $e->getMessage());
+        throw $e;
+    }
+}
+
+// ✅ Generate Kode Tiket Unik (SHORT VERSION)
+private function generateKodeTiket($transaksiId, $nomorKursi)
+{
+    // Format pendek: FLX-MMDD-TID-KURSI
+    // Contoh: FLX-1104-15-A5 (hanya 14 karakter)
+    
+    $month = date('m'); // 2 digit bulan
+    $day = date('d');   // 2 digit tanggal
+    $random = strtoupper(substr(md5(uniqid(rand(), true)), 0, 2)); // 2 karakter random
+    
+    // Format: FLX-MMDD-TID-KURSI-XX
+    return "FLX{$month}{$day}-{$transaksiId}-{$nomorKursi}";
+}
+
+// ✅ Halaman Riwayat Tiket
+public function riwayatTiket(Request $request)
+{
+    try {
+        $search = $request->get('search');
+        
+        $tikets = Tiket::with(['transaksi.user', 'kursi', 'jadwal.film', 'jadwal.studio'])
+            ->when($search, function($query, $search) {
+                return $query->where('kodetiket', 'like', "%{$search}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+        
+        return view('riwayat-tiket-kasir', compact('tikets', 'search'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error riwayat tiket: ' . $e->getMessage());
+        return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+    }
+}
+
+// ✅ Detail Tiket
+public function detailTiket($id)
+{
+    try {
+        $tiket = Tiket::with(['transaksi.user', 'kursi', 'jadwal.film', 'jadwal.studio'])
+            ->findOrFail($id);
+        
+        return view('detail-tiket-kasir', compact('tiket'));
+        
+    } catch (\Exception $e) {
+        Log::error('Error detail tiket: ' . $e->getMessage());
+        return back()->with('error', 'Tiket tidak ditemukan');
     }
 }
 
@@ -459,47 +551,6 @@ public function showDetailTransaksi($id)
     }
 }
 
-/**
- * Cetak tiket untuk kursi tertentu
- */
-public function cetakTiket($transaksiId, $kursi)
-{
-    try {
-        $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])
-            ->findOrFail($transaksiId);
-        
-        // Cek apakah transaksi sudah settlement
-        if ($transaksi->status !== 'settlement') {
-            return redirect()->route('detail-transaksi', $transaksiId)
-                ->with('error', 'Tiket hanya bisa dicetak untuk transaksi yang sudah settlement.');
-        }
-        
-        // Cek apakah kursi ada dalam transaksi
-        $kursiArray = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
-        
-        if (!in_array($kursi, $kursiArray)) {
-            return redirect()->route('detail-transaksi', $transaksiId)
-                ->with('error', 'Kursi tidak ditemukan dalam transaksi ini.');
-        }
-        
-        // Hitung harga per kursi
-        $hargaPerKursi = count($kursiArray) > 0 ? $transaksi->totalharga / count($kursiArray) : 0;
-        
-        Log::info('=== Cetak Tiket ===', [
-            'transaksi_id' => $transaksiId,
-            'kursi' => $kursi
-        ]);
-
-        return view('cetak-tiket', compact('transaksi', 'kursi', 'hargaPerKursi'));
-        
-    } catch (\Exception $e) {
-        Log::error('=== Error in cetakTiket ===');
-        Log::error('Message: ' . $e->getMessage());
-        
-        return redirect()->route('detail-transaksi', $transaksiId)
-            ->with('error', 'Gagal membuat tiket.');
-    }
-}
     /**
      * Laporan Keuangan (dari tabel keuangan)
      */

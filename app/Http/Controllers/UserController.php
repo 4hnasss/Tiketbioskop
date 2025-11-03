@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\film;
 use App\Models\jadwal;
 use App\Models\kursi;
+use App\Models\Tiket;
 use App\Models\transaksi;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -353,7 +355,7 @@ public function show($id)
                 
                 $params = [
                     'transaction_details' => [
-                        'order_id' => $orderId, // ✅ Unique dengan timestamp
+                        'order_id' => $orderId,
                         'gross_amount' => (int) $transaksi->totalharga,
                     ],
                     'customer_details' => [
@@ -369,7 +371,6 @@ public function show($id)
                 Log::info('Snap token regenerated successfully');
             } catch (\Exception $e) {
                 Log::error('Failed to regenerate snap token: ' . $e->getMessage());
-                // Tampilkan error ke user
                 return redirect()->route('transaksi.riwayat')
                     ->with('error', 'Token pembayaran tidak valid. Silakan buat transaksi baru.');
             }
@@ -389,12 +390,26 @@ public function show($id)
 public function updateStatus(Request $request, $id)
 {
     try {
+        Log::info('=== Update Status Request ===', [
+            'transaksi_id' => $id,
+            'request_data' => $request->all()
+        ]);
+
         $transaksi = Transaksi::findOrFail($id);
         $oldStatus = $transaksi->status;
         $newStatus = $request->status;
         
+        if (!$newStatus) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status tidak boleh kosong'
+            ], 400);
+        }
+
+        DB::beginTransaction();
+        
         $transaksi->status = $newStatus;
-        $transaksi->metode_pembayaran = $request->metode_pembayaran ?? null;
+        $transaksi->metode_pembayaran = $request->metode_pembayaran ?? $transaksi->metode_pembayaran;
         $transaksi->save();
 
         Log::info('Status transaksi updated', [
@@ -406,7 +421,11 @@ public function updateStatus(Request $request, $id)
         // ✅ PENTING: Update status kursi ketika pembayaran settlement
         if ($newStatus === 'settlement' && $oldStatus !== 'settlement') {
             $this->updateKursiStatus($transaksi, 'terjual');
-            Log::info('Kursi status updated to terjual', [
+            
+            // ✅ AUTO GENERATE TIKET PER KURSI
+            $this->generateTiket($transaksi);
+            
+            Log::info('Kursi status updated to terjual & tiket generated', [
                 'transaksi_id' => $id,
                 'kursi' => $transaksi->kursi
             ]);
@@ -421,10 +440,15 @@ public function updateStatus(Request $request, $id)
             ]);
         }
 
+        DB::commit();
+
         return response()->json(['success' => true]);
         
     } catch (\Exception $e) {
+        DB::rollBack();
         Log::error('Error updating status: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        
         return response()->json([
             'success' => false,
             'message' => $e->getMessage()
@@ -459,9 +483,92 @@ private function updateKursiStatus($transaksi, $status)
         
     } catch (\Exception $e) {
         Log::error('Error updating kursi status: ' . $e->getMessage());
+        throw $e;
     }
 }
 
+/**
+ * ✅ AUTO GENERATE TIKET PER KURSI
+ */
+private function generateTiket($transaksi)
+{
+    try {
+        $kursiList = is_array($transaksi->kursi) ? $transaksi->kursi : json_decode($transaksi->kursi, true);
+        
+        if (!is_array($kursiList)) {
+            Log::error('Kursi list is not array', ['kursi' => $transaksi->kursi]);
+            return;
+        }
+        
+        foreach ($kursiList as $nomorKursi) {
+            // Cari kursi_id berdasarkan nomor kursi
+            $kursi = Kursi::where('jadwal_id', $transaksi->jadwal_id)
+                ->where('nomorkursi', $nomorKursi)
+                ->first();
+            
+            if ($kursi) {
+                // Generate kode tiket unik
+                $kodetiket = $this->generateKodeTiket($transaksi->id, $nomorKursi);
+                
+                // Cek apakah tiket sudah ada (untuk menghindari duplikasi)
+                $existingTiket = Tiket::where('transaksi_id', $transaksi->id)
+                    ->where('kursi_id', $kursi->id)
+                    ->first();
+                
+                if (!$existingTiket) {
+                    // Buat tiket baru
+                    Tiket::create([
+                        'transaksi_id' => $transaksi->id,
+                        'kursi_id' => $kursi->id,
+                        'jadwal_id' => $transaksi->jadwal_id,
+                        'kodetiket' => $kodetiket
+                    ]);
+                    
+                    Log::info('✅ Tiket berhasil dibuat', [
+                        'kodetiket' => $kodetiket,
+                        'kursi' => $nomorKursi,
+                        'transaksi_id' => $transaksi->id
+                    ]);
+                } else {
+                    Log::info('Tiket sudah ada, skip generate', [
+                        'kodetiket' => $existingTiket->kodetiket,
+                        'kursi' => $nomorKursi
+                    ]);
+                }
+            } else {
+                Log::warning('Kursi tidak ditemukan', [
+                    'nomor_kursi' => $nomorKursi,
+                    'jadwal_id' => $transaksi->jadwal_id
+                ]);
+            }
+        }
+        
+        Log::info('✅ Semua tiket berhasil di-generate', [
+            'transaksi_id' => $transaksi->id,
+            'total_tiket' => count($kursiList)
+        ]);
+        
+    } catch (\Exception $e) {
+        Log::error('❌ Error generating tiket: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        throw $e;
+    }
+}
+
+/**
+ * ✅ Generate Kode Tiket Unik (SHORT VERSION)
+ */
+private function generateKodeTiket($transaksiId, $nomorKursi)
+{
+    // Format pendek: FLX-MMDD-TID-KURSI
+    // Contoh: FLX1104-15-A5
+    
+    $month = date('m'); // 2 digit bulan
+    $day = date('d');   // 2 digit tanggal
+    
+    // Format: FLXMMDD-TID-KURSI
+    return "FLX{$month}{$day}-{$transaksiId}-{$nomorKursi}";
+}
 /**
      * Menampilkan daftar riwayat transaksi user.
      */
@@ -475,5 +582,17 @@ public function riwayat()
         ->get();
 
     return view('pages.riwayat-transaksi', compact('transaksis'));
+}
+
+public function detailTransaksi($id)
+{
+    $userId = auth()->id();
+
+    $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio', 'tikets.kursi'])
+        ->where('user_id', $userId)
+        ->where('id', $id)
+        ->firstOrFail();
+
+    return view('pages.detail-transaksi', compact('transaksi'));
 }
 }

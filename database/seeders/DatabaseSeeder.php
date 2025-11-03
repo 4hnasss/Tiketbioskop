@@ -179,7 +179,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -187,7 +187,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -195,7 +195,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film1->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -203,7 +203,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -211,7 +211,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -219,7 +219,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film2->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -227,7 +227,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -235,7 +235,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -243,7 +243,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film3->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -251,7 +251,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -259,7 +259,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -267,7 +267,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film4->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -275,7 +275,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -283,7 +283,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -291,7 +291,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film5->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-10-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -300,7 +300,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film6->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -308,7 +308,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film6->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -316,7 +316,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film6->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -324,7 +324,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film8->id,
             'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -332,7 +332,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film8->id,
             'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -340,7 +340,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film8->id,
             'harga_id' => $hargaWeekend->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -348,7 +348,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film7->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -356,7 +356,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film7->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -364,7 +364,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film7->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -372,7 +372,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film9->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -380,7 +380,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film9->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -388,7 +388,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film9->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
 
@@ -396,7 +396,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film10->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '10:00:00',
         ]);
 
@@ -404,7 +404,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film10->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '14:00:00',
         ]);
 
@@ -412,7 +412,7 @@ class DatabaseSeeder extends Seeder
             'film_id' => $film10->id,
             'harga_id' => $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-02',
+            'tanggal' => '2025-11-04',
             'jamtayang' => '18:00:00',
         ]);
     }

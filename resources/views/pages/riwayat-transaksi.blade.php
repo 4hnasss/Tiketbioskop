@@ -74,7 +74,7 @@
                             </span>
 
                             <div class="space-x-2">
-                                <a href="{{ route('transaksi.show', $transaksi->id) }}" 
+                                <a href="{{ route('transaksidetail', $transaksi->id) }}" 
                                    class="text-[#1E56A0] text-sm font-semibold hover:underline">Detail</a>
 
                                 @if($transaksi->status === 'pending')
