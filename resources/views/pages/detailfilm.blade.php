@@ -58,45 +58,48 @@
           {{ $film->deskripsi }}
         </p>
       </div>
+{{-- Jadwal Tayang --}}
+@php
+    use Carbon\Carbon;
+    $today = Carbon::today()->toDateString();
+    $tanggal = $tanggal ?? $today;
+    $jadwalHariIni = $jadwals[$tanggal] ?? collect();
+@endphp
 
-      {{-- Jadwal Tayang Otomatis --}}
-      @php
-          use Carbon\Carbon;
-          $today = $tanggal ?? Carbon::today()->toDateString();
-          $jadwalHariIni = $jadwals[$today] ?? collect();
-      @endphp
-
-
-      <div class="bg-white/70 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-6">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-lg font-semibold text-[#14274E] flex items-center gap-2">
+<div class="bg-white/70 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-6">
+    <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-semibold text-[#14274E] flex items-center gap-2">
             <i data-lucide="clock" class="w-5 h-5"></i> Jadwal Tayang
-          </h3>
+        </h3>
 
-          <input 
+        <input 
             type="date" 
             id="tanggal" 
-            value="{{ $today }}" 
-            min="{{ $film->tanggalmulai }}" 
+            value="{{ $tanggal }}" 
+            min="{{ $today }}" 
             max="{{ $film->tanggalselesai }}" 
             onchange="ubahTanggal(this.value)"
             class="border border-[#14274E]/40 text-[#14274E] text-sm px-3 py-1.5 rounded-md bg-white/60 cursor-pointer hover:border-[#14274E]/70 transition"
-          />
-        </div>
+        />
+    </div>
 
-        <div id="daftarJadwal" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          @forelse ($jadwalHariIni as $jadwal)
-              <a 
+    <div id="daftarJadwal" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        @forelse ($jadwalHariIni as $jadwal)
+            <a 
                 href="{{ route('kursi', ['film' => $film->id, 'jadwal' => $jadwal->id]) }}"
                 class="relative overflow-hidden group border border-[#14274E]/50 rounded-full py-2 text-center text-[#14274E] font-semibold text-sm transition hover:bg-[#14274E] hover:text-white hover:shadow-md">
                 {{ date('H:i', strtotime($jadwal->jamtayang)) }}
-                <div class="absolute inset-0 bg-gradient-to-r from-[#14274E]/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-              </a>
-          @empty
-              <span class="text-gray-400 text-sm col-span-full text-center">Belum ada jadwal untuk tanggal ini</span>
-          @endforelse
-        </div>
-      </div>
+                <span class="text-xs block text-gray-500 group-hover:text-white/80">
+                    {{ $jadwal->studio->nama_studio }}
+                </span>
+            </a>
+        @empty
+            <div class="col-span-full text-center py-4">
+                <span class="text-gray-400 text-sm">Belum ada jadwal untuk tanggal ini</span>
+            </div>
+        @endforelse
+    </div>
+</div>
 
       {{-- Tombol Kembali --}}
       <div class="pt-4 text-center">

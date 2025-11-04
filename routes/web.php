@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\Route;
 // ------------------------
 Route::get('/', [UserController::class, 'home'])->name('home');
 Route::get('/film', [UserController::class, 'film'])->name('film');
-Route::get('/detailfilm/{film}', [UserController::class, 'detailfilm'])->name('film.detailfilm');
-
+Route::get('/film/{id}', [UserController::class, 'detailfilm'])->name('film.detailfilm');
 // ------------------------
 // LOGIN & REGISTER
 // ------------------------

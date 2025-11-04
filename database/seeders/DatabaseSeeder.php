@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ==== USER ====
-        $user = User::factory()->create([
+        $admin = User::factory()->create([
             'name' => 'meysa',
             'email' => 'meysa@example.com',
             'password' => bcrypt('1203456'),
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
 
-        $user = User::factory()->create([
+        $kasir = User::factory()->create([
             'name' => 'rintan',
             'email' => 'rintan@example.com',
             'password' => bcrypt('1234567'),
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'genre' => 'Drama',
             'durasi' => 115,
             'trailer' => 'home.mp4',
-            'deskripsi' => 'Home Sweet Loan adalah film drama keluarga Indonesia tahun 2024 yang disutradarai oleh Sabrina Rochelle Kalangie dan dibintangi oleh Yunita Siregar, Derby Romero dan Fita Anggriani. Film ini diadaptasi dari novel berjudul sama karya Almira Bastari dan diproduksi oleh Visinema Pictures. Ceritanya berfokus pada Kaluna (Yunita Siregar), seorang pekerja kantoran dari keluarga sederhana yang bermimpi memiliki rumah sendiri. Sebagai anak bungsu, ia tinggal bersama orang tua, kakak-kakaknya yang sudah berkeluarga, dan keponakan, yang membuat rumahnya terasa ramai dan sering mengganggu kenyamanannya.',
+            'deskripsi' => 'Home Sweet Loan adalah film drama keluarga Indonesia tahun 2024 yang disutradarai oleh Sabrina Rochelle Kalangie dan dibintangi oleh Yunita Siregar, Derby Romero dan Fita Anggriani. Film ini diadaptasi dari novel berjudul sama karya Almira Bastari dan diproduksi oleh Visinema Pictures. Ceritanya berfokus pada Kaluna (Yunita Siregar), seorang pekerja kantoran dari keluarga sederhana yang bermimpi memiliki rumah sendiri.',
             'status' => 'playnow',
             'tanggalmulai' => '2025-10-30',
             'tanggalselesai' => '2025-11-30',
@@ -85,7 +85,7 @@ class DatabaseSeeder extends Seeder
             'genre' => 'action',
             'durasi' => 185,
             'trailer' => 'avatar.mp4',
-            'deskripsi' => 'Avatar: Fire and Ash adalah sebuah film fiksi ilmiah epos Amerika tahun 2025 yang disutradarai, ditulis, diproduksi bersama, dan diedit oleh James Cameron.[2] Dan merupakan film ketiga dalam waralaba Avatar, serta sekuel dari Avatar: The Way of Water (2022). Cameron memproduksinya dengan Jon Landau. Cameron, Rick Jaffa, Amanda Silver, Josh Friedman dan Shane Salerno terlibat dalam proses penulisan. Pemeran yang terdiri dari Sam Worthington, Zoe Saldaña, Sigourney Weaver, Stephen Lang, Joel David Moore, CCH Pounder, Giovanni Ribisi, Dileep Rao, Matt Gerald, Kate Winslet, Cliff Curtis, Edie Falco, Brendan Cowell, Jemaine Clement, Britain Dalton, Trinity Jo-Li Bliss, Jack Champion, Bailey Bass dan Filip Geljo mengulangi peran mereka dari film sebelumnya, dengan Michelle Yeoh, David Thewlis, dan Oona Chaplin memerankan karakter baru. Cameron menyatakan bahwa Avatar: The Seed Bearer sedang dipertimbangkan sebagai kemungkinan judul utama.',
+            'deskripsi' => 'Avatar: Fire and Ash adalah sebuah film fiksi ilmiah epos Amerika tahun 2025 yang disutradarai, ditulis, diproduksi bersama, dan diedit oleh James Cameron. Dan merupakan film ketiga dalam waralaba Avatar, serta sekuel dari Avatar: The Way of Water (2022).',
             'status' => 'playnow',
             'tanggalmulai' => '2025-10-30',
             'tanggalselesai' => '2025-11-30',
@@ -121,7 +121,7 @@ class DatabaseSeeder extends Seeder
             'genre' => 'Kartun',
             'durasi' => 185,
             'trailer' => 'jumbo.mp4',
-            'deskripsi' => 'Film Jumbo mengisahkan seorang anak yatim piatu berusia 10 tahun bernama Don. Ia sering diremehkan karena memiliki tubuh yang besar. Don mempunyai sebuah buku dongeng warisan orang tuanya, yang penuh ilustrasi dan cerita ajaib. Buku tersebut bukan hanya kenang-kenangan, tetapi juga menjadi sumber inspirasi dan pelarian bagi Don dari dunia yang terasa tidak ramah karena kerap diremehkan oleh teman-temannya.',
+            'deskripsi' => 'Film Jumbo mengisahkan seorang anak yatim piatu berusia 10 tahun bernama Don. Ia sering diremehkan karena memiliki tubuh yang besar. Don mempunyai sebuah buku dongeng warisan orang tuanya, yang penuh ilustrasi dan cerita ajaib.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
@@ -133,7 +133,7 @@ class DatabaseSeeder extends Seeder
             'genre' => 'Drama',
             'durasi' => 185,
             'trailer' => 'panggilaku.mp4',
-            'deskripsi' => 'Intan adalah gadis kecil yang tumbuh jauh dari hidup sempurna, hanya punya satu hal paling berharga, ibunya, Rossa. Namun hidup membawa mereka ke titik terendah. Terjebak utang, Rossa didatangi dua penagih yakni Dedi dan Tatang. Rossa kemudian terdesak oleh Dedi dan Tatang hingga akhirnya menjadikan Intan sebagai jaminan hutangnya. Dedi yang awalnya hanya melihat Intan sebagai jaminan, perlahan justru terikat dalam kisah hidup gadis kecil ini. Dari pertemuan yang tak sengaja, tumbuh ikatan yang tak terduga.',
+            'deskripsi' => 'Intan adalah gadis kecil yang tumbuh jauh dari hidup sempurna, hanya punya satu hal paling berharga, ibunya, Rossa. Namun hidup membawa mereka ke titik terendah. Terjebak utang, Rossa didatangi dua penagih yakni Dedi dan Tatang.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
@@ -145,7 +145,7 @@ class DatabaseSeeder extends Seeder
             'genre' => 'Drama',
             'durasi' => 185,
             'trailer' => 'ngeri.mp4',
-            'deskripsi' => 'Ngeri-Ngeri Sedap (bahasa Inggris: Missing Home) adalah film drama komedi Indonesia tahun 2022 yang disutradarai dan ditulis oleh Bene Dion Rajagukguk. Film berlatar Suku Batak ini dibintangi oleh Arswendy Beningswara Nasution, Tika Panggabean, Boris Bokir Manullang, Gita Bhebhita Butarbutar, Lolox, dan Indra Jegel. Film ini ditayangkan di bioskop Indonesia pada 2 Juni 2022.[1] Meskipun memiliki judul yang sama dengan buku yang ditulis oleh Bene Dion, film ini tidak diadaptasi dari buku tersebut.',
+            'deskripsi' => 'Ngeri-Ngeri Sedap (bahasa Inggris: Missing Home) adalah film drama komedi Indonesia tahun 2022 yang disutradarai dan ditulis oleh Bene Dion Rajagukguk. Film berlatar Suku Batak ini dibintangi oleh Arswendy Beningswara Nasution, Tika Panggabean, Boris Bokir Manullang, Gita Bhebhita Butarbutar, Lolox, dan Indra Jegel.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
@@ -157,13 +157,12 @@ class DatabaseSeeder extends Seeder
             'genre' => 'Drama',
             'durasi' => 185,
             'trailer' => 'bertaut.mp4',
-            'deskripsi' => 'Kehidupan Jovanka berubah setelah perceraian orang tuanya. Bersama dengan Yuli, ibunya ia pindah ke Bandung dan memulai semuanya dari awal. Di sekolah baru, ia bertemu dengan Magnus, cowok pendiam yang menyimpan banyak rahasia dan trauma. Pertemuan ini tak hanya mempertemukan dua hati, tapi dua jiwa yang sama-sama terluka.',
+            'deskripsi' => 'Kehidupan Jovanka berubah setelah perceraian orang tuanya. Bersama dengan Yuli, ibunya ia pindah ke Bandung dan memulai semuanya dari awal. Di sekolah baru, ia bertemu dengan Magnus, cowok pendiam yang menyimpan banyak rahasia dan trauma.',
             'status' => 'upcomming',
             'tanggalmulai' => '2025-11-02',
             'tanggalselesai' => '2025-11-10',
             'poster' => 'bertaut.jpeg',
         ]);
-        
 
         // ==== STUDIO ====
         $studio1 = Studio::create(['nama_studio' => 'Studio 1']);
@@ -174,246 +173,488 @@ class DatabaseSeeder extends Seeder
         $hargaWeekday = Harga::create(['jenis_hari' => 'weekday', 'harga' => 25000]);
         $hargaWeekend = Harga::create(['jenis_hari' => 'weekend', 'harga' => 30000]);
 
-        // ==== JADWAL ====
-        $jadwal = Jadwal::create([
-            'film_id' => $film1->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '10:00:00',
-        ]);
+        // ==== DYNAMIC DATES ====
+        $today = Carbon::today()->toDateString();
+        $tomorrow = Carbon::tomorrow()->toDateString();
+        $dayAfterTomorrow = Carbon::today()->addDays(2)->toDateString();
+        $day3 = Carbon::today()->addDays(3)->toDateString();
+        $day4 = Carbon::today()->addDays(4)->toDateString();
+        $day5 = Carbon::today()->addDays(5)->toDateString();
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film1->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '14:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film1->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '18:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film2->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '10:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film2->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '14:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film2->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '18:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film3->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '10:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film3->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '14:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film3->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '18:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film4->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '10:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film4->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '14:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film4->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '18:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film5->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '10:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film5->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '14:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film5->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '18:00:00',
-        ]);
+        // Determine if each day is weekday or weekend
+        $todayIsWeekend = Carbon::today()->isWeekend();
+        $tomorrowIsWeekend = Carbon::tomorrow()->isWeekend();
+        $day2IsWeekend = Carbon::today()->addDays(2)->isWeekend();
+        $day3IsWeekend = Carbon::today()->addDays(3)->isWeekend();
+        $day4IsWeekend = Carbon::today()->addDays(4)->isWeekend();
+        $day5IsWeekend = Carbon::today()->addDays(5)->isWeekend();
 
         // ==== JADWAL ====
-        $jadwal = Jadwal::create([
-            'film_id' => $film6->id,
-            'harga_id' => $hargaWeekday->id,
+        // HARI INI (Day 0)
+        
+        // STUDIO 1 - Film 1 (Rumah Untuk Alie)
+        Jadwal::create([
+            'film_id' => $film1->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '10:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film6->id,
-            'harga_id' => $hargaWeekday->id,
+        Jadwal::create([
+            'film_id' => $film1->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '14:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film6->id,
-            'harga_id' => $hargaWeekday->id,
+        Jadwal::create([
+            'film_id' => $film1->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '18:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film8->id,
-            'harga_id' => $hargaWeekend->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '10:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film8->id,
-            'harga_id' => $hargaWeekend->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '14:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film8->id,
-            'harga_id' => $hargaWeekend->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '18:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film7->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '10:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film7->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '14:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film7->id,
-            'harga_id' => $hargaWeekday->id,
-            'studio_id' => $studio1->id,
-            'tanggal' => '2025-11-04',
-            'jamtayang' => '18:00:00',
-        ]);
-
-        $jadwal = Jadwal::create([
-            'film_id' => $film9->id,
-            'harga_id' => $hargaWeekday->id,
+        // STUDIO 2 - Film 2 (Home Sweet Loan)
+        Jadwal::create([
+            'film_id' => $film2->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '10:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film9->id,
-            'harga_id' => $hargaWeekday->id,
+        Jadwal::create([
+            'film_id' => $film2->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '14:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film9->id,
-            'harga_id' => $hargaWeekday->id,
+        Jadwal::create([
+            'film_id' => $film2->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio2->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '18:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film10->id,
-            'harga_id' => $hargaWeekday->id,
+        // STUDIO 3 - Film 3 (Pangepungan Di Bukit Duri)
+        Jadwal::create([
+            'film_id' => $film3->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '10:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film10->id,
-            'harga_id' => $hargaWeekday->id,
+        Jadwal::create([
+            'film_id' => $film3->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '14:00:00',
         ]);
 
-        $jadwal = Jadwal::create([
-            'film_id' => $film10->id,
-            'harga_id' => $hargaWeekday->id,
+        Jadwal::create([
+            'film_id' => $film3->id,
+            'harga_id' => $todayIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
             'studio_id' => $studio3->id,
-            'tanggal' => '2025-11-04',
+            'tanggal' => $today,
             'jamtayang' => '18:00:00',
         ]);
+
+        // BESOK (Day 1)
+        
+        // STUDIO 1 - Film 4 (Avatar)
+        Jadwal::create([
+            'film_id' => $film4->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film4->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film4->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 2 - Film 5 (Jangan Panggil Reisa Kafir)
+        Jadwal::create([
+            'film_id' => $film5->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film5->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film5->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 3 - Film 9 (Ngeri-Ngeri Sedap)
+        Jadwal::create([
+            'film_id' => $film9->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film9->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film9->id,
+            'harga_id' => $tomorrowIsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $tomorrow,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // LUSA (Day 2)
+        
+        // STUDIO 1 - Film 6 (Andai Ibu Tidak Menikah Dengan Ayah)
+        Jadwal::create([
+            'film_id' => $film6->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film6->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film6->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 2 - Film 7 (Jumbo)
+        Jadwal::create([
+            'film_id' => $film7->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film7->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film7->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 3 - Film 10 (Bertaut Rindu)
+        Jadwal::create([
+            'film_id' => $film10->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film10->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film10->id,
+            'harga_id' => $day2IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $dayAfterTomorrow,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // DAY 3
+        
+        // STUDIO 1 - Film 8 (Panggil Aku Ayah)
+        Jadwal::create([
+            'film_id' => $film8->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day3,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film8->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day3,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film8->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day3,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 2 - Film 1 (Rumah Untuk Alie)
+        Jadwal::create([
+            'film_id' => $film1->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day3,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film1->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day3,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film1->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day3,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 3 - Film 4 (Avatar)
+        Jadwal::create([
+            'film_id' => $film4->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day3,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film4->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day3,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film4->id,
+            'harga_id' => $day3IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day3,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // DAY 4
+        
+        // STUDIO 1 - Film 2 (Home Sweet Loan)
+        Jadwal::create([
+            'film_id' => $film2->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day4,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film2->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day4,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film2->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day4,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 2 - Film 3 (Pangepungan Di Bukit Duri)
+        Jadwal::create([
+            'film_id' => $film3->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day4,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film3->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day4,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film3->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day4,
+            'jamtayang' => '18:00:00',
+
+        ]);
+
+        // STUDIO 3 - Film 5 (Jangan Panggil Reisa Kafir)
+        Jadwal::create([
+            'film_id' => $film5->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day4,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film5->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day4,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film5->id,
+            'harga_id' => $day4IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day4,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // DAY 5
+        
+        // STUDIO 1 - Film 9 (Ngeri-Ngeri Sedap)
+        Jadwal::create([
+            'film_id' => $film9->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day5,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film9->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day5,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film9->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio1->id,
+            'tanggal' => $day5,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 2 - Film 6 (Andai Ibu Tidak Menikah Dengan Ayah)
+        Jadwal::create([
+            'film_id' => $film6->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day5,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film6->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day5,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film6->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio2->id,
+            'tanggal' => $day5,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        // STUDIO 3 - Film 7 (Jumbo)
+        Jadwal::create([
+            'film_id' => $film7->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day5,
+            'jamtayang' => '10:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film7->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day5,
+            'jamtayang' => '14:00:00',
+        ]);
+
+        Jadwal::create([
+            'film_id' => $film7->id,
+            'harga_id' => $day5IsWeekend ? $hargaWeekend->id : $hargaWeekday->id,
+            'studio_id' => $studio3->id,
+            'tanggal' => $day5,
+            'jamtayang' => '18:00:00',
+        ]);
+
+        $this->command->info('Database seeded successfully!');
+        $this->command->info('Total Jadwal: ' . Jadwal::count());
+        $this->command->info('Total Kursi: ' . Kursi::count());
     }
 }

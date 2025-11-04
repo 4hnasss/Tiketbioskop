@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('jadwals', function (Blueprint $table) {
@@ -19,12 +16,12 @@ return new class extends Migration
             $table->date('tanggal');
             $table->time('jamtayang');
             $table->timestamps();
+            
+            // Tambahkan unique constraint
+            $table->unique(['studio_id', 'tanggal', 'jamtayang'], 'unique_jadwal');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('jadwals');

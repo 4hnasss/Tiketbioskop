@@ -51,48 +51,42 @@ public function welcome()
     ));
 }
 
-    /**
-     * Halaman Pesan Tiket - Pilih Film
-     */
 public function pesanTiket()
-{
-    $today = Carbon::today()->toDateString();
-
-    // Ambil film + jadwal + harga
-    $films = Film::where('tanggalmulai', '<=', $today)
-        ->where('tanggalselesai', '>=', $today)
-        ->with(['jadwal.harga']) // muat relasi harga
-        ->orderBy('judul', 'asc')
-        ->get();
-    
-    return view('pesan-tiket', compact('films'));
-}
-
-
-    /**
-     * Pilih Jadwal Film
-     */
-public function pilihJadwal($filmId)
-{
-    $film = Film::findOrFail($filmId);
-
-    // Ambil semua jadwal film (beserta studio dan harga)
-    $jadwals = Jadwal::where('film_id', $filmId)
-        ->where('tanggal', '>=', Carbon::today())
-        ->with(['studio', 'harga'])
-        ->orderBy('tanggal', 'asc')
-        ->orderBy('jamtayang', 'asc')
+    {
+        $today = Carbon::today();
+        
+        // Hanya tampilkan film yang memiliki jadwal hari ini
+        $films = Film::whereHas('jadwal', function($query) use ($today) {
+            $query->whereDate('tanggal', $today);
+        })
+        ->with(['jadwal' => function($query) use ($today) {
+            $query->whereDate('tanggal', $today)
+                  ->with('harga')
+                  ->orderBy('jamtayang', 'asc');
+        }])
         ->get();
 
-    // Ambil list harga dari relasi harga di jadwal
-    $hargaList = $jadwals->pluck('harga.harga')->filter();
+        return view('pesan-tiket', compact('films'));
+    }
 
-    // Hitung harga min dan max
-    $hargaMin = $hargaList->min();
-    $hargaMax = $hargaList->max();
+    public function pilihJadwal($filmId)
+    {
+        $film = Film::findOrFail($filmId);
+        $today = Carbon::today();
+        
+        // Hanya ambil jadwal hari ini
+        $jadwals = $film->jadwal()
+            ->whereDate('tanggal', $today)
+            ->with(['studio', 'harga'])
+            ->orderBy('jamtayang', 'asc')
+            ->get();
 
-    return view('pilih-jadwal', compact('film', 'jadwals', 'hargaMin', 'hargaMax'));
-}
+        // Hitung harga min-max
+        $hargaMin = $jadwals->min('harga.harga');
+        $hargaMax = $jadwals->max('harga.harga');
+
+        return view('pilih-jadwal', compact('film', 'jadwals', 'hargaMin', 'hargaMax'));
+    }
 
 public function pilihKursi(Film $film, Jadwal $jadwal)
 {

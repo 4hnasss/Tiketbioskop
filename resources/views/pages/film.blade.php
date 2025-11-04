@@ -59,20 +59,6 @@
                             </svg>
                             {{ floor($film->durasi / 60) }}h {{ $film->durasi % 60 }}m
                         </p>
-
-                        {{-- Jam tayang (sudah difilter di Controller) --}}
-                        <div class="mt-2 flex flex-wrap gap-2">
-                            @if($film->jadwal->count())
-                                @foreach($film->jadwal as $jadwal)
-                                    <a href="{{ route('kursi', ['film'=>$film->id, 'jadwal'=>$jadwal->id]) }}" 
-                                       class="px-3 py-1 text-sm bg-[#E7EEF8] border border-[#14274E] text-[#14274E] rounded-full hover:bg-[#14274E] hover:text-white transition duration-300">
-                                       {{ date('H:i', strtotime($jadwal->jamtayang)) }}
-                                    </a>
-                                @endforeach
-                            @else
-                                <span class="text-gray-400 text-xs">Tidak ada jadwal hari ini</span>
-                            @endif
-                        </div>
                     </div>
                 @empty
                     <p class="text-gray-500 col-span-full text-center py-10">

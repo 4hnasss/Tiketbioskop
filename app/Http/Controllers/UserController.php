@@ -22,64 +22,103 @@ public function home()
 {
     $today = Carbon::today();
 
-    // Film yang sedang tayang
-    $filmPlayNow = Film::whereDate('tanggalmulai', '<=', $today)
-                        ->orderBy('tanggalmulai', 'desc')
-                        ->take(8)
-                        ->get();
+    // Film yang sedang tayang - film yang memiliki jadwal hari ini
+    $filmPlayNow = Film::whereHas('jadwal', function($query) use ($today) {
+        $query->whereDate('tanggal', $today);
+    })
+    ->with(['jadwal' => function($query) use ($today) {
+        $query->whereDate('tanggal', $today)
+              ->orderBy('jamtayang', 'asc');
+    }])
+    ->orderBy('created_at', 'desc')
+    ->take(8)
+    ->get();
 
-    // Film yang akan tayang
-    $filmUpcoming = Film::whereDate('tanggalmulai', '>', $today)
-                        ->orderBy('tanggalmulai', 'asc')
-                        ->take(8)
-                        ->get();
+    // Film yang akan tayang - film yang jadwalnya belum dimulai (tanggal jadwal > hari ini)
+    $filmUpcoming = Film::whereHas('jadwal', function($query) use ($today) {
+        $query->whereDate('tanggal', '>', $today);
+    })
+    ->whereDoesntHave('jadwal', function($query) use ($today) {
+        // Pastikan tidak ada jadwal hari ini
+        $query->whereDate('tanggal', $today);
+    })
+    ->with(['jadwal' => function($query) use ($today) {
+        $query->whereDate('tanggal', '>', $today)
+              ->orderBy('tanggal', 'asc')
+              ->orderBy('jamtayang', 'asc')
+              ->limit(3); // Tampilkan 3 jadwal terdekat saja
+    }])
+    ->orderBy('created_at', 'desc')
+    ->take(8)
+    ->get();
 
-    // Film acak untuk scroll banner
+    // Film acak untuk scroll banner (optional)
     $filmRandom = Film::inRandomOrder()->take(10)->get();
 
     // Kirim semua ke view utama
     return view('pages.home', compact('filmPlayNow', 'filmUpcoming', 'filmRandom'));
+}
+
+    public function film()
+    {
+        $today = Carbon::today();
+        
+        // Ambil film yang memiliki jadwal hari ini
+        $filmPlayNow = Film::whereHas('jadwal', function($query) use ($today) {
+            $query->whereDate('tanggal', $today);
+        })
+        ->with(['jadwal' => function($query) use ($today) {
+            $query->whereDate('tanggal', $today)
+                  ->orderBy('jamtayang', 'asc');
+        }])
+        ->get();
+        
+        // Ambil film yang jadwalnya belum dimulai (tanggal jadwal > hari ini)
+        $filmUpcoming = Film::whereHas('jadwal', function($query) use ($today) {
+            $query->whereDate('tanggal', '>', $today);
+        })
+        ->whereDoesntHave('jadwal', function($query) use ($today) {
+            // Pastikan tidak ada jadwal hari ini
+            $query->whereDate('tanggal', $today);
+        })
+        ->with(['jadwal' => function($query) use ($today) {
+            $query->whereDate('tanggal', '>', $today)
+                  ->orderBy('tanggal', 'asc')
+                  ->orderBy('jamtayang', 'asc')
+                  ->limit(3); // Tampilkan 3 jadwal terdekat saja
+        }])
+        ->get();
+
+        return view('pages.film', compact('filmPlayNow', 'filmUpcoming'));
     }
 
-public function film()
-{
-    $today = now()->toDateString();
-
-    $filmPlayNow = Film::where('tanggalmulai', '<=', $today)
-                        ->where('tanggalselesai', '>=', $today)
-                        ->with(['jadwal' => function ($q) {
-                            $q->whereDate('tanggal', Carbon::today());
-                        }])
-                        ->get();
-
-    $filmUpcoming = Film::where('tanggalmulai', '>', $today)
-                         ->with('jadwal')
-                         ->get();
-
-    return view('pages.film', compact('filmPlayNow', 'filmUpcoming'));
-}
 
 
+public function detailfilm($id, Request $request)
+    {
+        $film = Film::findOrFail($id);
+        $today = Carbon::today()->toDateString();
+        
+        // Ambil tanggal dari request atau gunakan hari ini
+        $tanggal = $request->input('tanggal', $today);
+        
+        // Validasi tanggal tidak boleh kurang dari hari ini
+        if ($tanggal < $today) {
+            $tanggal = $today;
+        }
+        
+        // Ambil jadwal berdasarkan tanggal yang dipilih
+        $jadwals = $film->jadwal()
+            ->whereDate('tanggal', $tanggal)
+            ->with(['studio', 'harga'])
+            ->orderBy('jamtayang', 'asc')
+            ->get()
+            ->groupBy(function($item) {
+                return Carbon::parse($item->tanggal)->format('Y-m-d');
+            });
 
-public function detailfilm(Film $film, Request $request)
-{
-    // Ambil tanggal dari query, atau default hari ini
-    $tanggal = $request->query('tanggal', Carbon::today()->toDateString());
-
-    // Ambil semua jadwal film ini dan kelompokkan berdasarkan tanggal
-    $jadwals = Jadwal::where('film_id', $film->id)
-        ->orderBy('tanggal')
-        ->orderBy('jamtayang')
-        ->get()
-        ->groupBy('tanggal');
-
-    // Kirim data ke view
-    return view('pages.detailfilm', [
-        'film' => $film,
-        'jadwals' => $jadwals,
-        'tanggal' => $tanggal, // penting: dikirim ke Blade
-    ]);
-}
+        return view('pages.detailfilm', compact('film', 'jadwals', 'tanggal'));
+    }
 
     public function showRegister()
     {
