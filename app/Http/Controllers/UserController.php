@@ -177,6 +177,8 @@ public function login(Request $request)
             case 'kasir':
                 return redirect()->intended('/kasir/welcome');
             
+            case 'owner':
+                return redirect()->intended('/owner/dashboard');
             default: // user biasa
                 return redirect()->intended('/');
         }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KasirController;
+use App\Http\Controllers\OwnerController;
 use Illuminate\Support\Facades\Route;
 
 // ------------------------
@@ -71,4 +72,19 @@ Route::middleware(['auth', 'kasir'])->prefix('kasir')->group(function () {
 
     // Laporan Keuangan
     Route::get('/laporan-keuangan', [KasirController::class, 'laporanKeuangan'])->name('kasir.laporan-keuangan');
+});
+
+// ------------------------
+// ROUTE KHUSUS OWNER
+// ------------------------
+Route::middleware(['auth', 'owner'])->prefix('owner')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [OwnerController::class, 'dashboard'])->name('owner.dashboard');
+    
+    // Transaksi
+    Route::get('/transaksi', [OwnerController::class, 'transaksi'])->name('owner.transaksi');
+    Route::get('/transaksi/{id}', [OwnerController::class, 'detailTransaksi'])->name('owner.detail-transaksi');
+    
+    // Laporan
+    Route::get('/laporan', [OwnerController::class, 'laporan'])->name('owner.laporan');
 });
