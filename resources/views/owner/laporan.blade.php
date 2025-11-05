@@ -1,3 +1,4 @@
+{{-- resources/views/owner/laporan.blade.php --}}
 @extends('owner.layout')
 
 @section('title', 'Laporan Pendapatan')
@@ -6,17 +7,19 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">
-            <i class="fas fa-file-invoice-dollar mr-2 text-indigo-600"></i>Laporan Pendapatan
+        <h1 class="text-4xl font-bold text-[#14274E]">
+            <i class="fas fa-file-invoice-dollar mr-3 text-[#1E56A0]"></i>Laporan Pendapatan
         </h1>
     </div>
 
     <!-- Filter Bulan dan Tahun -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <form method="GET" action="{{ route('owner.laporan') }}" class="flex items-end space-x-4">
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
+        <form method="GET" action="{{ route('owner.laporan') }}" class="flex flex-wrap items-end gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Bulan</label>
-                <select name="bulan" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <label class="block text-sm font-bold text-[#14274E] mb-2">
+                    <i class="far fa-calendar mr-2"></i>Bulan
+                </label>
+                <select name="bulan" class="px-5 py-3 border-2 border-[#D6E4F0] rounded-xl focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/50 backdrop-blur text-[#14274E] font-semibold">
                     @for($m = 1; $m <= 12; $m++)
                         <option value="{{ $m }}" {{ $bulan == $m ? 'selected' : '' }}>
                             {{ \Carbon\Carbon::create()->month($m)->format('F') }}
@@ -26,15 +29,17 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
-                <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <label class="block text-sm font-bold text-[#14274E] mb-2">
+                    <i class="far fa-calendar-alt mr-2"></i>Tahun
+                </label>
+                <select name="tahun" class="px-5 py-3 border-2 border-[#D6E4F0] rounded-xl focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/50 backdrop-blur text-[#14274E] font-semibold">
                     @for($y = \Carbon\Carbon::now()->year; $y >= \Carbon\Carbon::now()->year - 5; $y--)
                         <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>{{ $y }}</option>
                     @endfor
                 </select>
             </div>
 
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition duration-200">
+            <button type="submit" class="px-6 py-3 rounded-full bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white hover:scale-105 transition transform shadow-lg">
                 <i class="fas fa-filter mr-2"></i>Filter
             </button>
         </form>
@@ -42,35 +47,35 @@
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
+        <div class="bg-gradient-to-br from-[#10b981] to-[#059669] rounded-2xl shadow-xl p-8 text-white transform hover:scale-105 transition-transform">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-green-100 text-sm font-medium">Total Pendapatan Bulan Ini</p>
-                    <p class="text-3xl font-bold mt-2">Rp {{ number_format($totalBulanIni, 0, ',', '.') }}</p>
+                    <p class="text-green-100 text-sm font-medium mb-2">Total Pendapatan Bulan Ini</p>
+                    <p class="text-4xl font-bold">Rp {{ number_format($totalBulanIni, 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-green-400 bg-opacity-50 rounded-full p-4">
-                    <i class="fas fa-money-bill-wave text-3xl"></i>
+                <div class="bg-white/20 backdrop-blur rounded-full p-5">
+                    <i class="fas fa-money-bill-wave text-4xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+        <div class="bg-gradient-to-br from-[#1E56A0] to-[#14274E] rounded-2xl shadow-xl p-8 text-white transform hover:scale-105 transition-transform">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-blue-100 text-sm font-medium">Transaksi Bulan Ini</p>
-                    <p class="text-3xl font-bold mt-2">{{ number_format($totalTransaksiBulanIni) }}</p>
+                    <p class="text-blue-100 text-sm font-medium mb-2">Transaksi Bulan Ini</p>
+                    <p class="text-4xl font-bold">{{ number_format($totalTransaksiBulanIni) }}</p>
                 </div>
-                <div class="bg-blue-400 bg-opacity-50 rounded-full p-4">
-                    <i class="fas fa-receipt text-3xl"></i>
+                <div class="bg-white/20 backdrop-blur rounded-full p-5">
+                    <i class="fas fa-receipt text-4xl"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Chart Pendapatan Harian -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">
-            <i class="fas fa-chart-line mr-2 text-indigo-600"></i>Pendapatan Harian - {{ \Carbon\Carbon::create()->month($bulan)->format('F') }} {{ $tahun }}
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
+        <h2 class="text-2xl font-bold text-[#14274E] mb-8">
+            <i class="fas fa-chart-line mr-3 text-[#1E56A0]"></i>Pendapatan Harian - {{ \Carbon\Carbon::create()->month($bulan)->format('F') }} {{ $tahun }}
         </h2>
         <div class="relative h-96">
             <canvas id="harianChart"></canvas>
@@ -78,39 +83,40 @@
     </div>
 
     <!-- Tabel Pendapatan Harian -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">
-            <i class="fas fa-table mr-2 text-indigo-600"></i>Detail Pendapatan Harian
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
+        <h2 class="text-2xl font-bold text-[#14274E] mb-8">
+            <i class="fas fa-table mr-3 text-[#1E56A0]"></i>Detail Pendapatan Harian
         </h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+        <div class="overflow-x-auto rounded-xl">
+            <table class="min-w-full">
+                <thead class="bg-[#D6E4F0]">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Transaksi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider rounded-tl-xl">Tanggal</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider">Jumlah Transaksi</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider rounded-tr-xl">Total Pendapatan</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y divide-[#D6E4F0]">
                     @forelse($pendapatanHarian as $item)
-                    <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <tr class="hover:bg-[#D6E4F0]/50 transition duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-[#14274E] font-semibold">
+                            <i class="far fa-calendar mr-2 text-[#1E56A0]"></i>
                             {{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="px-4 py-2 bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white rounded-full font-bold">
                                 {{ number_format($item->jumlah_transaksi) }} transaksi
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#059669]">
                             Rp {{ number_format($item->total, 0, ',', '.') }}
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" class="px-6 py-8 text-center text-gray-500">
-                            <i class="fas fa-inbox text-3xl mb-2"></i>
-                            <p>Tidak ada data untuk periode ini</p>
+                        <td colspan="3" class="px-6 py-16 text-center">
+                            <i class="fas fa-inbox text-5xl text-[#D6E4F0] mb-3"></i>
+                            <p class="text-[#14274E] font-semibold">Tidak ada data untuk periode ini</p>
                         </td>
                     </tr>
                     @endforelse
@@ -120,9 +126,9 @@
     </div>
 
     <!-- Chart Pendapatan Bulanan -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">
-            <i class="fas fa-chart-bar mr-2 text-indigo-600"></i>Pendapatan Bulanan - Tahun {{ $tahun }}
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
+        <h2 class="text-2xl font-bold text-[#14274E] mb-8">
+            <i class="fas fa-chart-bar mr-3 text-[#1E56A0]"></i>Pendapatan Bulanan - Tahun {{ $tahun }}
         </h2>
         <div class="relative h-96">
             <canvas id="bulananChart"></canvas>
@@ -130,39 +136,40 @@
     </div>
 
     <!-- Tabel Pendapatan Bulanan -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">
-            <i class="fas fa-table mr-2 text-indigo-600"></i>Detail Pendapatan Bulanan
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
+        <h2 class="text-2xl font-bold text-[#14274E] mb-8">
+            <i class="fas fa-table mr-3 text-[#1E56A0]"></i>Detail Pendapatan Bulanan
         </h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+        <div class="overflow-x-auto rounded-xl">
+            <table class="min-w-full">
+                <thead class="bg-[#D6E4F0]">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bulan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Transaksi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider rounded-tl-xl">Bulan</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider">Jumlah Transaksi</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider rounded-tr-xl">Total Pendapatan</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y divide-[#D6E4F0]">
                     @forelse($pendapatanBulanan as $item)
-                    <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <tr class="hover:bg-[#D6E4F0]/50 transition duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-[#14274E] font-semibold">
+                            <i class="far fa-calendar mr-2 text-[#1E56A0]"></i>
                             {{ \Carbon\Carbon::create()->month($item->bulan)->format('F') }} {{ $tahun }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="px-4 py-2 bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white rounded-full font-bold">
                                 {{ number_format($item->jumlah_transaksi) }} transaksi
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#059669]">
                             Rp {{ number_format($item->total, 0, ',', '.') }}
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" class="px-6 py-8 text-center text-gray-500">
-                            <i class="fas fa-inbox text-3xl mb-2"></i>
-                            <p>Tidak ada data untuk tahun ini</p>
+                        <td colspan="3" class="px-6 py-16 text-center">
+                            <i class="fas fa-inbox text-5xl text-[#D6E4F0] mb-3"></i>
+                            <p class="text-[#14274E] font-semibold">Tidak ada data untuk tahun ini</p>
                         </td>
                     </tr>
                     @endforelse
@@ -172,9 +179,9 @@
     </div>
 
     <!-- Chart Pendapatan Tahunan -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">
-            <i class="fas fa-chart-area mr-2 text-indigo-600"></i>Pendapatan Tahunan
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
+        <h2 class="text-2xl font-bold text-[#14274E] mb-8">
+            <i class="fas fa-chart-area mr-3 text-[#1E56A0]"></i>Pendapatan Tahunan
         </h2>
         <div class="relative h-96">
             <canvas id="tahunanChart"></canvas>
@@ -182,39 +189,40 @@
     </div>
 
     <!-- Tabel Pendapatan Tahunan -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6">
-            <i class="fas fa-table mr-2 text-indigo-600"></i>Detail Pendapatan Tahunan
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
+        <h2 class="text-2xl font-bold text-[#14274E] mb-8">
+            <i class="fas fa-table mr-3 text-[#1E56A0]"></i>Detail Pendapatan Tahunan
         </h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+        <div class="overflow-x-auto rounded-xl">
+            <table class="min-w-full">
+                <thead class="bg-[#D6E4F0]">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Transaksi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Pendapatan</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider rounded-tl-xl">Tahun</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider">Jumlah Transaksi</th>
+                        <th class="px-6 py-4 text-left text-xs font-bold text-[#14274E] uppercase tracking-wider rounded-tr-xl">Total Pendapatan</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y divide-[#D6E4F0]">
                     @forelse($pendapatanTahunan as $item)
-                    <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                    <tr class="hover:bg-[#D6E4F0]/50 transition duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#14274E]">
+                            <i class="far fa-calendar-alt mr-2 text-[#1E56A0]"></i>
                             {{ $item->tahun }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="px-4 py-2 bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white rounded-full font-bold">
                                 {{ number_format($item->jumlah_transaksi) }} transaksi
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#059669]">
                             Rp {{ number_format($item->total, 0, ',', '.') }}
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" class="px-6 py-8 text-center text-gray-500">
-                            <i class="fas fa-inbox text-3xl mb-2"></i>
-                            <p>Tidak ada data pendapatan</p>
+                        <td colspan="3" class="px-6 py-16 text-center">
+                            <i class="fas fa-inbox text-5xl text-[#D6E4F0] mb-3"></i>
+                            <p class="text-[#14274E] font-semibold">Tidak ada data pendapatan</p>
                         </td>
                     </tr>
                     @endforelse
@@ -238,16 +246,32 @@
             datasets: [{
                 label: 'Pendapatan Harian (Rp)',
                 data: harianData,
-                backgroundColor: 'rgba(79, 70, 229, 0.6)',
-                borderColor: 'rgb(79, 70, 229)',
-                borderWidth: 2
+                backgroundColor: 'rgba(30, 86, 160, 0.7)',
+                borderColor: '#1E56A0',
+                borderWidth: 2,
+                borderRadius: 8,
+                hoverBackgroundColor: '#14274E'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 13,
+                            weight: 'bold'
+                        },
+                        color: '#14274E'
+                    }
+                },
                 tooltip: {
+                    backgroundColor: '#14274E',
+                    titleFont: {  size: 14 },
+                    bodyFont: { size: 13 },
+                    padding: 12,
+                    cornerRadius: 8,
                     callbacks: {
                         label: function(context) {
                             return 'Pendapatan: Rp ' + context.parsed.y.toLocaleString('id-ID');
@@ -259,10 +283,20 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
+                        font: { size: 12 },
+                        color: '#14274E',
                         callback: function(value) {
                             return 'Rp ' + value.toLocaleString('id-ID');
                         }
-                    }
+                    },
+                    grid: { color: 'rgba(214, 228, 240, 0.3)' }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 12 },
+                        color: '#14274E'
+                    },
+                    grid: { display: false }
                 }
             }
         }
@@ -279,20 +313,34 @@
             datasets: [{
                 label: 'Pendapatan Bulanan (Rp)',
                 data: bulananData,
-                borderColor: 'rgb(16, 185, 129)',
+                borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointRadius: 5,
-                pointHoverRadius: 7
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
+                legend: {
+                    labels: {
+                        font: { size: 13, weight: 'bold' },
+                        color: '#14274E'
+                    }
+                },
                 tooltip: {
+                    backgroundColor: '#14274E',
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 13 },
+                    padding: 12,
+                    cornerRadius: 8,
                     callbacks: {
                         label: function(context) {
                             return 'Pendapatan: Rp ' + context.parsed.y.toLocaleString('id-ID');
@@ -304,10 +352,20 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
+                        font: { size: 12 },
+                        color: '#14274E',
                         callback: function(value) {
                             return 'Rp ' + value.toLocaleString('id-ID');
                         }
-                    }
+                    },
+                    grid: { color: 'rgba(214, 228, 240, 0.3)' }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 12 },
+                        color: '#14274E'
+                    },
+                    grid: { display: false }
                 }
             }
         }
@@ -324,16 +382,29 @@
             datasets: [{
                 label: 'Pendapatan Tahunan (Rp)',
                 data: tahunanData,
-                backgroundColor: 'rgba(249, 115, 22, 0.6)',
-                borderColor: 'rgb(249, 115, 22)',
-                borderWidth: 2
+                backgroundColor: 'rgba(249, 115, 22, 0.7)',
+                borderColor: '#f59e0b',
+                borderWidth: 2,
+                borderRadius: 8,
+                hoverBackgroundColor: '#d97706'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
+                legend: {
+                    labels: {
+                        font: {size: 13, weight: 'bold' },
+                        color: '#14274E'
+                    }
+                },
                 tooltip: {
+                    backgroundColor: '#14274E',
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 13 },
+                    padding: 12,
+                    cornerRadius: 8,
                     callbacks: {
                         label: function(context) {
                             return 'Pendapatan: Rp ' + context.parsed.y.toLocaleString('id-ID');
@@ -345,10 +416,20 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
+                        font: { size: 12 },
+                        color: '#14274E',
                         callback: function(value) {
                             return 'Rp ' + value.toLocaleString('id-ID');
                         }
-                    }
+                    },
+                    grid: { color: 'rgba(214, 228, 240, 0.3)' }
+                },
+                x: {
+                    ticks: {
+                        font: { size: 12 },
+                        color: '#14274E'
+                    },
+                    grid: { display: false }
                 }
             }
         }
