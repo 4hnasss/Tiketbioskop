@@ -3,33 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Pembayaran | Flixora</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Detail Pembayaran | Flixora</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 </head>
 
 <body class="bg-gradient-to-b from-[#F5F8FC] to-[#E3EAF5] min-h-screen flex flex-col">
 
-  <!-- Konten -->
+  <!-- MAIN CONTENT -->
   <main class="flex-grow flex flex-col items-center justify-center px-4">
     <div class="bg-white shadow-md rounded-xl w-full max-w-lg p-8 text-center border border-gray-200">
+      
+      <!-- LOGO -->
       <img src="{{ asset('img/Brand.png') }}" alt="Flixora" class="h-10 mx-auto mb-2">
+      
+      <!-- TITLE -->
       <h1 class="text-xl font-semibold text-gray-800 mb-6">Detail Pembayaran</h1>
 
+      <!-- TRANSACTION DETAILS -->
       <div class="text-left mb-6">
+        <!-- Film -->
         <div class="grid grid-cols-2 py-1 border-b border-gray-200">
           <p class="font-semibold">Film</p>
           <p>{{ $transaksi->jadwal->film->judul }}</p>
         </div>
+
+        <!-- Jadwal -->
         <div class="grid grid-cols-2 py-1 border-b border-gray-200">
           <p class="font-semibold">Jadwal</p>
           <p>{{ $transaksi->jadwal->tanggal }} {{ $transaksi->jadwal->jamtayang }}</p>
         </div>
+
+        <!-- Studio -->
         <div class="grid grid-cols-2 py-1 border-b border-gray-200">
           <p class="font-semibold">Studio</p>
           <p>{{ $transaksi->jadwal->studio->nama_studio }}</p>
         </div>
+
+        <!-- Kursi -->
         <div class="grid grid-cols-2 py-1 border-b border-gray-200">
           <p class="font-semibold">Kursi</p>
           <p>
@@ -40,10 +52,14 @@
             @endif
           </p>
         </div>
+
+        <!-- Total Harga -->
         <div class="grid grid-cols-2 py-2 border-b border-gray-200 mt-2">
           <p class="font-semibold">Total Harga</p>
           <p>Rp {{ number_format($transaksi->totalharga, 0, ',', '.') }}</p>
         </div>
+
+        <!-- Status -->
         <div class="grid grid-cols-2 py-2 border-b border-gray-200">
           <p class="font-semibold">Status</p>
           <p id="statusText" class="font-semibold {{ $transaksi->status === 'settlement' ? 'text-green-600' : 'text-yellow-600' }}">
@@ -52,11 +68,14 @@
         </div>
       </div>
 
+      <!-- ACTION BUTTONS -->
       @if($transaksi->status !== 'settlement')
+        <!-- Pay Now Button -->
         <button id="payNow" class="w-full bg-[#0B1B3F] text-white py-2.5 rounded-md font-semibold hover:bg-[#152a6d] transition">
           Bayar Sekarang
         </button>
       @else
+        <!-- Success Message -->
         <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
           <div class="flex items-center justify-center gap-2 text-green-700">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,6 +84,8 @@
             <span class="font-semibold">Pembayaran Berhasil!</span>
           </div>
         </div>
+
+        <!-- View Transaction History Button -->
         <a href="/riwayat-transaksi" class="w-full inline-block bg-[#0B1B3F] text-white py-2.5 rounded-md font-semibold hover:bg-[#152a6d] transition">
           Lihat Riwayat Transaksi
         </a>
@@ -73,11 +94,18 @@
   </main>
 
   <script>
+    // ===========================
+    // DATA INITIALIZATION
+    // ===========================
     const snapToken = "{{ $transaksi->snap_token }}";
     const transaksiId = "{{ $transaksi->id }}";
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
+    // ===========================
+    // PAYMENT HANDLER
+    // ===========================
     const payBtn = document.getElementById("payNow");
+    
     if (payBtn) {
       payBtn.addEventListener("click", function () {
         snap.pay(snapToken, {
@@ -100,6 +128,9 @@
       });
     }
 
+    // ===========================
+    // UPDATE STATUS FUNCTION
+    // ===========================
     function updateStatus(status, metode) {
       fetch(`/transaksi/${transaksiId}/update-status`, {
         method: "POST",
@@ -115,9 +146,13 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
+          // Update status text
           document.getElementById("statusText").textContent = status;
-          document.getElementById("statusText").className = status === 'settlement' ? 'font-semibold text-green-600' : 'font-semibold text-yellow-600';
+          document.getElementById("statusText").className = status === 'settlement' 
+            ? 'font-semibold text-green-600' 
+            : 'font-semibold text-yellow-600';
           
+          // Redirect if payment successful
           if (status === 'settlement') {
             alert("Pembayaran berhasil! Tiket Anda sedang diproses.");
             window.location.href = "/riwayat-transaksi?status=success";

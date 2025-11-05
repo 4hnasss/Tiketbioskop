@@ -11,31 +11,40 @@
 <body class="bg-gradient-to-b from-[#f7faff] to-[#dbe9ff] min-h-screen font-sans text-gray-800">
   @include('components.navbar')
 
+  <!-- HEADER -->
   <div class="text-center mt-10">
-    <h1 class="text-2xl md:text-3xl font-bold tracking-wide text-[#0A1D56]">{{ strtoupper($film->judul) }}</h1>
+    <h1 class="text-2xl md:text-3xl font-bold tracking-wide text-[#0A1D56]">
+      {{ strtoupper($film->judul) }}
+    </h1>
     <p class="text-[#1E56A0] text-sm mt-1">
       {{ \Carbon\Carbon::parse($jadwal->tanggal)->translatedFormat('d F Y') }} |
       {{ \Carbon\Carbon::parse($jadwal->jamtayang)->format('H:i') }}
     </p>
   </div>
 
+  <!-- MAIN CONTENT -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-10 px-6 lg:px-20">
-    {{-- AREA KURSI --}}
+    
+    <!-- AREA KURSI -->
     <div class="lg:col-span-2 flex flex-col items-center">
       <div class="bg-white shadow-xl border border-gray-100 rounded-2xl p-8 w-full max-w-[850px] transition duration-300 hover:shadow-2xl">
+        
+        <!-- LAYAR -->
         <div class="text-center mb-8">
           <div class="inline-block bg-gradient-to-r from-[#A8C0FF] to-[#3f2b96] rounded-full h-2 w-64 mb-3"></div>
           <p class="text-sm text-gray-600 font-medium tracking-wide">LAYAR</p>
         </div>
 
+        <!-- SEAT GRID -->
         <div id="seatArea" class="flex flex-col gap-4 items-center font-semibold text-gray-700 text-sm"></div>
         
+        <!-- SELECTED SEATS DISPLAY -->
         <div id="selectedSeats" class="flex flex-wrap justify-center gap-2 text-sm text-gray-700 mt-6 min-h-8">
           <span class="text-gray-500">Belum ada kursi yang dipilih</span>
         </div>
       </div>
 
-      {{-- LEGEND --}}
+      <!-- LEGEND -->
       <div class="grid grid-cols-2 gap-x-8 gap-y-3 justify-items-start mt-6 text-xs">
         <div class="flex items-center gap-2">
           <div class="w-6 h-6 bg-blue-600 rounded border-2 border-blue-700 shadow-sm"></div>
@@ -56,22 +65,29 @@
       </div>
     </div>
 
-    {{-- RINGKASAN PESANAN --}}
+    <!-- RINGKASAN PESANAN -->
     <div class="lg:col-span-1 flex justify-center relative">
       <div class="bg-white shadow-lg border border-gray-100 w-full max-w-[320px] h-fit rounded-2xl p-6 sticky top-24 hover:shadow-xl transition duration-300">
         <h3 class="text-lg font-bold text-[#0A1D56] mb-4 text-center">Ringkasan Pesanan</h3>
 
+        <!-- SEAT DETAILS -->
         <div class="border-b border-gray-200 pb-4 mb-4">
           <p class="text-sm font-semibold text-gray-800 mb-1">Kursi</p>
-          <div id="seatsSummary" class="text-sm text-gray-600 min-h-6 mb-2"><span class="text-gray-500">-</span></div>
-          <div class="text-xs text-gray-600"><span id="seatCount">0</span> kursi × Rp <span id="pricePerSeat">{{ $hargaPerKursi }}</span></div>
+          <div id="seatsSummary" class="text-sm text-gray-600 min-h-6 mb-2">
+            <span class="text-gray-500">-</span>
+          </div>
+          <div class="text-xs text-gray-600">
+            <span id="seatCount">0</span> kursi × Rp <span id="pricePerSeat">{{ $hargaPerKursi }}</span>
+          </div>
         </div>
 
+        <!-- TOTAL PRICE -->
         <div class="flex justify-between items-center mb-6">
           <span class="font-semibold text-gray-900">Total</span>
           <span class="text-2xl font-bold text-[#0A1D56]">Rp <span id="total">0</span></span>
         </div>
 
+        <!-- BUY BUTTON -->
         <a href="#" id="buyButton" class="block text-center border-2 border-[#0A1D56] text-[#0A1D56] font-semibold py-2 rounded-full opacity-50 cursor-not-allowed transition hover:bg-[#0A1D56] hover:text-white hover:opacity-100">
           Bayar Sekarang
         </a>
@@ -82,11 +98,15 @@
   @include('components.footer')
 
   <script>
+    // ===========================
+    // DATA INITIALIZATION
+    // ===========================
     const kursiData = @json($kursi);
     const seatPrice = {{ $hargaPerKursi }};
     const jadwalId = {{ $jadwal->id }};
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
+    // DOM Elements
     const seatArea = document.getElementById("seatArea");
     const selectedSeats = document.getElementById("selectedSeats");
     const seatCount = document.getElementById("seatCount");
@@ -96,6 +116,10 @@
 
     let chosen = [];
 
+    // ===========================
+    // SEAT RENDERING
+    // ===========================
+    
     // Group kursi by row
     const grouped = {};
     kursiData.forEach(k => {
@@ -116,7 +140,7 @@
       rowDiv.appendChild(labelLeft);
 
       // Sort seats by number
-      const sortedSeats = grouped[row].sort((a,b) => 
+      const sortedSeats = grouped[row].sort((a, b) => 
         parseInt(a.nomorkursi.slice(1)) - parseInt(b.nomorkursi.slice(1))
       );
 
@@ -154,13 +178,16 @@
       seatArea.appendChild(rowDiv);
     });
 
+    // ===========================
+    // SEAT CREATION FUNCTION
+    // ===========================
     function makeSeat(k) {
       const seat = document.createElement("div");
       seat.dataset.seat = k.nomorkursi;
       seat.textContent = k.nomorkursi.replace(/[A-Z]/, "");
       seat.className = "w-9 h-9 flex items-center justify-center text-white text-xs font-bold rounded-md border-2 cursor-pointer transition-all duration-200 shadow-sm";
       
-      // ✅ Warna yang lebih pas untuk setiap status
+      // Status-based styling
       if (k.status === "terjual") {
         seat.classList.add("bg-red-500", "border-red-600", "cursor-not-allowed", "opacity-80");
         seat.title = "Terjual";
@@ -180,20 +207,30 @@
       return seat;
     }
 
+    // ===========================
+    // SEAT SELECTION LOGIC
+    // ===========================
     function toggleSeat(code, el) {
       const idx = chosen.indexOf(code);
+      
       if (idx !== -1) {
+        // Deselect seat
         chosen.splice(idx, 1);
         el.classList.remove("bg-green-500", "border-green-600", "scale-110");
         el.classList.add("bg-blue-600", "border-blue-700");
       } else {
+        // Select seat
         chosen.push(code);
         el.classList.remove("bg-blue-600", "border-blue-700");
         el.classList.add("bg-green-500", "border-green-600", "scale-110");
       }
+      
       updateSummary();
     }
 
+    // ===========================
+    // UPDATE SUMMARY
+    // ===========================
     function updateSummary() {
       if (chosen.length === 0) {
         selectedSeats.innerHTML = "<span class='text-gray-500'>Belum ada kursi yang dipilih</span>";
@@ -213,6 +250,9 @@
       total.textContent = (chosen.length * seatPrice).toLocaleString("id-ID");
     }
 
+    // ===========================
+    // PAYMENT PROCESS
+    // ===========================
     buyButton.addEventListener("click", async (e) => {
       e.preventDefault();
       
@@ -283,7 +323,9 @@
       }
     });
 
-    // Initial state
+    // ===========================
+    // INITIALIZATION
+    // ===========================
     updateSummary();
   </script>
 </body>
