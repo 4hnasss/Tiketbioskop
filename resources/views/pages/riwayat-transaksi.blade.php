@@ -91,7 +91,7 @@
                   'text' => 'text-green-700',
                   'label' => 'Pembayaran Selesai'
                 ],
-                'batal' => [
+                'expired' => [
                   'bg' => 'bg-red-100',
                   'text' => 'text-red-700',
                   'label' => 'Dibatalkan'

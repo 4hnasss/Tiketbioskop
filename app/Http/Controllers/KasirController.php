@@ -23,26 +23,28 @@ public function welcome()
 {
     $user = Auth::user();
     
-    // Statistik hari ini dari tabel transaksi
+    // Statistik hari ini
     $today = Carbon::today();
-    
-    // Total transaksi hari ini
+
+    // Total transaksi hari ini (semua status)
     $transaksiHariIni = Transaksi::whereDate('tanggaltransaksi', $today)->count();
-    
-    // Total pendapatan hari ini
+
+    // Total pendapatan hari ini (hanya transaksi dengan status 'settlement')
     $pendapatanHariIni = Transaksi::whereDate('tanggaltransaksi', $today)
+        ->where('status', 'settlement')
         ->sum('totalharga');
-    
-    // Tiket terjual hari ini (hitung dari kursi dalam transaksi)
+
+    // Tiket terjual hari ini (hitung dari kursi di transaksi)
     $tiketTerjualHariIni = Transaksi::whereDate('tanggaltransaksi', $today)
+        ->where('status', 'settlement')
         ->get()
-        ->sum(function($transaksi) {
+        ->sum(function ($transaksi) {
             $kursi = is_array($transaksi->kursi) 
                 ? $transaksi->kursi 
                 : json_decode($transaksi->kursi, true);
             return is_array($kursi) ? count($kursi) : 0;
         });
-    
+
     return view('welcome', compact(
         'user',
         'transaksiHariIni',
@@ -50,6 +52,7 @@ public function welcome()
         'tiketTerjualHariIni'
     ));
 }
+
 
 public function pesanTiket()
     {
