@@ -3,24 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - Cignifi</title>
+    <title>Create Account - Flixora</title>
     @vite('resources/css/app.css')
+    <style>
+        /* Animasi fade-in untuk elemen */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Kelas untuk animasi */
+        .animate-on-load {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            opacity: 0;
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        /* Delay untuk animasi bertahap */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+        .delay-800 { animation-delay: 0.8s; }
+
+        /* Animasi hover untuk tombol */
+        .btn-hover-scale {
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-hover-scale:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 </head>
 <body class="bg-[#f4f7ff] flex items-center justify-center min-h-screen font-sans">
 
-    <div class="w-full max-w-lg bg-white rounded-xl shadow-sm p-12 text-center"> 
+    <div class="w-full max-w-lg bg-white rounded-xl shadow-sm p-12 text-center animate-on-load"> 
         <!-- ↑ diperbesar: max-w-lg & p-12 -->
 
         <!-- Logo -->
-        <div class="flex justify-center mb-3">
+        <div class="flex justify-center mb-3 animate-scale-in delay-100">
             <img src="img/Brand.png" alt="Cignifi" class="w-[80px] h-auto">
         </div>
 
         <!-- Title -->
-        <h2 class="text-3xl font-semibold text-gray-800 mb-1">Create your account</h2>
-        <p class="text-gray-500 text-sm mb-8">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-1 animate-fade-in delay-200">Create your account</h2>
+        <p class="text-gray-500 text-sm mb-8 animate-fade-in delay-300">
             Already have an account?
-            <a href="{{ route('login') }}" class="text-[#4a90e2] hover:underline font-medium">Log in</a>
+            <a href="{{ route('login') }}" class="text-[#4a90e2] hover:underline font-medium btn-hover-scale">Log in</a>
         </p>
 
         <!-- Register Form -->
@@ -28,7 +96,7 @@
             @csrf
 
             <!-- Full Name -->
-            <div class="relative">
+            <div class="relative animate-fade-in delay-400">
                 <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 018 16h8a4 4 0 012.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -44,7 +112,7 @@
             </div>
 
             <!-- Email -->
-            <div class="relative">
+            <div class="relative animate-fade-in delay-500">
                 <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m8 0a4 4 0 00-8 0m8 0v1a4 4 0 01-8 0v-1m0 0a4 4 0 018 0" />
@@ -60,7 +128,7 @@
             </div>
 
             <!-- Password -->
-            <div class="relative">
+            <div class="relative animate-fade-in delay-600">
                 <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c.828 0 1.5-.672 1.5-1.5S12.828 8 12 8s-1.5.672-1.5 1.5S11.172 11 12 11z" />
@@ -89,7 +157,7 @@
             </div>
 
             <!-- Phone -->
-            <div class="relative">
+            <div class="relative animate-fade-in delay-700">
                 <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a2 2 0 011.789 1.106l1.387 2.773a2 2 0 01-.45 2.316l-1.415 1.415a11.05 11.05 0 005.657 5.657l1.415-1.415a2 2 0 012.316-.45l2.773 1.387A2 2 0 0121 18.72V22a2 2 0 01-2 2h-1C9.163 24 0 14.837 0 3a2 2 0 012-2h1z" />
@@ -106,7 +174,7 @@
             <!-- Button -->
             <button 
                 type="submit" 
-                class="w-full bg-[#4a90e2] text-white py-3 rounded-lg text-base font-medium hover:bg-[#357abd] transition cursor-pointer"
+                class="w-full bg-[#4a90e2] text-white py-3 rounded-lg text-base font-medium hover:bg-[#357abd] transition cursor-pointer btn-hover-scale animate-fade-in delay-800"
             >
                 Register
             </button>

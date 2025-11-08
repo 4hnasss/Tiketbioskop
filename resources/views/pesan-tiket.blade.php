@@ -17,28 +17,29 @@
 <body class="min-h-screen">
     @include('components.nav')
 
-    <div class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <h2 class="text-3xl font-bold text-[#14274E]">
-                    <i class="fas fa-ticket-alt mr-3 text-[#1E56A0]"></i>Daftar Film
-                </h2>
-                <p class="text-[#14274E]/70 mt-2">Pilih film yang ingin dipesan</p>
-            </div>
-
-            <!-- Search Inputs -->
-            <div class="flex flex-col sm:flex-row gap-3">
-                <input type="text" id="searchJudul" placeholder="Cari judul..." 
-                       class="px-4 py-3 border-2 border-[#D6E4F0] rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
-                <input type="text" id="searchGenre" placeholder="Cari genre..." 
-                       class="px-4 py-3 border-2 border-[#D6E4F0] rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
-                <input type="text" id="searchDurasi" placeholder="Durasi (menit)" 
-                       class="px-4 py-3 border-2 border-[#D6E4F0] rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
-                <input type="text" id="searchHarga" placeholder="Harga (Rp)" 
-                       class="px-4 py-3 border-2 border-[#D6E4F0] rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
-            </div>
+   <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-[#14274E]">
+                <i class="fas fa-ticket-alt mr-2 text-[#1E56A0]"></i>Daftar Film
+            </h2>
+            <p class="text-[#14274E]/70 mt-1 text-sm">Pilih film yang ingin dipesan</p>
         </div>
+
+        <!-- Search Inputs -->
+        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+            <input type="text" id="searchJudul" placeholder="Cari judul..." 
+                   class="flex-1 min-w-0 px-3 py-2 text-sm border-2 border-[#D6E4F0] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
+            <input type="text" id="searchGenre" placeholder="Cari genre..." 
+                   class="flex-1 min-w-0 px-3 py-2 text-sm border-2 border-[#D6E4F0] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
+            <input type="text" id="searchDurasi" placeholder="Durasi (menit)" 
+                   class="flex-1 min-w-0 px-3 py-2 text-sm border-2 border-[#D6E4F0] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
+            <input type="text" id="searchHarga" placeholder="Harga (Rp)" 
+                   class="flex-1 min-w-0 px-3 py-2 text-sm border-2 border-[#D6E4F0] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent bg-white/80 backdrop-blur text-[#14274E] font-medium">
+        </div>
+    </div>
+
 
         @if($films->count() > 0)
             <div class="overflow-x-auto bg-white/80 backdrop-blur-md shadow-xl rounded-2xl border-2 border-[#D6E4F0]">

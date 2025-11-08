@@ -5,14 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Transaksi #{{ $transaksi->id }} - Flixora</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        .fade-in-delay-1 {
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+        .fade-in-delay-2 {
+            animation: fadeIn 0.6s ease-out 0.4s both;
+        }
+        .fade-in-delay-3 {
+            animation: fadeIn 0.6s ease-out 0.6s both;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
 
     @include('components.nav')
 
-    <main class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8 fade-in">
         <!-- Back Button -->
-        <div class="mb-6">
+        <div class="mb-6 fade-in-delay-1">
             <a href="{{ route('riwayat-transaksi') }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -22,7 +46,7 @@
         </div>
 
         <!-- Header -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6 fade-in-delay-1">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900 mb-2">Detail Transaksi #{{ $transaksi->id }}</h1>
@@ -56,7 +80,7 @@
             <!-- Main Info -->
             <div class="md:col-span-2 space-y-6">
                 <!-- Film Info -->
-                <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in-delay-2">
                     <h2 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b">Informasi Film</h2>
                     
                     <div class="space-y-4">
@@ -98,7 +122,7 @@
                 </div>
 
                 <!-- Kursi Info -->
-                <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in-delay-2">
                     <h2 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b">Kursi yang Dipesan</h2>
                     
                     <div class="flex flex-wrap gap-2">
@@ -126,7 +150,7 @@
                 </div>
 
                 <!-- User Info -->
-                <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in-delay-3">
                     <h2 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b">Informasi Pembeli</h2>
                     
                     <div class="space-y-3">
@@ -156,7 +180,7 @@
             <!-- Sidebar -->
             <div class="md:col-span-1 space-y-6">
                 <!-- Payment Summary -->
-                <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in-delay-2">
                     <h2 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b">Ringkasan Pembayaran</h2>
                     
                     <div class="space-y-3">
@@ -195,7 +219,7 @@
                 </div>
 
                 <!-- Status Timeline -->
-                <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="bg-white rounded-lg shadow-md p-6 fade-in-delay-3">
                     <h2 class="text-lg font-bold text-gray-900 mb-4 pb-3 border-b">Status Transaksi</h2>
                     
                     <div class="space-y-4">
@@ -243,7 +267,7 @@
 
                 <!-- Action Buttons -->
                 @if($transaksi->status === 'settlement')
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg shadow-md p-6 border border-green-200">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg shadow-md p-6 border border-green-200 fade-in-delay-3">
                         <div class="text-center">
                             <svg class="w-12 h-12 text-green-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -254,7 +278,7 @@
                     </div>
                 @elseif($transaksi->status === 'pending')
                     <a href="{{ route('transaksi-kasir', $transaksi->id) }}" 
-                       class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-semibold py-3 rounded-lg transition shadow-md">
+                       class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-semibold py-3 rounded-lg transition shadow-md fade-in-delay-3">
                         Lanjutkan Pembayaran
                     </a>
                 @endif

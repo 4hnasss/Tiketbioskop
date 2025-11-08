@@ -5,22 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Flixora</title>
     @vite('resources/css/app.css')
+    <style>
+        /* Animasi fade-in untuk elemen */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Kelas untuk animasi */
+        .animate-on-load {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            opacity: 0;
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        /* Delay untuk animasi bertahap */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+
+        /* Animasi hover untuk tombol */
+        .btn-hover-scale {
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-hover-scale:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 </head>
 <body class="bg-[#f4f7ff] flex items-center justify-center min-h-screen font-sans">
 
-    <div class="w-full max-w-lg bg-white rounded-xl shadow-sm p-12 text-center"> 
+    <div class="w-full max-w-lg bg-white rounded-xl shadow-sm p-12 text-center animate-on-load"> 
         <!-- ↑ Lebih besar: max-w-lg dan padding p-12 -->
 
         <!-- Logo -->
-        <div class="flex justify-center mb-3">
+        <div class="flex justify-center mb-3 animate-scale-in delay-100">
             <img src="/img/Brand.png" alt="Flixora" class="w-[80px] h-auto">
         </div>
 
         <!-- Title -->
-        <h2 class="text-3xl font-semibold text-gray-800 mb-1">Welcome Back</h2>
-        <p class="text-gray-500 text-sm mb-8">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-1 animate-fade-in delay-200">Welcome Back</h2>
+        <p class="text-gray-500 text-sm mb-8 animate-fade-in delay-300">
             Don’t have an account yet? 
-            <a href="{{ route('register') }}" class="text-[#4a90e2] hover:underline font-medium">Sign Up</a>
+            <a href="{{ route('register') }}" class="text-[#4a90e2] hover:underline font-medium btn-hover-scale">Sign Up</a>
         </p>
 
         <!-- Login Form -->
@@ -28,7 +94,7 @@
             @csrf
 
             <!-- Email Field -->
-            <div class="relative">
+            <div class="relative animate-fade-in delay-400">
                 <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m8 0a4 4 0 00-8 0m8 0v1a4 4 0 01-8 0v-1m0 0a4 4 0 018 0" />
@@ -44,7 +110,7 @@
             </div>
 
             <!-- Password Field -->
-            <div class="relative">
+            <div class="relative animate-fade-in delay-500">
                 <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c.828 0 1.5-.672 1.5-1.5S12.828 8 12 8s-1.5.672-1.5 1.5S11.172 11 12 11z" />
@@ -75,7 +141,7 @@
             <!-- Button -->
             <button 
                 type="submit"
-                class="w-full bg-[#4a90e2] text-white py-3 rounded-lg text-base font-medium hover:bg-[#357abd] transition cursor-pointer"
+                class="w-full bg-[#4a90e2] text-white py-3 rounded-lg text-base font-medium hover:bg-[#357abd] transition cursor-pointer btn-hover-scale animate-fade-in delay-600"
             >
                 Sign In
             </button>

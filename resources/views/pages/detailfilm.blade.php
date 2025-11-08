@@ -3,16 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Film | TicketLy</title>
+    <title>Detail Film | Flixora</title>
     @vite('resources/css/app.css')
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Animasi untuk berbagai elemen */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Kelas animasi */
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-left {
+            opacity: 0;
+            animation: fadeInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-right {
+            opacity: 0;
+            animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            opacity: 0;
+            animation: scaleIn 0.7s ease-out forwards;
+        }
+
+        .animate-slide-down {
+            opacity: 0;
+            animation: slideInDown 0.6s ease-out forwards;
+        }
+
+        /* Delay classes */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+    </style>
 </head>
 
 <body class="bg-gradient-to-b from-[#f4f8ff] to-[#d9e5f5] min-h-screen text-gray-800">
     @include('components.navbar')
 
     <main class="flex justify-center py-16 px-4 md:px-10">
-        <div class="relative max-w-4xl w-full bg-white/70 backdrop-blur-md border border-white/40 rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-500 p-8">
+        <div class="animate-scale-in relative max-w-4xl w-full bg-white/70 backdrop-blur-md border border-white/40 rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-500 p-8">
 
             {{-- Dekorasi latar --}}
             <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-[#3b82f6]/40 to-transparent rounded-bl-full blur-2xl opacity-30"></div>
@@ -20,7 +112,7 @@
 
             {{-- Poster & Info Film --}}
             <div class="flex flex-col md:flex-row items-start md:items-center gap-8 mb-8 relative z-10">
-                <div class="relative group w-full md:w-[230px] h-[320px] rounded-2xl overflow-hidden shadow-md cursor-pointer"
+                <div class="animate-fade-in-left delay-200 relative group w-full md:w-[230px] h-[320px] rounded-2xl overflow-hidden shadow-md cursor-pointer"
                      onclick="bukaTrailer()">
                     <img src="{{ asset('img/' . $film->poster) }}" 
                          alt="{{ $film->judul }}" 
@@ -34,22 +126,22 @@
                 </div>
 
                 <div class="flex flex-col justify-between space-y-3 md:space-y-4">
-                    <h1 class="text-3xl font-bold text-[#14274E]">{{ $film->judul }}</h1>
-                    <p class="text-gray-600 text-sm">{{ $film->genre }}</p>
+                    <h1 class="animate-fade-in-right delay-300 text-3xl font-bold text-[#14274E]">{{ $film->judul }}</h1>
+                    <p class="animate-fade-in-right delay-400 text-gray-600 text-sm">{{ $film->genre }}</p>
 
-                    <div class="flex flex-wrap gap-2 text-[#1E56A0] text-sm font-medium items-center">
+                    <div class="animate-fade-in-right delay-500 flex flex-wrap gap-2 text-[#1E56A0] text-sm font-medium items-center">
                         <i data-lucide="calendar" class="w-4 h-4"></i>
                         <span>{{ $film->tanggalmulai }} - {{ $film->tanggalselesai }}</span>
                     </div>
 
-                    <span class="inline-block bg-[#e6efff] text-[#14274E] text-xs px-3 py-1 rounded-full font-medium w-fit">
+                    <span class="animate-fade-in-right delay-600 inline-block bg-[#e6efff] text-[#14274E] text-xs px-3 py-1 rounded-full font-medium w-fit">
                         {{ floor($film->durasi / 60) }}h {{ $film->durasi % 60 }}m
                     </span>
                 </div>
             </div>
 
             {{-- Sinopsis --}}
-            <div class="bg-white/60 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-8">
+            <div class="animate-fade-in-up delay-400 bg-white/60 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-8">
                 <div class="flex items-center gap-2 mb-3">
                     <i data-lucide="align-left" class="w-5 h-5 text-[#14274E]"></i>
                     <h3 class="text-lg font-semibold text-[#14274E]">Sinopsis</h3>
@@ -67,7 +159,7 @@
                 $jadwalHariIni = $jadwals[$tanggal] ?? collect();
             @endphp
 
-            <div class="bg-white/70 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-6">
+            <div class="animate-fade-in-up delay-500 bg-white/70 border border-[#14274E]/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition mb-6">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-lg font-semibold text-[#14274E] flex items-center gap-2">
                         <i data-lucide="clock" class="w-5 h-5"></i> Jadwal Tayang
@@ -85,10 +177,10 @@
                 </div>
 
                 <div id="daftarJadwal" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    @forelse ($jadwalHariIni as $jadwal)
+                    @forelse ($jadwalHariIni as $index => $jadwal)
                         <a 
                             href="{{ route('kursi', ['film' => $film->id, 'jadwal' => $jadwal->id]) }}"
-                            class="relative overflow-hidden group border border-[#14274E]/50 rounded-full py-2 text-center text-[#14274E] font-semibold text-sm transition hover:bg-[#14274E] hover:text-white hover:shadow-md">
+                            class="animate-scale-in delay-{{ min(($index + 6) * 100, 700) }} relative overflow-hidden group border border-[#14274E]/50 rounded-full py-2 text-center text-[#14274E] font-semibold text-sm transition hover:bg-[#14274E] hover:text-white hover:shadow-md">
                             {{ date('H:i', strtotime($jadwal->jamtayang)) }}
                             <span class="text-xs block text-gray-500 group-hover:text-white/80">
                                 {{ $jadwal->studio->nama_studio }}
@@ -103,7 +195,7 @@
             </div>
 
             {{-- Tombol Kembali --}}
-            <div class="pt-4 text-center">
+            <div class="animate-fade-in-up delay-600 pt-4 text-center">
                 <a href="/film" 
                    class="inline-block bg-[#14274E] text-white text-sm px-6 py-2 rounded-full font-medium hover:bg-[#1E3A8A] transition transform hover:scale-105 shadow-md hover:shadow-lg">
                     Kembali ke Daftar Film

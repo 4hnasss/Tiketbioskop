@@ -85,7 +85,7 @@
                                         {{ \Carbon\Carbon::parse($jadwal->jamtayang)->format('H:i') }}
                                     </div>
                                     <div class="text-xs text-[#14274E]/70 group-hover:text-white font-semibold">
-                                        Studio {{ $jadwal->studio->nama_studio }}
+                                         {{ $jadwal->studio->nama_studio }}
                                     </div>
                                 </a>
                             @endforeach
