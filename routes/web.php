@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [UserController::class, 'home'])->name('home');
 Route::get('/film', [UserController::class, 'film'])->name('film');
 Route::get('/film/{id}', [UserController::class, 'detailfilm'])->name('film.detailfilm');
+
 // ------------------------
 // LOGIN & REGISTER
 // ------------------------
@@ -30,6 +31,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/buat-pembayaran', [UserController::class, 'buatPembayaran'])->name('buat.pembayaran');
     Route::get('/transaksi/{id}', [UserController::class, 'show'])->name('transaksi.show');
     Route::post('/transaksi/{id}/update-status', [UserController::class, 'updateStatus'])->name('transaksi.update');
+    
+    // ✅ NEW: Route untuk cek status pembayaran (untuk countdown)
+    Route::get('/transaksi/{id}/check-status', [UserController::class, 'checkPaymentStatus'])->name('transaksi.check');
+    
     Route::get('/riwayat-transaksi', [UserController::class, 'riwayat'])->name('transaksi.riwayat');
     Route::get('/detail-transaksi/{id}', [UserController::class, 'detailTransaksi'])->name('transaksidetail');
 });

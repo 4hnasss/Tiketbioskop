@@ -18,11 +18,13 @@ use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
+    // ✅ WAKTU TIMEOUT PEMBAYARAN (dalam menit)
+    const PAYMENT_TIMEOUT_MINUTES = 1;
+
     public function home()
     {
         $today = Carbon::today();
 
-        // Film yang sedang tayang - film yang memiliki jadwal hari ini
         $filmPlayNow = Film::whereHas('jadwal', function($query) use ($today) {
             $query->whereDate('tanggal', $today);
         })
@@ -34,28 +36,24 @@ class UserController extends Controller
         ->take(8)
         ->get();
 
-        // Film yang akan tayang - film yang jadwalnya belum dimulai (tanggal jadwal > hari ini)
         $filmUpcoming = Film::whereHas('jadwal', function($query) use ($today) {
             $query->whereDate('tanggal', '>', $today);
         })
         ->whereDoesntHave('jadwal', function($query) use ($today) {
-            // Pastikan tidak ada jadwal hari ini
             $query->whereDate('tanggal', $today);
         })
         ->with(['jadwal' => function($query) use ($today) {
             $query->whereDate('tanggal', '>', $today)
                   ->orderBy('tanggal', 'asc')
                   ->orderBy('jamtayang', 'asc')
-                  ->limit(3); // Tampilkan 3 jadwal terdekat saja
+                  ->limit(3);
         }])
         ->orderBy('created_at', 'desc')
         ->take(8)
         ->get();
 
-        // Film acak untuk scroll banner (optional)
         $filmRandom = Film::inRandomOrder()->take(10)->get();
 
-        // Kirim semua ke view utama
         return view('pages.home', compact('filmPlayNow', 'filmUpcoming', 'filmRandom'));
     }
 
@@ -63,7 +61,6 @@ class UserController extends Controller
     {
         $today = Carbon::today();
         
-        // Ambil film yang memiliki jadwal hari ini
         $filmPlayNow = Film::whereHas('jadwal', function($query) use ($today) {
             $query->whereDate('tanggal', $today);
         })
@@ -73,19 +70,17 @@ class UserController extends Controller
         }])
         ->get();
         
-        // Ambil film yang jadwalnya belum dimulai (tanggal jadwal > hari ini)
         $filmUpcoming = Film::whereHas('jadwal', function($query) use ($today) {
             $query->whereDate('tanggal', '>', $today);
         })
         ->whereDoesntHave('jadwal', function($query) use ($today) {
-            // Pastikan tidak ada jadwal hari ini
             $query->whereDate('tanggal', $today);
         })
         ->with(['jadwal' => function($query) use ($today) {
             $query->whereDate('tanggal', '>', $today)
                   ->orderBy('tanggal', 'asc')
                   ->orderBy('jamtayang', 'asc')
-                  ->limit(3); // Tampilkan 3 jadwal terdekat saja
+                  ->limit(3);
         }])
         ->get();
 
@@ -97,15 +92,12 @@ class UserController extends Controller
         $film = Film::findOrFail($id);
         $today = Carbon::today()->toDateString();
         
-        // Ambil tanggal dari request atau gunakan hari ini
         $tanggal = $request->input('tanggal', $today);
         
-        // Validasi tanggal tidak boleh kurang dari hari ini
         if ($tanggal < $today) {
             $tanggal = $today;
         }
         
-        // Ambil jadwal berdasarkan tanggal yang dipilih
         $jadwals = $film->jadwal()
             ->whereDate('tanggal', $tanggal)
             ->with(['studio', 'harga'])
@@ -125,7 +117,6 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -133,7 +124,6 @@ class UserController extends Controller
             'nohp' => 'nullable|string|max:20',
         ]);
 
-        // Simpan ke database
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -141,33 +131,26 @@ class UserController extends Controller
             'nohp' => $request->nohp,
         ]);
 
-        // Redirect setelah register
         return redirect('/login')->with('success', 'Akun berhasil dibuat! Silakan login.');
     }
 
-    // Menampilkan halaman login
     public function showLoginForm()
     {
-        return view('auth.login'); // menyesuaikan folder auth
+        return view('auth.login');
     }
 
-    // Memproses login
     public function login(Request $request)
     {
-        // Validasi input
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // Attempt login
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Ambil user yang sedang login
             $user = Auth::user();
 
-            // Redirect berdasarkan role
             switch ($user->role) {
                 case 'admin':
                     return redirect()->intended('/admin');
@@ -177,12 +160,11 @@ class UserController extends Controller
                 
                 case 'owner':
                     return redirect()->intended('/owner/dashboard');
-                default: // user biasa
+                default:
                     return redirect()->intended('/');
             }
         }
 
-        // Jika gagal login
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->withInput();
@@ -190,25 +172,54 @@ class UserController extends Controller
 
     public function profile()
     {
-        // Ambil data user yang sedang login
         $user = Auth::user();
-
-        // Kirim data user ke view
         return view('pages.profile', compact('user'));
     }
 
-    // Logout
     public function logout(Request $request)
     {
+        // ✅ PENTING: Cancel semua transaksi pending yang expired milik user sebelum logout
+        try {
+            $userId = auth()->id();
+            
+            if ($userId) {
+                Log::info('Checking expired transactions before logout', ['user_id' => $userId]);
+                
+                // Cari transaksi pending yang expired
+                $expiredTransactions = Transaksi::where('user_id', $userId)
+                    ->where('status', 'pending')
+                    ->whereNotNull('payment_expired_at')
+                    ->where('payment_expired_at', '<', now())
+                    ->get();
+                
+                foreach ($expiredTransactions as $transaksi) {
+                    Log::info('Cancelling expired transaction on logout', [
+                        'user_id' => $userId,
+                        'transaksi_id' => $transaksi->id
+                    ]);
+                    
+                    $this->cancelExpiredTransaction($transaksi);
+                }
+                
+                if ($expiredTransactions->count() > 0) {
+                    Log::info('Cancelled expired transactions on logout', [
+                        'user_id' => $userId,
+                        'count' => $expiredTransactions->count()
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error cancelling expired transactions on logout: ' . $e->getMessage());
+            // Tetap lanjutkan logout meskipun ada error
+        }
+        
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        
         return redirect('/');
     }
 
-    // ========================== 
-    // PILIH KURSI 
-    // ========================== 
     public function kursi($film_id, $jadwal_id)
     {
         $film = Film::findOrFail($film_id);
@@ -271,7 +282,7 @@ class UserController extends Controller
 
             $totalHarga = count($kursi) * $hargaPerKursi;
 
-            // ✅ Simpan transaksi
+            // ✅ Simpan transaksi dengan waktu expired
             $transaksi = Transaksi::create([
                 'user_id' => auth()->id(),
                 'jadwal_id' => $jadwalId,
@@ -279,9 +290,13 @@ class UserController extends Controller
                 'totalharga' => $totalHarga,
                 'status' => 'pending',
                 'tanggaltransaksi' => now(),
+                'payment_expired_at' => now()->addMinutes(self::PAYMENT_TIMEOUT_MINUTES),
             ]);
 
-            Log::info('Transaksi Created:', ['id' => $transaksi->id]);
+            Log::info('Transaksi Created:', [
+                'id' => $transaksi->id,
+                'expired_at' => $transaksi->payment_expired_at
+            ]);
 
             // ✅ UPDATE: Set status kursi jadi "dipesan" (reserved)
             foreach ($kursi as $nomorKursi) {
@@ -337,6 +352,7 @@ class UserController extends Controller
                 'success' => true,
                 'transaksiId' => $transaksi->id,
                 'snapToken' => $snapToken,
+                'expiredAt' => $transaksi->payment_expired_at->toIso8601String(),
                 'message' => 'Transaksi berhasil dibuat'
             ]);
 
@@ -363,7 +379,7 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            $transaksi = Transaksi::find($id);
+            $transaksi = Transaksi::with(['jadwal.film', 'jadwal.studio', 'user'])->find($id);
             
             if (!$transaksi) {
                 Log::error('Transaksi not found: ' . $id);
@@ -371,15 +387,39 @@ class UserController extends Controller
                     ->with('error', 'Transaksi tidak ditemukan');
             }
             
-            $transaksi->load(['jadwal.film', 'jadwal.studio', 'user']);
+            // ✅ CRITICAL: CEK TIMEOUT PEMBAYARAN SEBELUM APAPUN
+            if ($transaksi->status === 'pending' && $transaksi->payment_expired_at) {
+                if (now()->greaterThanOrEqualTo($transaksi->payment_expired_at)) {
+                    Log::info('Payment timeout detected - Auto cancelling', [
+                        'transaksi_id' => $transaksi->id,
+                        'expired_at' => $transaksi->payment_expired_at,
+                        'current_time' => now()
+                    ]);
+                    
+                    // Auto-cancel transaksi
+                    $this->cancelExpiredTransaction($transaksi);
+                    
+                    // IMPORTANT: Redirect ke riwayat dengan pesan error
+                    return redirect()->route('transaksi.riwayat')
+                        ->with('error', 'Waktu pembayaran telah habis. Silakan buat transaksi baru.');
+                }
+            }
             
             Log::info('=== Transaksi Show ===', [
                 'id' => $transaksi->id,
                 'status' => $transaksi->status,
-                'snap_token' => $transaksi->snap_token ? 'exists' : 'null'
+                'snap_token' => $transaksi->snap_token ? 'exists' : 'null',
+                'expired_at' => $transaksi->payment_expired_at,
+                'is_expired' => $transaksi->payment_expired_at ? now()->greaterThanOrEqualTo($transaksi->payment_expired_at) : false
             ]);
             
-            // ✅ HANYA regenerate jika BENAR-BENAR tidak ada snap_token
+            // ✅ Jika sudah expired, redirect
+            if ($transaksi->status === 'expired') {
+                return redirect()->route('transaksi.riwayat')
+                    ->with('error', 'Transaksi ini telah kadaluarsa. Silakan buat transaksi baru.');
+            }
+            
+            // ✅ HANYA regenerate jika status pending/challenge dan tidak ada snap_token
             if (in_array($transaksi->status, ['pending', 'challenge']) && empty($transaksi->snap_token)) {
                 try {
                     \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
@@ -387,7 +427,6 @@ class UserController extends Controller
                     \Midtrans\Config::$isSanitized = true;
                     \Midtrans\Config::$is3ds = true;
                     
-                    // ✅ PENTING: Order ID HARUS UNIK dengan timestamp baru
                     $orderId = 'FLX-' . $transaksi->id . '-' . time();
                     
                     Log::info('Regenerating snap token with order_id: ' . $orderId);
@@ -471,9 +510,9 @@ class UserController extends Controller
             }
             
             // ✅ Jika transaksi dibatalkan, kembalikan kursi jadi tersedia
-            if ($newStatus === 'batal' && in_array($oldStatus, ['pending', 'challenge'])) {
+            if (in_array($newStatus, ['batal', 'expired']) && in_array($oldStatus, ['pending', 'challenge', 'dipesan'])) {
                 $this->updateKursiStatus($transaksi, 'tersedia');
-                Log::info('Kursi status updated to tersedia (cancelled)', [
+                Log::info('Kursi status updated to tersedia (cancelled/expired)', [
                     'transaksi_id' => $id,
                     'kursi' => $transaksi->kursi
                 ]);
@@ -481,7 +520,11 @@ class UserController extends Controller
 
             DB::commit();
 
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'status' => $newStatus,
+                'message' => 'Status berhasil diupdate'
+            ]);
             
         } catch (\Exception $e) {
             DB::rollBack();
@@ -492,6 +535,114 @@ class UserController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * ✅ CEK DAN BATALKAN TRANSAKSI YANG EXPIRED
+     */
+    public function checkPaymentStatus(Request $request, $id)
+    {
+        try {
+            $transaksi = Transaksi::findOrFail($id);
+            
+            Log::info('Checking payment status', [
+                'transaksi_id' => $id,
+                'status' => $transaksi->status,
+                'expired_at' => $transaksi->payment_expired_at,
+                'now' => now()
+            ]);
+            
+            // Cek apakah pembayaran sudah expired
+            if ($transaksi->status === 'pending' && $transaksi->payment_expired_at) {
+                if (now()->greaterThanOrEqualTo($transaksi->payment_expired_at)) {
+                    
+                    Log::info('Payment expired - cancelling now', [
+                        'transaksi_id' => $id
+                    ]);
+                    
+                    // Auto-cancel
+                    $this->cancelExpiredTransaction($transaksi);
+                    
+                    return response()->json([
+                        'success' => true,
+                        'expired' => true,
+                        'status' => 'expired',
+                        'redirect' => true,
+                        'message' => 'Waktu pembayaran telah habis'
+                    ]);
+                }
+                
+                // Hitung sisa waktu
+                $remainingSeconds = now()->diffInSeconds($transaksi->payment_expired_at, false);
+                
+                return response()->json([
+                    'success' => true,
+                    'expired' => false,
+                    'remaining_seconds' => max(0, $remainingSeconds),
+                    'status' => $transaksi->status
+                ]);
+            }
+            
+            return response()->json([
+                'success' => true,
+                'expired' => false,
+                'status' => $transaksi->status
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error checking payment status: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * ✅ CANCEL TRANSAKSI YANG EXPIRED
+     */
+    private function cancelExpiredTransaction($transaksi)
+    {
+        try {
+            DB::beginTransaction();
+            
+            Log::info('Cancelling expired transaction', [
+                'transaksi_id' => $transaksi->id,
+                'old_status' => $transaksi->status,
+                'expired_at' => $transaksi->payment_expired_at
+            ]);
+            
+            // Update status transaksi
+            $transaksi->status = 'expired';
+            $transaksi->save();
+            
+            Log::info('Transaction status updated to expired', [
+                'transaksi_id' => $transaksi->id
+            ]);
+            
+            // Kembalikan kursi jadi tersedia
+            $this->updateKursiStatus($transaksi, 'tersedia');
+            
+            Log::info('Seats released to tersedia', [
+                'transaksi_id' => $transaksi->id
+            ]);
+            
+            DB::commit();
+            
+            Log::info('✅ Expired transaction cancelled successfully', [
+                'transaksi_id' => $transaksi->id,
+                'expired_at' => $transaksi->payment_expired_at
+            ]);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('❌ Error cancelling expired transaction', [
+                'transaksi_id' => $transaksi->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
     }
 
@@ -508,16 +659,35 @@ class UserController extends Controller
                 return;
             }
 
+            Log::info('Updating kursi status', [
+                'transaksi_id' => $transaksi->id,
+                'jadwal_id' => $transaksi->jadwal_id,
+                'kursi_list' => $kursiList,
+                'new_status' => $status
+            ]);
+
             foreach ($kursiList as $nomorKursi) {
-                Kursi::where('jadwal_id', $transaksi->jadwal_id)
+                $kursi = Kursi::where('jadwal_id', $transaksi->jadwal_id)
                     ->where('nomorkursi', $nomorKursi)
-                    ->update(['status' => $status]);
+                    ->first();
                 
-                Log::info('Kursi updated', [
-                    'nomor' => $nomorKursi,
-                    'jadwal_id' => $transaksi->jadwal_id,
-                    'status' => $status
-                ]);
+                if ($kursi) {
+                    $oldStatus = $kursi->status;
+                    $kursi->status = $status;
+                    $kursi->save();
+                    
+                    Log::info('✅ Kursi updated', [
+                        'nomor' => $nomorKursi,
+                        'jadwal_id' => $transaksi->jadwal_id,
+                        'old_status' => $oldStatus,
+                        'new_status' => $status
+                    ]);
+                } else {
+                    Log::warning('⚠️ Kursi not found', [
+                        'nomor' => $nomorKursi,
+                        'jadwal_id' => $transaksi->jadwal_id
+                    ]);
+                }
             }
             
         } catch (\Exception $e) {
@@ -540,22 +710,18 @@ class UserController extends Controller
             }
             
             foreach ($kursiList as $nomorKursi) {
-                // Cari kursi_id berdasarkan nomor kursi
                 $kursi = Kursi::where('jadwal_id', $transaksi->jadwal_id)
                     ->where('nomorkursi', $nomorKursi)
                     ->first();
                 
                 if ($kursi) {
-                    // Generate kode tiket unik
                     $kodetiket = $this->generateKodeTiket($transaksi->id, $nomorKursi);
                     
-                    // Cek apakah tiket sudah ada (untuk menghindari duplikasi)
                     $existingTiket = Tiket::where('transaksi_id', $transaksi->id)
                         ->where('kursi_id', $kursi->id)
                         ->first();
                     
                     if (!$existingTiket) {
-                        // Buat tiket baru
                         Tiket::create([
                             'transaksi_id' => $transaksi->id,
                             'kursi_id' => $kursi->id,
@@ -568,44 +734,24 @@ class UserController extends Controller
                             'kursi' => $nomorKursi,
                             'transaksi_id' => $transaksi->id
                         ]);
-                    } else {
-                        Log::info('Tiket sudah ada, skip generate', [
-                            'kodetiket' => $existingTiket->kodetiket,
-                            'kursi' => $nomorKursi
-                        ]);
                     }
-                } else {
-                    Log::warning('Kursi tidak ditemukan', [
-                        'nomor_kursi' => $nomorKursi,
-                        'jadwal_id' => $transaksi->jadwal_id
-                    ]);
                 }
             }
             
-            Log::info('✅ Semua tiket berhasil di-generate', [
-                'transaksi_id' => $transaksi->id,
-                'total_tiket' => count($kursiList)
-            ]);
-            
         } catch (\Exception $e) {
             Log::error('❌ Error generating tiket: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
             throw $e;
         }
     }
 
     /**
-     * ✅ Generate Kode Tiket Unik (SHORT VERSION)
+     * ✅ Generate Kode Tiket Unik
      */
     private function generateKodeTiket($transaksiId, $nomorKursi)
     {
-        // Format pendek: FLX-MMDD-TID-KURSI
-        // Contoh: FLX1104-15-A5
+        $month = date('m');
+        $day = date('d');
         
-        $month = date('m'); // 2 digit bulan
-        $day = date('d');   // 2 digit tanggal
-        
-        // Format: FLXMMDD-TID-KURSI
         return "FLX{$month}{$day}-{$transaksiId}-{$nomorKursi}";
     }
 

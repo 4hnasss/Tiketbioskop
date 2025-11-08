@@ -72,27 +72,77 @@
 
     <!-- Chart Section -->
     <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-8">
-        <div class="flex justify-between items-center mb-8">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
             <h2 class="text-2xl font-bold text-[#14274E]">
                 <i class="fas fa-chart-bar mr-3 text-[#1E56A0]"></i>Grafik Pendapatan
             </h2>
             
-            <!-- Filter Periode -->
-            <div class="flex space-x-2">
-                <a href="{{ route('owner.dashboard', ['periode' => 'hari']) }}" 
-                   class="px-5 py-2.5 rounded-full transition duration-200 {{ $periode == 'hari' ? 'bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white shadow-lg' : 'bg-[#D6E4F0] text-[#14274E] hover:bg-[#1E56A0] hover:text-white' }}">
-                    Per Hari
-                </a>
-                <a href="{{ route('owner.dashboard', ['periode' => 'bulan']) }}" 
-                   class="px-5 py-2.5 rounded-full transition duration-200 {{ $periode == 'bulan' ? 'bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white shadow-lg' : 'bg-[#D6E4F0] text-[#14274E] hover:bg-[#1E56A0] hover:text-white' }}">
-                    Per Bulan
-                </a>
-                <a href="{{ route('owner.dashboard', ['periode' => 'tahun']) }}" 
-                   class="px-5 py-2.5 rounded-full transition duration-200  {{ $periode == 'tahun' ? 'bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white shadow-lg' : 'bg-[#D6E4F0] text-[#14274E] hover:bg-[#1E56A0] hover:text-white' }}">
-                    Per Tahun
-                </a>
+            <div class="flex flex-col lg:flex-row gap-4 w-full lg:w-auto">
+                <!-- Filter Periode -->
+                <div class="flex space-x-2">
+                    <a href="{{ route('owner.dashboard', array_merge(request()->only(['start_date', 'end_date']), ['periode' => 'hari'])) }}" 
+                       class="px-5 py-2.5 rounded-full transition duration-200 {{ $periode == 'hari' ? 'bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white shadow-lg' : 'bg-[#D6E4F0] text-[#14274E] hover:bg-[#1E56A0] hover:text-white' }}">
+                        Per Hari
+                    </a>
+                    <a href="{{ route('owner.dashboard', array_merge(request()->only(['start_date', 'end_date']), ['periode' => 'bulan'])) }}" 
+                       class="px-5 py-2.5 rounded-full transition duration-200 {{ $periode == 'bulan' ? 'bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white shadow-lg' : 'bg-[#D6E4F0] text-[#14274E] hover:bg-[#1E56A0] hover:text-white' }}">
+                        Per Bulan
+                    </a>
+                    <a href="{{ route('owner.dashboard', array_merge(request()->only(['start_date', 'end_date']), ['periode' => 'tahun'])) }}" 
+                       class="px-5 py-2.5 rounded-full transition duration-200  {{ $periode == 'tahun' ? 'bg-gradient-to-r from-[#1E56A0] to-[#14274E] text-white shadow-lg' : 'bg-[#D6E4F0] text-[#14274E] hover:bg-[#1E56A0] hover:text-white' }}">
+                        Per Tahun
+                    </a>
+                </div>
+
+                <!-- Filter Tanggal -->
+                <form method="GET" action="{{ route('owner.dashboard') }}" class="flex items-center gap-2 bg-[#D6E4F0] rounded-full px-4 py-2">
+                    <input type="hidden" name="periode" value="{{ $periode }}">
+                    
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-calendar-alt text-[#1E56A0]"></i>
+                        <input type="date" 
+                               name="start_date" 
+                               value="{{ request('start_date') }}"
+                               class="bg-transparent border-none text-sm text-[#14274E] focus:outline-none focus:ring-0 w-36"
+                               placeholder="Start Date">
+                    </div>
+                    
+                    <span class="text-[#14274E]">-</span>
+                    
+                    <div class="flex items-center gap-2">
+                        <input type="date" 
+                               name="end_date" 
+                               value="{{ request('end_date') }}"
+                               class="bg-transparent border-none text-sm text-[#14274E] focus:outline-none focus:ring-0 w-36"
+                               placeholder="End Date">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="ml-2 px-4 py-1.5 bg-[#1E56A0] text-white rounded-full hover:bg-[#14274E] transition text-sm font-semibold">
+                        <i class="fas fa-filter mr-1"></i>Filter
+                    </button>
+                    
+                    @if(request('start_date') || request('end_date'))
+                        <a href="{{ route('owner.dashboard', ['periode' => $periode]) }}" 
+                           class="ml-1 px-3 py-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition text-sm">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    @endif
+                </form>
             </div>
         </div>
+
+        @if(request('start_date') || request('end_date'))
+            <div class="mb-4 px-4 py-2 bg-blue-50 border-l-4 border-[#1E56A0] rounded">
+                <p class="text-sm text-[#14274E]">
+                    <i class="fas fa-info-circle mr-2 text-[#1E56A0]"></i>
+                    Menampilkan data dari 
+                    <strong>{{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d M Y') : 'awal' }}</strong>
+                    sampai 
+                    <strong>{{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d M Y') : 'sekarang' }}</strong>
+                </p>
+            </div>
+        @endif
 
         <div class="relative h-96">
             <canvas id="pendapatanChart"></canvas>

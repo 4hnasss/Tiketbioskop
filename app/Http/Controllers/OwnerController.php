@@ -10,40 +10,188 @@ use Illuminate\Support\Facades\DB;
 class OwnerController extends Controller
 {
     /**
-     * Dashboard Owner - Menampilkan overview transaksi dan chart
-     */
-    public function dashboard(Request $request)
-    {
-        // Get filter periode dari request (default: bulan ini)
-        $periode = $request->get('periode', 'bulan');
-        
-        // Statistik Umum
-        $totalTransaksi = Transaksi::count();
-        $totalPendapatan = Transaksi::where('status', 'settlement')->sum('totalharga');
-        $transaksiHariIni = Transaksi::whereDate('tanggaltransaksi', Carbon::today())->count();
-        $pendapatanHariIni = Transaksi::whereDate('tanggaltransaksi', Carbon::today())
-            ->where('status', 'settlement')
-            ->sum('totalharga');
-        
-        // Transaksi Terbaru (10 terakhir)
-        $transaksiTerbaru = Transaksi::with(['user', 'jadwal'])
-            ->orderBy('tanggaltransaksi', 'desc')
-            ->limit(10)
-            ->get();
-        
-        // Data untuk Chart Berdasarkan Periode
-        $chartData = $this->getChartData($periode);
-        
-        return view('owner.dashboard', compact(
-            'totalTransaksi',
-            'totalPendapatan',
-            'transaksiHariIni',
-            'pendapatanHariIni',
-            'transaksiTerbaru',
-            'chartData',
-            'periode'
-        ));
+ * Dashboard Owner - Menampilkan overview transaksi dan chart
+ */
+public function dashboard(Request $request)
+{
+    // Get filter periode dari request (default: bulan ini)
+    $periode = $request->get('periode', 'bulan');
+    
+    // Get filter tanggal dari request
+    $startDate = $request->get('start_date');
+    $endDate = $request->get('end_date');
+    
+    // Statistik Umum (tidak terpengaruh filter tanggal)
+    $totalTransaksi = Transaksi::count();
+    $totalPendapatan = Transaksi::where('status', 'settlement')->sum('totalharga');
+    $transaksiHariIni = Transaksi::whereDate('tanggaltransaksi', Carbon::today())->count();
+    $pendapatanHariIni = Transaksi::whereDate('tanggaltransaksi', Carbon::today())
+        ->where('status', 'settlement')
+        ->sum('totalharga');
+    
+    // Transaksi Terbaru (10 terakhir)
+    $transaksiTerbaru = Transaksi::with(['user', 'jadwal'])
+        ->orderBy('tanggaltransaksi', 'desc')
+        ->limit(10)
+        ->get();
+    
+    // Data untuk Chart Berdasarkan Periode dan Filter Tanggal
+    $chartData = $this->getChartData($periode, $startDate, $endDate);
+    
+    return view('owner.dashboard', compact(
+        'totalTransaksi',
+        'totalPendapatan',
+        'transaksiHariIni',
+        'pendapatanHariIni',
+        'transaksiTerbaru',
+        'chartData',
+        'periode'
+    ));
+}
+
+/**
+ * Generate data untuk chart berdasarkan periode dan filter tanggal
+ */
+private function getChartData($periode, $startDate = null, $endDate = null)
+{
+    $labels = [];
+    $data = [];
+    
+    // Base query dengan filter status settlement
+    $baseQuery = Transaksi::where('status', 'settlement');
+    
+    // Terapkan filter tanggal jika ada
+    if ($startDate) {
+        $baseQuery->whereDate('tanggaltransaksi', '>=', $startDate);
     }
+    if ($endDate) {
+        $baseQuery->whereDate('tanggaltransaksi', '<=', $endDate);
+    }
+    
+    switch ($periode) {
+        case 'hari':
+            // Grafik per hari (7 hari terakhir atau sesuai range)
+            if ($startDate && $endDate) {
+                // Jika ada filter tanggal, gunakan range tersebut
+                $start = Carbon::parse($startDate);
+                $end = Carbon::parse($endDate);
+                $days = $start->diffInDays($end) + 1;
+                
+                // Batasi maksimal 30 hari untuk performa
+                if ($days > 30) {
+                    $days = 30;
+                    $start = $end->copy()->subDays(29);
+                }
+                
+                for ($i = 0; $i < $days; $i++) {
+                    $date = $start->copy()->addDays($i);
+                    $labels[] = $date->format('d M');
+                    
+                    $pendapatan = Transaksi::where('status', 'settlement')
+                        ->whereDate('tanggaltransaksi', $date)
+                        ->sum('totalharga');
+                    
+                    $data[] = $pendapatan;
+                }
+            } else {
+                // Default: 7 hari terakhir
+                for ($i = 6; $i >= 0; $i--) {
+                    $date = Carbon::today()->subDays($i);
+                    $labels[] = $date->format('d M');
+                    
+                    $pendapatan = Transaksi::where('status', 'settlement')
+                        ->whereDate('tanggaltransaksi', $date)
+                        ->sum('totalharga');
+                    
+                    $data[] = $pendapatan;
+                }
+            }
+            break;
+            
+        case 'bulan':
+            // Grafik per bulan (12 bulan terakhir atau sesuai range)
+            if ($startDate && $endDate) {
+                $start = Carbon::parse($startDate)->startOfMonth();
+                $end = Carbon::parse($endDate)->endOfMonth();
+                $months = $start->diffInMonths($end) + 1;
+                
+                // Batasi maksimal 12 bulan
+                if ($months > 12) {
+                    $months = 12;
+                    $start = $end->copy()->subMonths(11)->startOfMonth();
+                }
+                
+                for ($i = 0; $i < $months; $i++) {
+                    $month = $start->copy()->addMonths($i);
+                    $labels[] = $month->format('M Y');
+                    
+                    $pendapatan = Transaksi::where('status', 'settlement')
+                        ->whereYear('tanggaltransaksi', $month->year)
+                        ->whereMonth('tanggaltransaksi', $month->month)
+                        ->sum('totalharga');
+                    
+                    $data[] = $pendapatan;
+                }
+            } else {
+                // Default: 12 bulan terakhir
+                for ($i = 11; $i >= 0; $i--) {
+                    $month = Carbon::now()->subMonths($i);
+                    $labels[] = $month->format('M Y');
+                    
+                    $pendapatan = Transaksi::where('status', 'settlement')
+                        ->whereYear('tanggaltransaksi', $month->year)
+                        ->whereMonth('tanggaltransaksi', $month->month)
+                        ->sum('totalharga');
+                    
+                    $data[] = $pendapatan;
+                }
+            }
+            break;
+            
+        case 'tahun':
+            // Grafik per tahun (5 tahun terakhir atau sesuai range)
+            if ($startDate && $endDate) {
+                $start = Carbon::parse($startDate)->startOfYear();
+                $end = Carbon::parse($endDate)->endOfYear();
+                $years = $start->diffInYears($end) + 1;
+                
+                // Batasi maksimal 10 tahun
+                if ($years > 10) {
+                    $years = 10;
+                    $start = $end->copy()->subYears(9)->startOfYear();
+                }
+                
+                for ($i = 0; $i < $years; $i++) {
+                    $year = $start->copy()->addYears($i);
+                    $labels[] = $year->format('Y');
+                    
+                    $pendapatan = Transaksi::where('status', 'settlement')
+                        ->whereYear('tanggaltransaksi', $year->year)
+                        ->sum('totalharga');
+                    
+                    $data[] = $pendapatan;
+                }
+            } else {
+                // Default: 5 tahun terakhir
+                for ($i = 4; $i >= 0; $i--) {
+                    $year = Carbon::now()->subYears($i);
+                    $labels[] = $year->format('Y');
+                    
+                    $pendapatan = Transaksi::where('status', 'settlement')
+                        ->whereYear('tanggaltransaksi', $year->year)
+                        ->sum('totalharga');
+                    
+                    $data[] = $pendapatan;
+                }
+            }
+            break;
+    }
+    
+    return [
+        'labels' => $labels,
+        'data' => $data
+    ];
+}
 
     /**
      * Halaman Transaksi - Menampilkan semua transaksi dengan filter
@@ -159,61 +307,5 @@ class OwnerController extends Controller
         ));
     }
 
-    /**
-     * Helper: Get Chart Data berdasarkan periode
-     */
-    private function getChartData($periode)
-    {
-        $chartData = [
-            'labels' => [],
-            'data' => []
-        ];
-        
-        switch ($periode) {
-            case 'hari':
-                // Data 30 hari terakhir
-                for ($i = 29; $i >= 0; $i--) {
-                    $date = Carbon::today()->subDays($i);
-                    $chartData['labels'][] = $date->format('d M');
-                    
-                    $pendapatan = Transaksi::whereDate('tanggaltransaksi', $date)
-                        ->where('status', 'settlement')
-                        ->sum('totalharga');
-                    
-                    $chartData['data'][] = (float) $pendapatan;
-                }
-                break;
-                
-            case 'bulan':
-                // Data 12 bulan terakhir
-                for ($i = 11; $i >= 0; $i--) {
-                    $date = Carbon::now()->subMonths($i);
-                    $chartData['labels'][] = $date->format('M Y');
-                    
-                    $pendapatan = Transaksi::whereYear('tanggaltransaksi', $date->year)
-                        ->whereMonth('tanggaltransaksi', $date->month)
-                        ->where('status', 'settlement')
-                        ->sum('totalharga');
-                    
-                    $chartData['data'][] = (float) $pendapatan;
-                }
-                break;
-                
-            case 'tahun':
-                // Data 5 tahun terakhir
-                for ($i = 4; $i >= 0; $i--) {
-                    $year = Carbon::now()->subYears($i)->year;
-                    $chartData['labels'][] = $year;
-                    
-                    $pendapatan = Transaksi::whereYear('tanggaltransaksi', $year)
-                        ->where('status', 'settlement')
-                        ->sum('totalharga');
-                    
-                    $chartData['data'][] = (float) $pendapatan;
-                }
-                break;
-        }
-        
-        return $chartData;
-    }
+   
 }
